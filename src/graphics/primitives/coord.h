@@ -18,9 +18,6 @@ typedef struct grid2d {
     int y;
 } grid2d;
 
-/* 2d point operations */
-double dist2d(point2d a, point2d b);
-
 /* 3d space */
 typedef struct point3d {
     signed int x;

@@ -1,7 +1,26 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+# GNU Autotools Files
+**/Makefile
+**/Makefile.in
+**/*.o
+**/*.a
+/autom4te.cache
+/aclocal.m4
+/ar-lib
+/compile
+/config.guess
+/config.h
+/config.h.in
+/config.log
+/config.status
+/config.sub
+/configure
+/depcomp
+/install-sh
+/Makefile
+/missing
+/stamp-h1
+/src/main
 
-/.vs
+# Visual Studio Binaries
 /OpenGL/x64/Debug
 /x64/Debug

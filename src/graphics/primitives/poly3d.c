@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+#include "../../../config.h"
+
+#ifdef  HAVE_GL_GL_H    /* OpenGL libraries */
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
+#endif /* HAVE_GL_GL_H, HAVE_OPENGL_GL_H */
+
 #include "coord.h"  /* coordinate objects */
 #include "prim.h"   /* primitive shapes */
 
@@ -16,7 +24,7 @@ poly3d *new_poly3d(unsigned char point_count, ...)
     poly3d *newpoly = NULL;
 
     /* need more than two points for a polygon */
-    if (point_count > 3) {
+    if (point_count >= 3) {
         newpoly = (poly3d *) calloc(1, sizeof (poly3d));
         if (newpoly != NULL) {
             newpoly->point_count = point_count;
@@ -33,4 +41,20 @@ poly3d *new_poly3d(unsigned char point_count, ...)
     va_end(points);
 
     return newpoly;
+}
+
+/*
+ * draw_tri3d - draw a triangle
+ */
+void draw_tri3d(tri3d *poly, double r, double g, double b)
+{
+    int a = 0;
+    glBegin(GL_TRIANGLES);
+        glColor3f(r, g, b);
+        for (a = 0; a < 3; a++) {
+            glVertex3f(poly->points[a].x, poly->points[a].y, poly->points[a].z);
+        }
+    glEnd();
+    
+    return;
 }

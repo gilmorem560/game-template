@@ -1,16 +1,21 @@
 /*
- * wglcontext - OpenGL context for WindowsAPI
+ * wglcontext - OpenGL for WinAPI
  */
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "wglcontext.h"
 
+/*
+ * wglinit - initialize OpenGL for WinAPI
+ */
 void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 {
 	int pixel_format = 0;
+    
+    /* query WGL version */
 
-	/* initialize window class */
+	/* register window class */
 	wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wndclass.lpfnWndProc = wndproc;
 	wndclass.cbClsExtra = 0;
@@ -23,7 +28,7 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	wndclass.lpszClassName = L"MainWndClass";
 	RegisterClass(&wndclass);
 
-	/* initialize pixelformatdescriptor */
+	/* set pixel format attributes */
 	PIXELFORMATDESCRIPTOR pfd = {
 		sizeof (PIXELFORMATDESCRIPTOR)
 		,1
@@ -43,7 +48,7 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 		,0, 0, 0
 	};
 
-	/* initialize window */
+	/* create window */
 	wnd = CreateWindow(
 		L"MainWndClass"
 		,L"OpenGL"
@@ -76,13 +81,13 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	pixel_format = ChoosePixelFormat(dc, &pfd);
 	SetPixelFormat(dc, pixel_format, &pfd);
 
-	/* create rendering context */
+	/* create context */
 	context = wglCreateContext(dc);
 
-	/* make context current */
+	/* associate context to window */
 	wglMakeCurrent(dc, context);
 
-	/* show window */
+	/* display window */
 	ShowWindow(wnd, nShowCmd);
 		if (!UpdateWindow(wnd)) {
 			fprintf(stderr, "wglinit: could not update window\n");
@@ -94,15 +99,18 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	return;
 }
 
-void wglexit(HINSTANCE hInstance)
+/*
+ * wglfree - close OpenGL for X11
+ */
+void wglfree(HINSTANCE hInstance)
 {
 	/* hide window */
 	ShowWindow(wnd, SW_HIDE);
 
-	/* clear context */
+	/* dissociate context from window */
 	wglMakeCurrent(NULL, NULL);
 
-	/* destroy rendering context */
+	/* destroy context */
 	wglDeleteContext(context);
 
 	/* release device context */
