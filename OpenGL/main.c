@@ -3,35 +3,96 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
+/* Graphics handler */
+#include "wglcontext.h"
 
 /* Basic objects */
 #include "coord.h"
 #include "prim.h"
 
-int main(int argc, char* argv[])
+/* wndproc - main windows message processing loop */
+LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+/*
+ * WinMain - windows entry point
+ */
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
-    /* instantiate */
-    point2d point1 = { 0, 1 };
-    point2d point2 = { 1, 0 };
-    point2d point3 = { -1, 0 };
-    tri2d *myTriangle = NULL;
-    size_t counter;
+    /* loop messages */
+    MSG msg;
+    bool quit = false;
 
-    /* initialize */
-    myTriangle = new_poly2d(3, point1, point2, point3);
-    if (myTriangle == NULL)
-        return EXIT_FAILURE;
+    /* initialize graphics */
+    wglinit(hInstance, nShowCmd, wndproc);
 
-    /* test */
-    counter = myTriangle->point_count;
-    printf("Triangle coordinates:\n\n");
+    /* main loop */
+    while (!quit) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glBegin(GL_TRIANGLES);
+            glColor3f(0.0, 1.0, 0.0);
+            glVertex3f(0.0, 1.0, 0.0);
+            glVertex3f(1.0, 0.0, 0.0);
+            glVertex3f(-1.0, 0.0, 0.0);
 
-    printf("\tx\ty\n");
-    do {
-        printf("\t%d\t%d\n", myTriangle->points[counter-1].x, myTriangle->points[counter-1].y);
-    } while (counter-- > 1);
+            glColor3f(0.0, 0.0, 1.0);
+            glVertex3f(0.0, -1.0, 0.0);
+            glVertex3f(1.0, 0.0, 0.0);
+            glVertex3f(-1.0, 0.0, 0.0);
+        glEnd();
 
-    printf("\nDone\n");
+        SwapBuffers(dc);
+
+        /* handle messages */
+        switch (GetMessage(&msg, wnd, 0, 0)) {
+        case -1:
+            /* error */
+            fprintf(stderr, "main: could not retrieve message\n");
+            return EXIT_FAILURE;
+        case 0:
+            /* WM_QUIT */
+            quit = true;
+            break;
+        default:
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            break;
+        }
+    }
+
+    /* close graphics */
+    wglexit(hInstance);
 
     return EXIT_SUCCESS;
+}
+
+/*
+ * wndproc - main windows message processing loop
+ */
+LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+    case WM_KEYDOWN:
+        switch (wParam) {
+        case 'Q':
+        case 'q':
+            PostQuitMessage(0);
+            break;
+        default:
+            break;
+        }
+        break;
+    case WM_CLOSE:
+        DestroyWindow(hWnd);
+        break;
+    case WM_DESTROY:
+        break;
+    default:
+        return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    }
+
+    return 0;
 }

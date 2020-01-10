@@ -19,6 +19,9 @@
     <Filter Include="Source Files\prim">
       <UniqueIdentifier>{993e7676-aac2-45e4-8bd2-c5dc89c4c403}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\gfx">
+      <UniqueIdentifier>{b0795ff9-af0d-4689-9aa5-d3344e51b162}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="grid2d.c">
@@ -42,12 +45,18 @@
     <ClCompile Include="poly3d.c">
       <Filter>Source Files\prim</Filter>
     </ClCompile>
+    <ClCompile Include="wglcontext.c">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="coord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="prim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wglcontext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
