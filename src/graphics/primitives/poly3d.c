@@ -50,9 +50,9 @@ void draw_tri3d(tri3d *poly, double r, double g, double b)
 {
     int a = 0;
     glBegin(GL_TRIANGLES);
-        glColor3f(r, g, b);
+        glColor3d(r, g, b);
         for (a = 0; a < 3; a++) {
-            glVertex3f(poly->points[a].x, poly->points[a].y, poly->points[a].z);
+            glVertex3d(poly->points[a].x, poly->points[a].y, poly->points[a].z);
         }
     glEnd();
     

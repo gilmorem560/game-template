@@ -10,11 +10,7 @@
 #endif  /* _WIN32 */
 
 /* graphics handler */
-#ifndef _WIN32
-#include "graphics/contexts/glxcontext.h"
-#else   /* _WIN32 */
-#include "graphics/contexts/wglcontext.h"
-#endif  /* linux, _WIN32 */
+#include "graphics/contexts/glcontext.h"
 
 /* input handler */
 #include "input/input.h"
@@ -27,15 +23,24 @@ bool renderframe(void); /* OpenGL rendering cycle */
 bool move(void);        /* handle movement based on key masks */
 
 /* test objects */
-point3d point1 = { 0.0, 1.0, 0.0 };
-point3d point2 = { -1.0, 0.0, 0.0 };
-point3d point3 = { 1.0, 0.0, 0.0 };
-point3d point4 = { 0.0, -1.0, 0.0 };
+point3d point1 = { 0.0 , 1.0, 0.0 };
+point3d point2 = { 0.0, -1.0, 0.0 };
+point3d point3 = { 0.5, 0.0, -0.5 };
+point3d point4 = { 0.5, 0.0, 0.5 };
+point3d point5 = { -0.5, 0.0, 0.5 };
+point3d point6 = { -0.5, 0.0, -0.5 };
 tri3d *triangle1;
 tri3d *triangle2;
+tri3d *triangle3;
+tri3d *triangle4;
+tri3d *triangle5;
+tri3d *triangle6;
+tri3d *triangle7;
+tri3d *triangle8;
 bool tri1l = false;
 bool tri2l = false;
-bool quit = false;
+int angle;
+bool isfull = false;
 
 #ifndef _WIN32
 /*
@@ -44,10 +49,18 @@ bool quit = false;
 int main(int argc, char *argv[])
 {
     key = 0;    /* initialize key bitfield here for now */
+    quit = false;
+    angle = 1;
     
     /* test triangles */
-    triangle1 = new_poly3d(3, point1, point2, point3);
-    triangle2 = new_poly3d(3, point4, point2, point3);
+    triangle1 = new_poly3d(3, point1, point3, point4);
+    triangle2 = new_poly3d(3, point1, point4, point5);
+    triangle3 = new_poly3d(3, point1, point5, point6);
+    triangle4 = new_poly3d(3, point1, point6, point3);
+    triangle5 = new_poly3d(3, point2, point3, point4);
+    triangle6 = new_poly3d(3, point2, point4, point5);
+    triangle7 = new_poly3d(3, point2, point5, point6);
+    triangle8 = new_poly3d(3, point2, point6, point3);
 
     /* initialize OpenGL for X11 */
     glxinit();
@@ -62,12 +75,15 @@ int main(int argc, char *argv[])
         }
 
         /* begin processing events */
-        glxevent(dpy);
+        if (XPending(dpy))
+            glxevent(dpy);
         
         /* process movement */
         move();
         
         /* prepare for next frame */
+        if (angle == 360)
+            angle = 0;
     }
     
     /* close OpenGL for X11 */
@@ -81,6 +97,10 @@ int main(int argc, char *argv[])
  */
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
+    key = 0;    /* initialize key bitfield here for now */
+    quit = false;
+    angle = 1;
+    
     /* initialize OpenGL for WinAPI */
     wglinit(hInstance, nShowCmd, wndproc);
 
@@ -118,8 +138,14 @@ bool renderframe(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     
     /* draw some triangles */
-    draw_tri3d(triangle1, 0.0, 1.0, 0.0);
-    draw_tri3d(triangle2, 0.0, 0.0, 1.0);
+    draw_tri3d(triangle1, 1.0, 0.0, 0.0);
+    draw_tri3d(triangle2, 0.0, 1.0, 0.0);
+    draw_tri3d(triangle3, 0.0, 0.0, 1.0);
+    draw_tri3d(triangle4, 1.0, 1.0, 0.0);
+    draw_tri3d(triangle5, 0.0, 1.0, 1.0);
+    draw_tri3d(triangle6, 1.0, 0.0, 1.0);
+    draw_tri3d(triangle7, 1.0, 1.0, 1.0);
+    draw_tri3d(triangle8, 0.0, 0.0, 0.0);
         
     return true;
 }
@@ -131,16 +157,28 @@ bool move(void)
 {
     int a = 0;
     
+    /* f - fullscreen */
+    if (key & KEY_F) {
+        if (isfull) {
+            setwindowed();
+            isfull = false;
+        } else {
+            setfullscreen();
+            isfull = true;
+        }
+        key &= ~KEY_F;
+    }
+    
     /* m - move model */
     if (key & KEY_M) {
-        if (triangle1->points[0].x >= 1.0)
+        if (triangle1->points[2].x > 1.0)
             tri1l = true;
-        else if (triangle1->points[0].x <= -1.0)
+        else if (triangle1->points[2].x < -1.0)
             tri1l = false;
                         
-        if (triangle2->points[0].x >= 1.0)
+        if (triangle2->points[2].x > 1.0)
             tri2l = true;
-        else if (triangle2->points[0].x <= -1.0)
+        else if (triangle2->points[2].x < -1.0)
             tri2l = false;
                     
         for (a = 0; a < 3; a++) {
@@ -154,12 +192,16 @@ bool move(void)
             else
                 triangle2->points[a].x += 0.1;
         }
-        key &= ~KEY_M;
     }
     
     /* q - quit */
     if (key & KEY_Q) {
         quit = true;
+    }
+    
+    /* r - rotate model */
+    if (key & KEY_R) {
+        glRotated(angle, 0, 1, 0);
     }
     
     return true;

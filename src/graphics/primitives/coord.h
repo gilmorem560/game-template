@@ -10,24 +10,24 @@ extern "C" {
 
 /* 2d space */
 typedef struct point2d {
-    signed int x;
-    signed int y;
+    double x;
+    double y;
 } point2d;
 typedef struct grid2d {
-    int x;
-    int y;
+    double x;
+    double y;
 } grid2d;
 
 /* 3d space */
 typedef struct point3d {
-    signed int x;
-    signed int y;
-    signed int z;
+    double x;
+    double y;
+    double z;
 } point3d;
 typedef struct grid3d {
-    int x;
-    int y;
-    int z;
+    double x;
+    double y;
+    double z;
 } grid3d;
 
 #ifdef __cplusplus

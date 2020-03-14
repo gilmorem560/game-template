@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "wglcontext.h"
+#include "glcontext.h"
 
 /*
  * wglinit - initialize OpenGL for WinAPI

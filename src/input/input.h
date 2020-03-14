@@ -4,6 +4,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+    
+#include <stdbool.h>    /* C booleans */
 
 #ifndef _WIN32
 #include <X11/Xlib.h>   /* X11 libraries */
@@ -48,6 +50,10 @@ extern "C" {
 
 /* key masks */
 unsigned long key;
+unsigned long keyHeld;
+
+/* quit state */
+bool quit;
 
 #ifdef  _WIN32
 /* wglevent - process WinAPI input */

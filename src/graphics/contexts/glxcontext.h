@@ -11,6 +11,7 @@ extern "C" {
 #include "../../../config.h"
 
 #include <X11/Xlib.h>   /* X11 libraries */
+#include <X11/XKBlib.h>	/* X11 Xkb extensions */
 #ifdef  HAVE_GL_GL_H    /* OpenGL libraries */
 #include <GL/gl.h>
 #elif defined(HAVE_OPENGL_GL_H)
@@ -28,6 +29,10 @@ extern "C" {
 Display *dpy;
 XVisualInfo *vis;
 Window win;
+Window root;
+    unsigned long rootSizeX;
+    unsigned long rootSizeY;
+int screen_number;
 
 /* GLX variables */
 GLXFBConfig *config;

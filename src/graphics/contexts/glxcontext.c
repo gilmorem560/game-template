@@ -4,15 +4,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "glxcontext.h"
- 
+#include "glcontext.h"
+
 /*
  * glxinit - initialize OpenGL for X11
  */
 void glxinit(void)
 {
-    int screen_number;
-    Window root;
+    XSetWindowAttributes attrs;
     int major, minor;
     int config_count;
     dpy = NULL;
@@ -38,7 +37,7 @@ void glxinit(void)
         XCloseDisplay(dpy);
         exit(EXIT_FAILURE);
     }
-        
+    
     /* determine default screen */
     screen_number = XDefaultScreen(dpy);
     
@@ -60,7 +59,7 @@ void glxinit(void)
         ,GLX_DOUBLEBUFFER   ,True
         ,None
     };
-        
+    
     /* get framebuffer config */
     config = glXChooseFBConfig(dpy, screen_number, attrib_list, &config_count);
         if (config == NULL) {
@@ -68,7 +67,7 @@ void glxinit(void)
             XCloseDisplay(dpy);
             exit(EXIT_FAILURE);
         }
-        
+    
     /* retrieve X visual info */
     vis = glXGetVisualFromFBConfig(dpy, *config);
         if (vis == NULL) {
@@ -87,7 +86,10 @@ void glxinit(void)
             XCloseDisplay(dpy);
             exit(EXIT_FAILURE);
         }
-        
+    
+    /* set input events */
+    attrs.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask;
+    
     /* create window */
     win = XCreateWindow(
         dpy                 /* Display *display */
@@ -96,18 +98,15 @@ void glxinit(void)
         ,400                /* int y */
         ,640                /* unsigned int width */
         ,480                /* unsigned int height */
-        ,2                  /* unsigned int border_width */
+        ,1                  /* unsigned int border_width */
         ,CopyFromParent     /* int depth */
         ,CopyFromParent     /* unsigned int class */
         ,vis->visual        /* Visual *visual */
-        ,0                  /* unsigned long valuemask */
-        ,NULL);             /* XSetWindowAttributes *attributes */
+        ,CWEventMask        /* unsigned long valuemask */
+        ,&attrs);             /* XSetWindowAttributes *attributes */
     
     /* allow auto-repeat of keys */
-    XAutoRepeatOn(dpy);
-    
-    /* set the events accepted */
-    XSelectInput(dpy, win, KeyPressMask | ExposureMask);
+    XkbSetDetectableAutoRepeat(dpy, True, NULL);
     
     /* create on-screen rendering area */
     window = glXCreateWindow(dpy, *config, win, NULL);
@@ -124,8 +123,13 @@ void glxinit(void)
         exit(EXIT_FAILURE);
     }
     
+    /* set name */
+    XStoreName(dpy, win, "OpenGL");
+    
     /* display window */
     XMapWindow(dpy, win);
+
+    glEnable(GL_DEPTH_TEST);
     
     return;
 }
@@ -159,5 +163,39 @@ void glxfree(void)
     /* close X display */
     XCloseDisplay(dpy);
     
+    return;
+}
+
+/*
+ * setwindowed
+ */
+void setwindowed(void)
+{
+    #ifndef NDEBUG                      /* 480p CRT used for development */
+        rootSizeX = 640;
+        rootSizeY = 480;
+    #endif /* NDEBUG */
+    
+    XResizeWindow(dpy, root, rootSizeX, rootSizeY); /* restore desktop resolution */
+    XMoveWindow(dpy, win, 400, 400);    /* and return it to its place (400x400 for debug) */
+    XSetWindowBorderWidth(dpy, win, 1); /* return the border */
+    XRaiseWindow(dpy, win);             /* put the window on top */
+    
+    return;
+}
+
+/*
+ * setfullscreen
+ */
+void setfullscreen(void)
+{
+    /* backup windowed state */
+    rootSizeX = XDisplayWidth(dpy, screen_number);
+    rootSizeY = XDisplayHeight(dpy, screen_number);
+    
+    XRaiseWindow(dpy, win);             /* put the window on top */
+    XSetWindowBorderWidth(dpy, win, 0); /* remove its border */
+    XMoveWindow(dpy, win, 0, 0);        /* and stick it in the corner */
+    XResizeWindow(dpy, root, 640, 480); /* finally, resize the desktop */
     return;
 }
