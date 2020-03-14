@@ -1,4 +1,4 @@
-AC_INIT([OpenGL], [1.0], [segaloco@gmail.com])
+AC_INIT([game-template], [1.0], [segaloco@gmail.com])
 AM_INIT_AUTOMAKE([-Wall -Werror])
 AC_PROG_CC
 AC_PROG_RANLIB
