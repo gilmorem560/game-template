@@ -14,20 +14,10 @@ void wglevent(HWND hWnd)
 {
     MSG msg;
     
-    switch (GetMessage(&msg, hWnd, 0, 0)) {
-        case -1:
-            /* error */
-            fprintf(stderr, "main: could not retrieve message\n");
-            return EXIT_FAILURE;
-        case 0:
-            /* WM_QUIT */
-            quit = true;
-            break;
-        default:
+    if(PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-            break;
-        }
+    }
         
     return;
 }
@@ -48,6 +38,23 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case 'q':
             key |= KEY_Q;
             break;
+        case 'R':
+        case 'r':
+            key |= KEY_R;
+            break;
+        default:
+            break;
+        }
+        break;
+    case WM_KEYUP:
+        #ifndef NDEBUG
+        printf("WM_KEYUP");
+        #endif /* NDEBUG */
+        switch (wParam) {
+        case 'R':
+        case 'r':
+            key &= ~KEY_R;
+            break;
         default:
             break;
         }
@@ -56,6 +63,7 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DestroyWindow(hWnd);
         break;
     case WM_DESTROY:
+        quit = true;
         break;
     default:
         return DefWindowProc(hWnd, uMsg, wParam, lParam);

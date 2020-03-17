@@ -18,3 +18,9 @@
 # Visual Studio Files
 /OpenGL/x64/Debug
 /x64/Debug
+*.db
+*.suo
+*.opendb
+*.json
+*.sqlite
+.vs

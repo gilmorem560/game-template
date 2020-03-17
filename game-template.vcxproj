@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{D31B1EE2-39C4-4977-9150-5868C3F4AD1A}</ProjectGuid>
-    <RootNamespace>OpenGL</RootNamespace>
+    <RootNamespace>game-template</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\objects\hedrons.c" />
     <ClCompile Include="src\graphics\primitives\grid2d.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
     </ClCompile>
@@ -170,6 +171,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\objects\hedrons.h" />
     <ClInclude Include="src\graphics\primitives\coord.h" />
     <ClInclude Include="src\graphics\primitives\prim.h" />
     <ClInclude Include="src\graphics\contexts\wglcontext.h" />

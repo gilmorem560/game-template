@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
         move();
         
         /* prepare for next frame */
-	if (angle == 360)
+	    if (angle == 360)
             angle = 0;
     }
     
@@ -109,10 +109,35 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 {
     key = 0;    /* initialize key bitfield here for now */
     quit = false;
-    angle = 1;
     
     /* initialize OpenGL for WinAPI */
     wglinit(hInstance, nShowCmd, wndproc);
+
+    /* create lists */
+    diamond1 = glGenLists(1);
+    glNewList(diamond1, GL_COMPILE);
+    octahedron(0.5, 0.5, 0.5);
+    glEndList();
+
+    diamond2 = glGenLists(1);
+    glNewList(diamond2, GL_COMPILE);
+    octahedron(0.5, 0.5, 0.5);
+    glEndList();
+
+    diamond3 = glGenLists(1);
+    glNewList(diamond3, GL_COMPILE);
+    octahedron(0.5, 0.5, 0.5);
+    glEndList();
+
+    diamond4 = glGenLists(1);
+    glNewList(diamond4, GL_COMPILE);
+    octahedron(0.5, 0.5, 0.5);
+    glEndList();
+
+    diamond5 = glGenLists(1);
+    glNewList(diamond5, GL_COMPILE);
+    octahedron(0.5, 0.5, 0.5);
+    glEndList();
 
     /* main loop */
     while (!quit) {
@@ -130,7 +155,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         move();
         
         /* prepare for next frame */
+        if (angle == 360)
+            angle = 0;
     }
+
+    /* destroy lists */
+    glDeleteLists(diamond1, 1);
+    glDeleteLists(diamond2, 1);
+    glDeleteLists(diamond3, 1);
+    glDeleteLists(diamond4, 1);
+    glDeleteLists(diamond5, 1);
 
     /* close OpenGL for WinAPI */
     wglfree(hInstance);
@@ -185,8 +219,6 @@ bool renderframe(void)
  */
 bool move(void)
 {
-    int a = 0;
-    
     /* f - fullscreen */
     if (key & KEY_F) {
 	/*    
@@ -213,7 +245,7 @@ bool move(void)
     
     /* r - rotate model */
     if (key & KEY_R) {
-	angle++;
+	    angle++;
     }
     
     return true;

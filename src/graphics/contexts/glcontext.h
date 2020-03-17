@@ -6,7 +6,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef __WIN32
+#ifdef _WIN32
 #include "wglcontext.h"
 #else
 #include "glxcontext.h"
