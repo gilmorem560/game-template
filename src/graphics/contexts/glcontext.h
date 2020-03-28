@@ -5,8 +5,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+	
+#include <stdbool.h>
 
-#ifdef __WIN32
+#ifdef _WIN32
 #include "wglcontext.h"
 #else
 #include "glxcontext.h"

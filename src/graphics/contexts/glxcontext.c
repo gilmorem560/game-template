@@ -88,7 +88,7 @@ void glxinit(void)
         }
     
     /* set input events */
-    attrs.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask;
+    attrs.event_mask = KeyPressMask | KeyReleaseMask | StructureNotifyMask;
     
     /* create window */
     win = XCreateWindow(
@@ -128,8 +128,6 @@ void glxinit(void)
     
     /* display window */
     XMapWindow(dpy, win);
-
-    glEnable(GL_DEPTH_TEST);
     
     return;
 }

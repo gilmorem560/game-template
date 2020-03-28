@@ -22,41 +22,62 @@
     <Filter Include="Source Files\gfx">
       <UniqueIdentifier>{b0795ff9-af0d-4689-9aa5-d3344e51b162}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\obj">
+      <UniqueIdentifier>{98c0bd7d-c96b-4822-a775-67d2a6255efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\input">
+      <UniqueIdentifier>{8d5fb6b5-b880-4ad1-a235-830a9e9eb1ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="grid2d.c">
-      <Filter>Source Files\coord</Filter>
-    </ClCompile>
-    <ClCompile Include="point2d.c">
-      <Filter>Source Files\coord</Filter>
-    </ClCompile>
-    <ClCompile Include="grid3d.c">
-      <Filter>Source Files\coord</Filter>
-    </ClCompile>
-    <ClCompile Include="point3d.c">
-      <Filter>Source Files\coord</Filter>
-    </ClCompile>
-    <ClCompile Include="main.c">
+    <ClCompile Include="src\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="poly2d.c">
+    <ClCompile Include="src\graphics\objects\hedrons.c">
+      <Filter>Source Files\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\grid2d.c">
+      <Filter>Source Files\coord</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\grid3d.c">
+      <Filter>Source Files\coord</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\point2d.c">
+      <Filter>Source Files\coord</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\point3d.c">
+      <Filter>Source Files\coord</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\poly2d.c">
       <Filter>Source Files\prim</Filter>
     </ClCompile>
-    <ClCompile Include="poly3d.c">
+    <ClCompile Include="src\graphics\primitives\poly3d.c">
       <Filter>Source Files\prim</Filter>
     </ClCompile>
-    <ClCompile Include="wglcontext.c">
+    <ClCompile Include="src\graphics\contexts\wglcontext.c">
       <Filter>Source Files\gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\wglevent.c">
+      <Filter>Source Files\input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="coord.h">
+    <ClInclude Include="src\graphics\primitives\coord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="prim.h">
+    <ClInclude Include="src\graphics\primitives\prim.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wglcontext.h">
+    <ClInclude Include="src\graphics\contexts\wglcontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\objects\hedrons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

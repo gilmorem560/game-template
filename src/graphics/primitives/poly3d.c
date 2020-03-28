@@ -4,12 +4,17 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+#ifndef _WIN32
 #include "../../../config.h"
+#endif
 
-#ifdef  HAVE_GL_GL_H    /* OpenGL libraries */
+#ifdef HAVE_GL_GL_H    /* OpenGL libraries */
 #include <GL/gl.h>
 #elif defined(HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
+#elif defined(_WIN32)
+#include <Windows.h>
+#include <GL/gl.h>
 #endif /* HAVE_GL_GL_H, HAVE_OPENGL_GL_H */
 
 #include "coord.h"  /* coordinate objects */
@@ -58,3 +63,20 @@ void draw_tri3d(tri3d *poly, double r, double g, double b)
     
     return;
 }
+
+/*
+ * draw_quad3d - draw a quad
+ */
+void draw_quad3d(quad3d *poly, double r, double g, double b)
+{
+    int a = 0;
+    glBegin(GL_QUADS);
+        glColor3d(r, g, b);
+        for (a = 0; a < 4; a++) {
+            glVertex3d(poly->points[a].x, poly->points[a].y, poly->points[a].z);
+        }
+    glEnd();
+    
+    return;
+}
+
