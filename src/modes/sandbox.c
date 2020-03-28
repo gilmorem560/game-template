@@ -3,6 +3,7 @@
  */
 #include "sandbox.h"
 
+/* local assets */
 static GLdouble verticies[] = {  0.5,  0.5,  0.5
 							   , 0.5,  0.5, -0.5
 							   , 0.5, -0.5,  0.5
@@ -12,7 +13,7 @@ static GLdouble verticies[] = {  0.5,  0.5,  0.5
 							   ,-0.5, -0.5,  0.5
 							   ,-0.5, -0.5, -0.5 };
 						
-static GLdouble colors[] = { 1.0, 0.0, 0.0
+static GLdouble colors[] = { 0.1, 0.0, 0.0
 							,0.0, 1.0, 0.0
 							,0.0, 0.0, 1.0
 							,1.0, 1.0, 0.0
@@ -20,6 +21,24 @@ static GLdouble colors[] = { 1.0, 0.0, 0.0
 							,0.0, 1.0, 1.0
 							,0.0, 0.0, 0.0
 							,1.0, 1.0, 1.0 };
+
+static GLdouble normals[] = {  1.0,  1.0,  1.0
+							 , 1.0,  1.0, -1.0
+							 , 1.0, -1.0,  1.0
+							 , 1.0, -1.0, -1.0
+							 ,-1.0,  1.0,  1.0
+							 ,-1.0,  1.0, -1.0
+							 ,-1.0, -1.0,  1.0
+							 ,-1.0, -1.0, -1.0};
+							 
+static GLdouble texture_coords[] = {  0.0, 1.0
+									 ,1.0, 1.0
+									 ,0.0, 0.0
+									 ,1.0, 0.0
+									 ,0.0, 1.0
+									 ,1.0, 1.0
+									 ,0.0, 0.0
+									 ,1.0, 0.0};
 							
 static GLubyte indicies[] = { 1, 0, 2, 3
 							 ,0, 4, 6, 2
@@ -28,41 +47,80 @@ static GLubyte indicies[] = { 1, 0, 2, 3
 							 ,1, 5, 4, 0
 							 ,2, 6, 7, 3 };
 							 
-static bool smoothShading;
-static bool flatShading;
-static double zoom;
-static double z_dist;
-static bool z_pos;
+static GLfloat light_pos[] = { 3.0, 3.0, 3.0, 0.0 };
+static GLfloat ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+static GLfloat fog_color[] = { 0.5, 0.5, 0.5, 1.0 };
+static GLubyte texture_image[] = { 0 ,255 ,0   ,255
+								  ,0 ,0   ,255 ,255
+								  ,0 ,255 ,0   ,255
+								  ,0 ,0   ,255 ,255 };
+static GLint texture;
 
 /*
  * sandbox_init - OpenGL init
  */
 bool sandbox_init(void)
-{
+{	
 	#ifndef NDEBUG
 	fprintf(stdout, "sandbox: init\n");
 	#endif /* NDEBUG */
 	
 	/* Enable GL features */
-	glEnable(GL_DEPTH_TEST);	/* operating in 3 dimensions */
-	glEnable(GL_CULL_FACE);		/* allow culling for performance boost */
-	glCullFace(GL_BACK);		/* only looking from outside in */
-	
-	//glEnableClientState(GL_NORMAL_ARRAY);	/* Enable vertex, color, and normal arrays for performance boost */
+	glEnable(GL_DEPTH_TEST);		/* operating in 3 dimensions */
+	glEnable(GL_CULL_FACE);			/* allow culling for performance boost */
+	glEnable(GL_LIGHTING);			/* apply lighting */
+	glEnable(GL_LIGHT0);			/* use first light */
+	glEnable(GL_COLOR_MATERIAL);	/* allow vertex color in lighting */
+	glEnable(GL_FOG);				/* fog calculations */
+	glEnable(GL_TEXTURE_2D);		/* enable texturing */
+	glEnableClientState(GL_NORMAL_ARRAY);	/* Enable vertex, color, and normal arrays for performance boost */
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	
-	/* Prepare arrays */
-	glVertexPointer(3, GL_DOUBLE, 0, verticies);
-	glColorPointer(3, GL_DOUBLE, 0, colors);
-	
-	/* Prepare textures */
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	/* Prepare propeties */
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(0.5, 0.5, 0.5, 1.0);
+	
+	/* culling */
+	glCullFace(GL_BACK);
+	
+	/* lighting setup */
+	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+	
+	/* material setup */
+	glMaterialf(GL_FRONT, GL_SHININESS, 50.0);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	
+	/* fog setup */
+	glFogi(GL_FOG_MODE, GL_EXP);
+	glFogfv(GL_FOG_COLOR, fog_color);
+	glFogf(GL_FOG_DENSITY, 0.35);
+	glFogf(GL_FOG_START, 1.0);
+	glFogf(GL_FOG_END, 13.0);
+	
+	/* projection setup */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 13.0);
+	
+	/* texture setup */
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_image);
+		
+	/* Prepare arrays */
+	glNormalPointer(GL_DOUBLE, 0, normals);
+	glVertexPointer(3, GL_DOUBLE, 0, verticies);
+	glColorPointer(3, GL_DOUBLE, 0, colors);
+	glTexCoordPointer(2, GL_DOUBLE, 0, texture_coords);
+	
+	/* initialize properties */
 	angleX = 0.0;
 	angleY = 0.0;
 	smoothShading = true;
@@ -80,7 +138,7 @@ bool sandbox_init(void)
 bool sandbox_renderframe(void)
 {
     /* clear the scene */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT |  GL_STENCIL_BUFFER_BIT);
 	
 	if (smoothShading)
 		glShadeModel(GL_SMOOTH);
@@ -173,6 +231,11 @@ bool sandbox_move(void)
 	if (key & KEY_X)
 		zoom -= 0.1;
 	
+	/* q - quit */
+	if (key & KEY_Q)
+		quit = true;
+	
+	/* limits */
 	if (angleX > 360.0)
 		angleX = 0.0;
 	else if (angleX < 0.0)
@@ -183,11 +246,11 @@ bool sandbox_move(void)
 	else if (angleY < 0.0)
 		angleY = 360.0;
 	
-	if (zoom > -5.0)
-		zoom = -5.0;
+	if (zoom > -3.82)
+		zoom = -3.82;
 	
-	if (zoom < -9.0)
-		zoom = -9.0;
+	if (zoom < -10.18)
+		zoom = -10.18;
 	
 	if (z_pos)
 	{
@@ -200,12 +263,7 @@ bool sandbox_move(void)
 			z_dist -= 0.1;
 		else
 			z_pos = true;
-	}
-	
-		
-	/* q - quit */
-	if (key & KEY_Q)
-		quit = true;
+	}	
 	
 	return true;
 }
@@ -218,9 +276,8 @@ bool sandbox_free(void)
 	#ifndef NDEBUG
 	fprintf(stdout, "sandbox: free\n");
 	#endif /* NDEBUG */
-	/* Free display lists */
 	
-	//glDeleteLists(cube, 1);
+	glDeleteTextures(1, &texture);
 	
 	return true;
 }

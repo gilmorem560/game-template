@@ -21,14 +21,14 @@ bool sandbox_free(void);		/* OpenGL free */
 
 /* assets */
 
-/* OpenGL lists */
-GLint cube;
-
-/* OpenGL textures */
-
 /* properties */
 double angleX;
 double angleY;
+bool smoothShading;
+bool flatShading;
+double zoom;
+double z_dist;
+bool z_pos;
 
 #ifdef __cplusplus
 };
