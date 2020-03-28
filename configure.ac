@@ -6,6 +6,7 @@ AM_PROG_AR
 AC_PATH_X
 AX_CHECK_GL
 AX_CHECK_GLX
+AC_CHECK_LIB([m],[sqrt])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
     Makefile

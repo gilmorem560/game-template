@@ -1,6 +1,7 @@
 # GNU Files
 **/.deps
 **/.directory
+**/.dirstamp
 **/Makefile
 **/Makefile.in
 **/*.o
@@ -14,6 +15,7 @@
 /configure
 /stamp-h1
 /src/main
+/TODO
 
 # Visual Studio Files
 /OpenGL/x64/Debug

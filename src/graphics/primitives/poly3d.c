@@ -63,3 +63,20 @@ void draw_tri3d(tri3d *poly, double r, double g, double b)
     
     return;
 }
+
+/*
+ * draw_quad3d - draw a quad
+ */
+void draw_quad3d(quad3d *poly, double r, double g, double b)
+{
+    int a = 0;
+    glBegin(GL_QUADS);
+        glColor3d(r, g, b);
+        for (a = 0; a < 4; a++) {
+            glVertex3d(poly->points[a].x, poly->points[a].y, poly->points[a].z);
+        }
+    glEnd();
+    
+    return;
+}
+

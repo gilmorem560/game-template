@@ -9,6 +9,7 @@
 extern "C" {
 #endif /* __cplusplus */
 	
+void tetrahedron(double n);
 void octahedron(double x, double y, double z);
 	
 #ifdef __cplusplus

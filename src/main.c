@@ -22,13 +22,8 @@
 /* composite objects */
 #include "graphics/objects/hedrons.h"
 
-bool renderframe(void); /* OpenGL rendering cycle */
-bool move(void);        /* handle movement based on key masks */
-
-/* octahedron */
-GLint diamond1, diamond2, diamond3, diamond4, diamond5;
-
-int angle = 0;
+/* game modes */
+#include "modes/modes.h"
 
 #ifndef _WIN32
 /*
@@ -36,69 +31,85 @@ int angle = 0;
  */
 int main(int argc, char *argv[])
 {
+	if (argc < 2) {
+		fprintf(stderr, "Format: %s <modenum>\n", argv[0]);
+		return EXIT_FAILURE;
+	}
+	
+	game_mode = atoi(argv[1]);
+	
     key = 0;    /* initialize key bitfield here for now */
     quit = false;
 
     /* initialize OpenGL for X11 */
     glxinit();
-    
-    /* create lists */
-    diamond1 = glGenLists(1);
-    glNewList(diamond1, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
-    
-    diamond2 = glGenLists(1);
-    glNewList(diamond2, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
-    
-    diamond3 = glGenLists(1);
-    glNewList(diamond3, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
-    
-    diamond4 = glGenLists(1);
-    glNewList(diamond4, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
-    
-    diamond5 = glGenLists(1);
-    glNewList(diamond5, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
-        
+
+    /* prepare OpenGL assets */
+    switch (game_mode) {
+    case GM_DIAMONDS:
+        diamond_init();
+        break;
+    case GM_MAP:
+	    map_init();
+	    break;
+	case GM_SANDBOX:
+		sandbox_init();
+		break;
+    default:
+        break;
+    }
+
     /* main loop */
     while (!quit) {
-        /* render next frame */
-        if (!renderframe()) {
-            fprintf(stderr, "renderframe: failure\n");
-        } else {
-            glXSwapBuffers(dpy, window);
-        }
-
         /* begin processing events */
         if (XPending(dpy))
             glxevent(dpy);
-        
-        /* process movement */
-        move();
-        
-        /* prepare for next frame */
-	    if (angle == 360)
-            angle = 0;
+
+		switch(game_mode) {
+		case GM_DIAMONDS:
+			/* process next frame */
+			diamond_renderframe();
+			/* process movement */
+			diamond_move();
+			break;
+		case GM_MAP:
+			/* process next frame */
+			map_renderframe();
+			/* process movement */
+			map_move();
+			break;
+		case GM_SANDBOX:
+			/* process next frame */
+			sandbox_renderframe();
+			/* process movement */
+			sandbox_move();
+				break;
+		default:
+			fprintf(stderr, "Unknown game mode: %d\n", game_mode);
+			quit = true;
+			break;
+		}
+
+		glXSwapBuffers(dpy, window);
     }
-    
-    /* destroy lists */
-    glDeleteLists(diamond1, 1);
-    glDeleteLists(diamond2, 1);
-    glDeleteLists(diamond3, 1);
-    glDeleteLists(diamond4, 1);
-    glDeleteLists(diamond5, 1);
-    
+
+    /* unload OpenGL assets */
+    switch (game_mode) {
+    case GM_DIAMONDS:
+        diamond_free();
+        break;
+    case GM_MAP:
+        map_free();
+		break;
+	case GM_SANDBOX:
+		sandbox_free();
+		break;
+    default:
+        break;
+    }
     /* close OpenGL for X11 */
     glxfree();
-    
+
     return EXIT_SUCCESS;
 }
 #else   /* _WIN32 */
@@ -109,40 +120,24 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 {
     key = 0;    /* initialize key bitfield here for now */
     quit = false;
-    
+
     /* initialize OpenGL for WinAPI */
     wglinit(hInstance, nShowCmd, wndproc);
 
-    /* create lists */
-    diamond1 = glGenLists(1);
-    glNewList(diamond1, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
-
-    diamond2 = glGenLists(1);
-    glNewList(diamond2, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
-
-    diamond3 = glGenLists(1);
-    glNewList(diamond3, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
-
-    diamond4 = glGenLists(1);
-    glNewList(diamond4, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
-
-    diamond5 = glGenLists(1);
-    glNewList(diamond5, GL_COMPILE);
-    octahedron(0.5, 0.5, 0.5);
-    glEndList();
+    /* prepare OpenGL assets */
+    switch (game_mode) {
+    case GM_DIAMONDS:
+        diamond_init();
+        break;
+    default:
+        break;
+    }
 
     /* main loop */
     while (!quit) {
+	/* TODO: Implement game modes */
         /* render next frame */
-        if (!renderframe()) {
+        if (!diamond_renderframe()) {
             fprintf(stderr, "renderframe: failure\n");
         } else {
             SwapBuffers(dc);
@@ -150,21 +145,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
         /* begin processing events */
         wglevent(wnd);
-        
+
         /* process movement */
-        move();
-        
+        diamond_move();
+
         /* prepare for next frame */
-        if (angle == 360)
-            angle = 0;
+        if (diamond_angle == 360)
+            diamond_angle = 0;
     }
 
-    /* destroy lists */
-    glDeleteLists(diamond1, 1);
-    glDeleteLists(diamond2, 1);
-    glDeleteLists(diamond3, 1);
-    glDeleteLists(diamond4, 1);
-    glDeleteLists(diamond5, 1);
+    /* unload OpenGL assets */
+    switch(game_mode) {
+    case GM_DIAMONDS:
+        diamond_free();
+        break;
+    default:
+        break;
+    }
 
     /* close OpenGL for WinAPI */
     wglfree(hInstance);
@@ -172,81 +169,3 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     return EXIT_SUCCESS;
 }
 #endif  /* _WIN32 */
-
-/*
- * renderframe - OpenGL rendering cycle
- */
-bool renderframe(void)
-{
-    /* clear the scene */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    
-    glPushMatrix();
-	glTranslated(0.5, 0.5, 0.0);
-	glRotated(angle, 0.0, 1.0, 0.0);
-	glCallList(diamond1);
-    glPopMatrix();
-    
-    glPushMatrix();
-	glTranslated(0.5, -0.5, 0.0);
-	glRotated(angle, 0.0, 1.0, 0.0);
-	glCallList(diamond2);
-    glPopMatrix();
-    
-    glPushMatrix();
-	glTranslated(-0.5, 0.5, 0.0);
-	glRotated(angle, 0.0, -1.0, 0.0);
-	glCallList(diamond3);
-    glPopMatrix();
-    
-    glPushMatrix();
-	glTranslated(-0.5, -0.5, 0.0);
-	glRotated(angle, 0.0, -1.0, 0.0);
-	glCallList(diamond4);
-    glPopMatrix();
-    
-    glPushMatrix();
-	glTranslated(0.0, 0.0, 0.0);
-	glRotated(angle, 1.0, 0.0, 0.0);
-	glCallList(diamond4);
-    glPopMatrix();
-        
-    return true;
-}
-
-/*
- * move - handle movement based on key masks 
- */
-bool move(void)
-{
-    /* f - fullscreen */
-    if (key & KEY_F) {
-	/*    
-        if (isfull) {
-            setwindowed();
-            isfull = false;
-        } else {
-            setfullscreen();
-            isfull = true;
-        }
-        key &= ~KEY_F;
-	*/
-    }
-    
-    /* m - move model */
-    if (key & KEY_M) {
-
-    }
-    
-    /* q - quit */
-    if (key & KEY_Q) {
-        quit = true;
-    }
-    
-    /* r - rotate model */
-    if (key & KEY_R) {
-	    angle++;
-    }
-    
-    return true;
-}

@@ -7,6 +7,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+	
+/* coordinates */
+#include "coord.h"
 
 /* 2d primitives */
 typedef struct poly2d {
@@ -30,6 +33,7 @@ typedef poly3d quad3d;
 /* 3d primitives init */
 poly3d *new_poly3d(unsigned char point_count, ...);
 void draw_tri3d(tri3d *poly, double r, double g, double b);
+void draw_quad3d(quad3d *poly, double r, double g, double b);
 
 #ifdef __cplusplus
 };

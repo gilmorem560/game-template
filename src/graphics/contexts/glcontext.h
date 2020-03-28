@@ -5,6 +5,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+	
+#include <stdbool.h>
 
 #ifdef _WIN32
 #include "wglcontext.h"

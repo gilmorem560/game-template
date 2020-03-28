@@ -96,8 +96,6 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 			exit(EXIT_FAILURE);
 		}
 
-	glEnable(GL_DEPTH_TEST);
-
 	return;
 }
 

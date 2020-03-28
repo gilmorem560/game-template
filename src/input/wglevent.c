@@ -34,6 +34,14 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         printf("WM_KEYDOWN\n");
         #endif /* NDEBUG */
         switch (wParam) {
+	case 'A':
+        case 'a':
+            key |= KEY_A;
+            break;
+	case 'D':
+        case 'd':
+            key |= KEY_D;
+            break;
         case 'Q':
         case 'q':
             key |= KEY_Q;
@@ -41,6 +49,22 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case 'R':
         case 'r':
             key |= KEY_R;
+            break;
+	case 'S':
+        case 's':
+            key |= KEY_S;
+            break;
+	case 'W':
+        case 'w':
+            key |= KEY_W;
+            break;
+	case 'X':
+        case 'x':
+            key |= KEY_X;
+            break;
+	case 'Z':
+        case 'z':
+            key |= KEY_Z;
             break;
         default:
             break;
@@ -51,9 +75,33 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         printf("WM_KEYUP");
         #endif /* NDEBUG */
         switch (wParam) {
+	case 'A':
+        case 'a':
+            key &= ~KEY_A;
+            break;
+	case 'D':
+        case 'd':
+            key &= ~KEY_D;
+            break;
         case 'R':
         case 'r':
             key &= ~KEY_R;
+            break;
+	case 'S':
+        case 's':
+            key &= ~KEY_S;
+            break;
+	case 'W':
+        case 'w':
+            key &= ~KEY_W;
+            break;
+	case 'X':
+        case 'x':
+            key &= ~KEY_X;
+            break;
+	case 'Z':
+        case 'z':
+            key &= ~KEY_Z;
             break;
         default:
             break;

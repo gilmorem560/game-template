@@ -13,6 +13,9 @@ extern "C" {
 #else
 #include <Windows.h>    /* WinAPI libraries */
 #endif /* _WIN32 */
+	
+/* OpenGL context */
+#include "../graphics/contexts/glcontext.h"
     
 /* key mask values */
 #define KEY_A       ((unsigned long) 1 << 0x00)
