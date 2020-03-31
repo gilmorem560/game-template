@@ -58,33 +58,33 @@ bool diamond_renderframe(void)
 
 	glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-	glTranslated(0.5, 0.5, 0.0);
-	glRotated(diamond_angle, 0.0, 1.0, 0.0);
-	glCallList(diamond1);
+		glTranslated(0.5, 0.5, 0.0);
+		glRotated(diamond_angle, 0.0, 1.0, 0.0);
+		glCallList(diamond1);
     glPopMatrix();
 
     glPushMatrix();
-	glTranslated(0.5, -0.5, 0.0);
-	glRotated(diamond_angle, 0.0, 1.0, 0.0);
-	glCallList(diamond2);
+		glTranslated(0.5, -0.5, 0.0);
+		glRotated(diamond_angle, 0.0, 1.0, 0.0);
+		glCallList(diamond2);
     glPopMatrix();
 
     glPushMatrix();
-	glTranslated(-0.5, 0.5, 0.0);
-	glRotated(diamond_angle, 0.0, -1.0, 0.0);
-	glCallList(diamond3);
+		glTranslated(-0.5, 0.5, 0.0);
+		glRotated(diamond_angle, 0.0, -1.0, 0.0);
+		glCallList(diamond3);
     glPopMatrix();
 
     glPushMatrix();
-	glTranslated(-0.5, -0.5, 0.0);
-	glRotated(diamond_angle, 0.0, -1.0, 0.0);
-	glCallList(diamond4);
+		glTranslated(-0.5, -0.5, 0.0);
+		glRotated(diamond_angle, 0.0, -1.0, 0.0);
+		glCallList(diamond4);
     glPopMatrix();
 
     glPushMatrix();
-	glTranslated(0.0, 0.0, 0.0);
-	glRotated(diamond_angle, 1.0, 0.0, 0.0);
-	glCallList(diamond5);
+		glTranslated(0.0, 0.0, 0.0);
+		glRotated(diamond_angle, 1.0, 0.0, 0.0);
+		glCallList(diamond5);
     glPopMatrix();
 	
 	glFlush();

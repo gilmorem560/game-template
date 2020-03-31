@@ -47,9 +47,9 @@ static GLubyte indicies[] = { 1, 0, 2, 3
 							 ,1, 5, 4, 0
 							 ,2, 6, 7, 3 };
 							 
-static GLfloat light_pos[] = { 3.0, 3.0, 3.0, 0.0 };
-static GLfloat ambient[] = { 0.3, 0.3, 0.3, 1.0 };
-static GLfloat fog_color[] = { 0.5, 0.5, 0.5, 1.0 };
+static GLfloat light_pos[] = { 3.0f, 3.0f, 3.0f, 0.0f };
+static GLfloat ambient[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+static GLfloat fog_color[] = { 0.5f, 0.5f, 0.5f, 1.0f };
 static GLubyte texture_image[] = { 0 ,255 ,0   ,255
 								  ,0 ,0   ,255 ,255
 								  ,0 ,255 ,0   ,255
@@ -79,7 +79,7 @@ bool sandbox_init(void)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	/* Prepare propeties */
-	glClearColor(0.5, 0.5, 0.5, 1.0);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	
 	/* culling */
 	glCullFace(GL_BACK);
@@ -89,15 +89,15 @@ bool sandbox_init(void)
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 	
 	/* material setup */
-	glMaterialf(GL_FRONT, GL_SHININESS, 50.0);
+	glMaterialf(GL_FRONT, GL_SHININESS, 50.0f);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	
 	/* fog setup */
 	glFogi(GL_FOG_MODE, GL_EXP);
 	glFogfv(GL_FOG_COLOR, fog_color);
-	glFogf(GL_FOG_DENSITY, 0.35);
-	glFogf(GL_FOG_START, 1.0);
-	glFogf(GL_FOG_END, 13.0);
+	glFogf(GL_FOG_DENSITY, 0.35f);
+	glFogf(GL_FOG_START, 1.0f);
+	glFogf(GL_FOG_END, 13.0f);
 	
 	/* projection setup */
 	glMatrixMode(GL_PROJECTION);

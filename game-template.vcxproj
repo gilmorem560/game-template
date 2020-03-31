@@ -169,6 +169,9 @@
     <ClCompile Include="src\input\wglevent.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
     </ClCompile>
+    <ClCompile Include="src\modes\diamond.c" />
+    <ClCompile Include="src\modes\map.c" />
+    <ClCompile Include="src\modes\sandbox.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\graphics\objects\hedrons.h" />
@@ -176,6 +179,10 @@
     <ClInclude Include="src\graphics\primitives\prim.h" />
     <ClInclude Include="src\graphics\contexts\wglcontext.h" />
     <ClInclude Include="src\input\input.h" />
+    <ClInclude Include="src\modes\diamond.h" />
+    <ClInclude Include="src\modes\map.h" />
+    <ClInclude Include="src\modes\modes.h" />
+    <ClInclude Include="src\modes\sandbox.h" />
     <ClInclude Include="src\util\macros.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

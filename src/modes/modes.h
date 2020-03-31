@@ -23,11 +23,11 @@ extern "C" {
 	
 /* game modes */
 int game_mode;
-#include "modes/diamond.h"
+#include "diamond.h"
 	#define	GM_DIAMONDS	0
-#include "modes/map.h"
+#include "map.h"
 	#define GM_MAP		1
-#include "modes/sandbox.h"
+#include "sandbox.h"
 	#define GM_SANDBOX	2
 	
 #ifdef __cplusplus

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #ifndef _WIN32
 #include "../config.h"
@@ -31,12 +32,21 @@
  */
 int main(int argc, char *argv[])
 {
-	if (argc < 2) {
-		fprintf(stderr, "Format: %s <modenum>\n", argv[0]);
-		return EXIT_FAILURE;
-	}
-	
-	game_mode = atoi(argv[1]);
+    if (argc < 2) {
+        fprintf(stderr, "Format: %s <modenum>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+    if (strlen(argv[1]) > 1 || !isdigit((int) argv[1][0])) {
+        fprintf(stderr, "Malformed modenum: %s\n", argv[1]);
+        return EXIT_FAILURE;
+    }
+
+    game_mode = atoi(argv[1]);
+
+    if (game_mode < GM_DIAMONDS || game_mode > GM_SANDBOX) {
+        fprintf(stderr, "Modenum not implemented: %d\n", game_mode);
+        return EXIT_FAILURE;
+    }
 	
     key = 0;    /* initialize key bitfield here for now */
     quit = false;
@@ -65,7 +75,7 @@ int main(int argc, char *argv[])
         if (XPending(dpy))
             glxevent(dpy);
 
-		switch(game_mode) {
+		switch (game_mode) {
 		case GM_DIAMONDS:
 			/* process next frame */
 			diamond_renderframe();
@@ -107,6 +117,7 @@ int main(int argc, char *argv[])
     default:
         break;
     }
+
     /* close OpenGL for X11 */
     glxfree();
 
@@ -118,6 +129,22 @@ int main(int argc, char *argv[])
  */
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
+    if (__argc < 2) {
+        fprintf(stderr, "Format: %s <modenum>\n", __argv[0]);
+        return EXIT_FAILURE;
+    }
+    if (strlen(__argv[1]) > 1 || !isdigit((int) __argv[1][0])) {
+        fprintf(stderr, "Malformed modenum: %s\n", __argv[1]);
+        return EXIT_FAILURE;
+    }
+
+    game_mode = atoi(__argv[1]);
+
+    if (game_mode < GM_DIAMONDS || game_mode > GM_SANDBOX) {
+        fprintf(stderr, "Modenum not implemented: %d\n", game_mode);
+        return EXIT_FAILURE;
+    }
+
     key = 0;    /* initialize key bitfield here for now */
     quit = false;
 
@@ -129,35 +156,59 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     case GM_DIAMONDS:
         diamond_init();
         break;
+    case GM_MAP:
+        map_init();
+        break;
+    case GM_SANDBOX:
+        sandbox_init();
+        break;
     default:
         break;
     }
 
     /* main loop */
     while (!quit) {
-	/* TODO: Implement game modes */
-        /* render next frame */
-        if (!diamond_renderframe()) {
-            fprintf(stderr, "renderframe: failure\n");
-        } else {
-            SwapBuffers(dc);
-        }
-
         /* begin processing events */
         wglevent(wnd);
 
-        /* process movement */
-        diamond_move();
+        switch (game_mode) {
+        case GM_DIAMONDS:
+            /* process next frame */
+            diamond_renderframe();
+            /* process movement */
+            diamond_move();
+            break;
+        case GM_MAP:
+            /* process next frame */
+            map_renderframe();
+            /* process movement */
+            map_move();
+            break;
+        case GM_SANDBOX:
+            /* process next frame */
+            sandbox_renderframe();
+            /* process movement */
+            sandbox_move();
+            break;
+        default:
+            fprintf(stderr, "Unknown game mode: %d\n", game_mode);
+            quit = true;
+            break;
+        }
 
-        /* prepare for next frame */
-        if (diamond_angle == 360)
-            diamond_angle = 0;
+        SwapBuffers(dc);
     }
 
     /* unload OpenGL assets */
-    switch(game_mode) {
+    switch (game_mode) {
     case GM_DIAMONDS:
         diamond_free();
+        break;
+    case GM_MAP:
+        map_free();
+        break;
+    case GM_SANDBOX:
+        sandbox_free();
         break;
     default:
         break;
