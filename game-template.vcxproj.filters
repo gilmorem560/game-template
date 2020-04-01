@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\coord">
-      <UniqueIdentifier>{d19d9a26-e91c-47cd-a591-a75c4e785305}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\prim">
-      <UniqueIdentifier>{993e7676-aac2-45e4-8bd2-c5dc89c4c403}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\gfx">
       <UniqueIdentifier>{b0795ff9-af0d-4689-9aa5-d3344e51b162}</UniqueIdentifier>
     </Filter>
@@ -27,6 +21,24 @@
     </Filter>
     <Filter Include="Source Files\input">
       <UniqueIdentifier>{8d5fb6b5-b880-4ad1-a235-830a9e9eb1ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mode">
+      <UniqueIdentifier>{8e8baf0a-958e-4fdd-8de2-8a28056fecd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\mode">
+      <UniqueIdentifier>{bef8505e-d489-4ce8-8f56-318ffa5a09b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\obj">
+      <UniqueIdentifier>{bf5f4da7-e8fd-4856-a854-59b58ac82404}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wgl">
+      <UniqueIdentifier>{9ff79dd5-c712-47a5-b272-c8eea7d6a5bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\obj\coord">
+      <UniqueIdentifier>{d19d9a26-e91c-47cd-a591-a75c4e785305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\obj\prim">
+      <UniqueIdentifier>{993e7676-aac2-45e4-8bd2-c5dc89c4c403}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -37,22 +49,22 @@
       <Filter>Source Files\obj</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\primitives\grid2d.c">
-      <Filter>Source Files\coord</Filter>
+      <Filter>Source Files\obj\coord</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\primitives\grid3d.c">
-      <Filter>Source Files\coord</Filter>
+      <Filter>Source Files\obj\coord</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\primitives\point2d.c">
-      <Filter>Source Files\coord</Filter>
+      <Filter>Source Files\obj\coord</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\primitives\point3d.c">
-      <Filter>Source Files\coord</Filter>
+      <Filter>Source Files\obj\coord</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\primitives\poly2d.c">
-      <Filter>Source Files\prim</Filter>
+      <Filter>Source Files\obj\prim</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\primitives\poly3d.c">
-      <Filter>Source Files\prim</Filter>
+      <Filter>Source Files\obj\prim</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\contexts\wglcontext.c">
       <Filter>Source Files\gfx</Filter>
@@ -60,25 +72,55 @@
     <ClCompile Include="src\input\wglevent.c">
       <Filter>Source Files\input</Filter>
     </ClCompile>
+    <ClCompile Include="src\modes\diamond.c">
+      <Filter>Source Files\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\map.c">
+      <Filter>Source Files\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\sandbox.c">
+      <Filter>Source Files\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\stage.c">
+      <Filter>Source Files\mode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\graphics\primitives\coord.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\primitives\prim.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\contexts\wglcontext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\input\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\macros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\modes\diamond.h">
+      <Filter>Header Files\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\map.h">
+      <Filter>Header Files\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\sandbox.h">
+      <Filter>Header Files\mode</Filter>
+    </ClInclude>
     <ClInclude Include="src\graphics\objects\hedrons.h">
+      <Filter>Header Files\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\modes.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\stage.h">
+      <Filter>Header Files\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\contexts\glcontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\contexts\wglcontext.h">
+      <Filter>Header Files\wgl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\primitives\coord.h">
+      <Filter>Header Files\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\primitives\prim.h">
+      <Filter>Header Files\obj</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

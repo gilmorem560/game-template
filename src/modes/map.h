@@ -1,5 +1,5 @@
 /*
- * map - Render a map with player
+ * map - render a map with player
  */
 #ifndef __MAP_H__
 #define __MAP_H__
@@ -8,31 +8,26 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Common includes */
+/* common includes */
 #include "modes.h"
-/* Additional includes */
+/* additional includes */
 #include "../graphics/objects/hedrons.h"
 	
 /* game mode stages */
 bool map_init(void);		/* OpenGL init */
-bool map_renderframe(void); 	/* OpenGL rendering cycle */
-bool map_move(void);        	/* handle movement based on key masks */
+bool map_render(void); 		/* OpenGL rendering cycle */
+bool map_input(void);       /* handle movement based on key masks */
+bool map_routine(void);		/* process mode behavior */
 bool map_free(void);		/* OpenGL free */
-
-/* assets */
-/* void *map_bg_img; */
 
 /* OpenGL lists */
 GLint actor;
 
-/* OpenGL textures */
-/* GLuint map_bg; */
-
 /* properties */
-double actor_x;
-double actor_y;
-double actor_z;
-double actor_angle;
+GLdouble actor_x;
+GLdouble actor_y;
+GLdouble actor_z;
+GLdouble actor_angle;
 	
 #ifdef __cplusplus
 };

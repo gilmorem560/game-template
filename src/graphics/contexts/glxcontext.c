@@ -1,15 +1,12 @@
  /*
   * glxcontext - OpenGL for X11
   */
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "glcontext.h"
 
 /*
  * glxinit - initialize OpenGL for X11
  */
-void glxinit(void)
+void glxinit(int xres, int yres)
 {
     XSetWindowAttributes attrs;
     int major, minor;
@@ -32,11 +29,11 @@ void glxinit(void)
     }
     
     /* check that it is sufficient */
-    if (decimal(major, minor) < 1.3) {
+    /*if (decimal(major, minor) < 1.3) {
         fprintf(stderr, "glxinit: version 1.3 or greater required, version %f detected\n", decimal(major, minor));
         XCloseDisplay(dpy);
         exit(EXIT_FAILURE);
-    }
+    }*/
     
     /* determine default screen */
     screen_number = XDefaultScreen(dpy);
@@ -96,8 +93,8 @@ void glxinit(void)
         ,root               /* Window parent */
         ,400                /* int x */
         ,400                /* int y */
-        ,640                /* unsigned int width */
-        ,480                /* unsigned int height */
+        ,xres               /* unsigned int width */
+        ,yres               /* unsigned int height */
         ,1                  /* unsigned int border_width */
         ,CopyFromParent     /* int depth */
         ,CopyFromParent     /* unsigned int class */
@@ -161,39 +158,5 @@ void glxfree(void)
     /* close X display */
     XCloseDisplay(dpy);
     
-    return;
-}
-
-/*
- * setwindowed
- */
-void setwindowed(void)
-{
-    #ifndef NDEBUG                      /* 480p CRT used for development */
-        rootSizeX = 640;
-        rootSizeY = 480;
-    #endif /* NDEBUG */
-    
-    XResizeWindow(dpy, root, rootSizeX, rootSizeY); /* restore desktop resolution */
-    XMoveWindow(dpy, win, 400, 400);    /* and return it to its place (400x400 for debug) */
-    XSetWindowBorderWidth(dpy, win, 1); /* return the border */
-    XRaiseWindow(dpy, win);             /* put the window on top */
-    
-    return;
-}
-
-/*
- * setfullscreen
- */
-void setfullscreen(void)
-{
-    /* backup windowed state */
-    rootSizeX = XDisplayWidth(dpy, screen_number);
-    rootSizeY = XDisplayHeight(dpy, screen_number);
-    
-    XRaiseWindow(dpy, win);             /* put the window on top */
-    XSetWindowBorderWidth(dpy, win, 0); /* remove its border */
-    XMoveWindow(dpy, win, 0, 0);        /* and stick it in the corner */
-    XResizeWindow(dpy, root, 640, 480); /* finally, resize the desktop */
     return;
 }

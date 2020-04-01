@@ -22,7 +22,7 @@ HDC dc;
 HGLRC context;
 
 /* wglinit - initialize OpenGL for WinAPI */
-void wglinit(HINSTANCE hInstance, int nCmdShow, WNDPROC wndproc);
+void wglinit(HINSTANCE hInstance, int nCmdShow, WNDPROC wndproc, int xres, int yres);
 
 /* wglfree - close OpenGL for WinAPI */
 void wglfree(HINSTANCE hInstance);

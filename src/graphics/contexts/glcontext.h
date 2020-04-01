@@ -5,17 +5,21 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-	
+
+/* library includes */
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
+#include <math.h>
+#include <assert.h>
+#include <ctype.h>
 
 #ifdef _WIN32
 #include "wglcontext.h"
 #else
 #include "glxcontext.h"
 #endif /* _WIN32 */
-    
-void setwindowed(void);
-void setfullscreen(void);
     
 #ifdef __cplusplus
 };

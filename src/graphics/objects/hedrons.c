@@ -1,5 +1,5 @@
 /*
- * hedrons - Simple 3D Shapes
+ * hedrons - simple 3D Shapes
  */
 #include <stdlib.h>
 #include <math.h>
@@ -102,14 +102,14 @@ void octahedron(double x, double y, double z)
 	points[5].z = -z;
 	
 	/* create our primitives */
-	triangles[0] = new_poly3d(3, points[0], points[2], points[4]);
+	triangles[0] = new_poly3d(3, points[0], points[4], points[2]);
 	triangles[1] = new_poly3d(3, points[0], points[2], points[5]); 
-	triangles[2] = new_poly3d(3, points[0], points[3], points[4]); 
-	triangles[3] = new_poly3d(3, points[0], points[3], points[5]); 
+	triangles[2] = new_poly3d(3, points[0], points[5], points[3]); 
+	triangles[3] = new_poly3d(3, points[0], points[3], points[4]); 
 	triangles[4] = new_poly3d(3, points[1], points[2], points[4]); 
-	triangles[5] = new_poly3d(3, points[1], points[2], points[5]); 
-	triangles[6] = new_poly3d(3, points[1], points[3], points[4]); 
-	triangles[7] = new_poly3d(3, points[1], points[3], points[5]); 
+	triangles[5] = new_poly3d(3, points[1], points[5], points[2]); 
+	triangles[6] = new_poly3d(3, points[1], points[3], points[5]); 
+	triangles[7] = new_poly3d(3, points[1], points[4], points[3]); 
 	
 	/* drawing models */
 	glMatrixMode(GL_MODELVIEW);

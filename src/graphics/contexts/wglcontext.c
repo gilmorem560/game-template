@@ -1,19 +1,16 @@
 /*
  * wglcontext - OpenGL for WinAPI
  */
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "glcontext.h"
 
 /*
  * wglinit - initialize OpenGL for WinAPI
  */
-void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
+void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc, int xres, int yres)
 {
 	int pixel_format = 0;
     
-    /* query WGL version */
+    /* TODO: query WGL version */
 
 	/* register window class */
 	wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -55,8 +52,8 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 		,WS_OVERLAPPEDWINDOW
 		,CW_USEDEFAULT
 		,CW_USEDEFAULT
-		,640
-		,480
+		,xres
+		,yres
 		,(HWND) NULL
 		,(HMENU) NULL
 		,hInstance

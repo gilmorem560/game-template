@@ -1,5 +1,5 @@
 /*
- * diamond - Render some diamonds
+ * diamond - render some diamonds
  */
 #ifndef __DIAMOND_H__
 #define __DIAMOND_H__
@@ -8,15 +8,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Common includes */
+/* common includes */
 #include "modes.h"
-/* Additional includes */
+/* additional includes */
 #include "../graphics/objects/hedrons.h"
 	
 /* game mode stages */
 bool diamond_init(void);	/* OpenGL init */
-bool diamond_renderframe(void); /* OpenGL rendering cycle */
-bool diamond_move(void);        /* handle movement based on key masks */
+bool diamond_render(void);	/* OpenGL rendering cycle */
+bool diamond_input(void);   /* handle movement based on key masks */
+bool diamond_routine(void);	/* process object routine*/
 bool diamond_free(void);	/* OpenGL free */
 
 /* OpenGL lists */
