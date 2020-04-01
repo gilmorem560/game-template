@@ -141,6 +141,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\assets\font.c" />
+    <ClCompile Include="src\assets\menu_texture.c" />
     <ClCompile Include="src\graphics\objects\hedrons.c" />
     <ClCompile Include="src\graphics\primitives\grid2d.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
@@ -175,6 +177,7 @@
     <ClCompile Include="src\modes\stage.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\assets\assets.h" />
     <ClInclude Include="src\graphics\contexts\glcontext.h" />
     <ClInclude Include="src\graphics\objects\hedrons.h" />
     <ClInclude Include="src\graphics\primitives\coord.h" />

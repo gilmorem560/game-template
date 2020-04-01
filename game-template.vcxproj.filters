@@ -40,6 +40,9 @@
     <Filter Include="Source Files\obj\prim">
       <UniqueIdentifier>{993e7676-aac2-45e4-8bd2-c5dc89c4c403}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\assets">
+      <UniqueIdentifier>{2d6ea4ae-9998-4ff8-b36b-1df0c44c8c1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
@@ -84,6 +87,12 @@
     <ClCompile Include="src\modes\stage.c">
       <Filter>Source Files\mode</Filter>
     </ClCompile>
+    <ClCompile Include="src\assets\font.c">
+      <Filter>Source Files\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assets\menu_texture.c">
+      <Filter>Source Files\assets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\input\input.h">
@@ -121,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="src\graphics\primitives\prim.h">
       <Filter>Header Files\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assets\assets.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
