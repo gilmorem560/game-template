@@ -1,10 +1,6 @@
 /*
  * wglevent - event processing for OpenGL in WinAPI
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
 #include "input.h"
 
 /*

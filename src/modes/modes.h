@@ -9,17 +9,12 @@
 extern "C" {
 #endif /* __cplusplus */
 	
-/* OpenGL */
+/* openGL */
 #include "../graphics/contexts/glcontext.h"
-/* Input */
+/* input */
 #include "../input/input.h"
-/* Basic Objects */
+/* basic objects */
 #include "../graphics/primitives/prim.h"
-/* Debugging Features */
-#ifndef NDEBUG
-#include <stdio.h>
-#include <assert.h>
-#endif /* NDEBUG */
 	
 /* game modes */
 int game_mode;
@@ -29,6 +24,8 @@ int game_mode;
 	#define GM_MAP		1
 #include "sandbox.h"
 	#define GM_SANDBOX	2
+#include "stage.h"
+	#define GM_STAGE 3
 	
 #ifdef __cplusplus
 };

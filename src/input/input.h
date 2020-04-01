@@ -4,19 +4,17 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-    
-#include <stdbool.h>    /* C booleans */
 
+/* OpenGL context */
+#include "../graphics/contexts/glcontext.h"
+    
 #ifndef _WIN32
 #include <X11/Xlib.h>   /* X11 libraries */
 #include <X11/keysym.h> /* X11 key constants */
 #else
 #include <Windows.h>    /* WinAPI libraries */
 #endif /* _WIN32 */
-	
-/* OpenGL context */
-#include "../graphics/contexts/glcontext.h"
-    
+  
 /* key mask values */
 #define KEY_A       ((unsigned long) 1 << 0x00)
 #define KEY_B       ((unsigned long) 1 << 0x01)

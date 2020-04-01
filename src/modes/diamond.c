@@ -1,5 +1,5 @@
 /*
- * diamond - Display some diamonds
+ * diamond - display some diamonds
  */ 
 #include "diamond.h"
 
@@ -13,8 +13,6 @@ bool diamond_init(void)
 	#endif /* NDEBUG */
 	
 	glEnable(GL_DEPTH_TEST);
-	
-	diamond_angle = 0;
 	
 	diamond1 = glGenLists(1);
 	glNewList(diamond1, GL_COMPILE);
@@ -45,18 +43,21 @@ bool diamond_init(void)
 	glLoadIdentity();
 	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
 
+	diamond_angle = 0;
+
 	return true;
 }
 
 /*
- * diamond_renderframe - OpenGL rendering cycle
+ * diamond_render - OpenGL rendering cycle
  */
-bool diamond_renderframe(void)
+bool diamond_render(void)
 {
     /* clear the scene */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
     glPushMatrix();
 		glTranslated(0.5, 0.5, 0.0);
 		glRotated(diamond_angle, 0.0, 1.0, 0.0);
@@ -89,51 +90,43 @@ bool diamond_renderframe(void)
 	
 	glFlush();
 
+	#ifdef WIN32
+		SwapBuffers(dc);
+	#else
+		glXSwapBuffers(dpy, window);
+	#endif /* WIN32 */
+
     return true;
 }
 
 /*
- * diamond_move - handle movement based on key masks
+ * diamond_input - handle movement based on key masks
  */
-bool diamond_move(void)
+bool diamond_input(void)
 {
-	if (diamond_angle == 360)
-	    diamond_angle = 0;
-	
-    /* f - fullscreen */
-    if (key & KEY_F) {
-	/*
-        if (isfull) {
-            setwindowed();
-            isfull = false;
-        } else {
-            setfullscreen();
-            isfull = true;
-        }
-        key &= ~KEY_F;
-	*/
-    }
+	/* movement */
+	/* r - rotate model */	if (key & KEY_R) diamond_angle++;
 
-    /* m - move model */
-    if (key & KEY_M) {
-
-    }
-
-    /* q - quit */
-    if (key & KEY_Q) {
-        quit = true;
-    }
-
-    /* r - rotate model */
-    if (key & KEY_R) {
-	    diamond_angle++;
-    }
+	/* actions */
+    /* q - quit */			if (key & KEY_Q) quit = true;
 
     return true;
 }
 
 /*
- * diamond_free - Free OpenGL assets
+ * diamond_routine - process diamond routine
+ */
+bool diamond_routine(void)
+{
+	/* constraints */
+		/* angle */
+		diamond_angle %= 360;
+
+	return true;
+}
+
+/*
+ * diamond_free - free OpenGL assets
  */
 bool diamond_free(void)
 {

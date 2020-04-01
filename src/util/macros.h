@@ -8,8 +8,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* decimal - create decimal a.b */
-#define decimal(a,b) ((double) a + ((double) b / 10.0))
+/* if there were macros you would see them here */
 
 #ifdef __cplusplus
 };

@@ -1,10 +1,10 @@
 /*
  * main - entry point
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include <ctype.h>
+
+#define XRES    640
+#define YRES    480
 
 #ifndef _WIN32
 #include "../config.h"
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     quit = false;
 
     /* initialize OpenGL for X11 */
-    glxinit();
+    glxinit(XRES, YRES);
 
     /* prepare OpenGL assets */
     switch (game_mode) {
@@ -78,22 +78,28 @@ int main(int argc, char *argv[])
 		switch (game_mode) {
 		case GM_DIAMONDS:
 			/* process next frame */
-			diamond_renderframe();
+			diamond_render();
 			/* process movement */
-			diamond_move();
+			diamond_input();
+            /* run mode routine */
+            diamond_routine();
 			break;
 		case GM_MAP:
 			/* process next frame */
-			map_renderframe();
+			map_render();
 			/* process movement */
-			map_move();
+			map_input();
+            /* run mode routine */
+            map_routine();
 			break;
 		case GM_SANDBOX:
 			/* process next frame */
-			sandbox_renderframe();
+			sandbox_render();
 			/* process movement */
-			sandbox_move();
-				break;
+			sandbox_input();
+            /* run mode routine */
+            sandbox_routine();
+			break;
 		default:
 			fprintf(stderr, "Unknown game mode: %d\n", game_mode);
 			quit = true;
@@ -133,7 +139,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         fprintf(stderr, "Format: %s <modenum>\n", __argv[0]);
         return EXIT_FAILURE;
     }
-    if (strlen(__argv[1]) > 1 || !isdigit((int) __argv[1][0])) {
+    if (strlen(__argv[1]) > 1 || !isdigit((int)__argv[1][0])) {
         fprintf(stderr, "Malformed modenum: %s\n", __argv[1]);
         return EXIT_FAILURE;
     }
@@ -149,7 +155,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     quit = false;
 
     /* initialize OpenGL for WinAPI */
-    wglinit(hInstance, nShowCmd, wndproc);
+    wglinit(hInstance, nShowCmd, wndproc, XRES, YRES);
 
     /* prepare OpenGL assets */
     switch (game_mode) {
@@ -174,29 +180,33 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         switch (game_mode) {
         case GM_DIAMONDS:
             /* process next frame */
-            diamond_renderframe();
+            diamond_render();
             /* process movement */
-            diamond_move();
+            diamond_input();
+            /* run mode routine */
+            diamond_routine();
             break;
         case GM_MAP:
             /* process next frame */
-            map_renderframe();
-            /* process movement */
-            map_move();
+            map_render();
+            /* process input */
+            map_input();
+            /* run mode routine */
+            map_routine();
             break;
         case GM_SANDBOX:
             /* process next frame */
-            sandbox_renderframe();
-            /* process movement */
-            sandbox_move();
+            sandbox_render();
+            /* process input */
+            sandbox_input();
+            /* run mode routine */
+            sandbox_routine();
             break;
         default:
             fprintf(stderr, "Unknown game mode: %d\n", game_mode);
             quit = true;
             break;
         }
-
-        SwapBuffers(dc);
     }
 
     /* unload OpenGL assets */

@@ -1,5 +1,5 @@
 /*
- * hedrons - Simple 3D Shapes
+ * hedrons - simple 3D Shapes
  */
 #include <stdlib.h>
 #include <math.h>

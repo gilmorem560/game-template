@@ -65,7 +65,7 @@ bool sandbox_init(void)
 	fprintf(stdout, "sandbox: init\n");
 	#endif /* NDEBUG */
 	
-	/* Enable GL features */
+	/* enable GL features */
 	glEnable(GL_DEPTH_TEST);		/* operating in 3 dimensions */
 	glEnable(GL_CULL_FACE);			/* allow culling for performance boost */
 	glEnable(GL_LIGHTING);			/* apply lighting */
@@ -73,13 +73,13 @@ bool sandbox_init(void)
 	glEnable(GL_COLOR_MATERIAL);	/* allow vertex color in lighting */
 	glEnable(GL_FOG);				/* fog calculations */
 	glEnable(GL_TEXTURE_2D);		/* enable texturing */
-	glEnableClientState(GL_NORMAL_ARRAY);	/* Enable vertex, color, and normal arrays for performance boost */
+	glEnableClientState(GL_NORMAL_ARRAY);	/* enable handling of */
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	/* Prepare propeties */
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	/* fog background */
+	glClearColor(fog_color[0], fog_color[1], fog_color[2], fog_color[3]);
 	
 	/* culling */
 	glCullFace(GL_BACK);
@@ -114,45 +114,44 @@ bool sandbox_init(void)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_image);
 		
-	/* Prepare arrays */
+	/* prepare arrays */
 	glNormalPointer(GL_DOUBLE, 0, normals);
 	glVertexPointer(3, GL_DOUBLE, 0, verticies);
 	glColorPointer(3, GL_DOUBLE, 0, colors);
 	glTexCoordPointer(2, GL_DOUBLE, 0, texture_coords);
 	
 	/* initialize properties */
-	angleX = 0.0;
-	angleY = 0.0;
-	smoothShading = true;
-	flatShading = false;
-	zoom = -7.0;
-	z_dist = 0.0;
-	z_pos = true;
+	sandbox_angle_x = 0.0;
+	sandbox_angle_y = 0.0;
+	sandbox_shading_smooth = true;
+	sandbox_zoom = -7.0;
+	sandbox_mid_z = 0.0;
+	sandbox_mid_pos = true;
 	
 	return true;
 }
 
 /*
- * sandbox_renderframe - OpenGL rendering cycle
+ * sandbox_render - OpenGL rendering cycle
  */
-bool sandbox_renderframe(void)
+bool sandbox_render(void)
 {
     /* clear the scene */
     glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT |  GL_STENCIL_BUFFER_BIT);
 	
-	if (smoothShading)
+	if (sandbox_shading_smooth)
 		glShadeModel(GL_SMOOTH);
-	
-	if (flatShading)
+	else
 		glShadeModel(GL_FLAT);
 	
-	/* Render objects */
-
+	/* render objects */
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslated(0.0, 0.0, zoom);
-	glRotated(angleX, 1.0, 0.0, 0.0);
-	glRotated(angleY, 0.0, 1.0, 0.0);
+	glTranslated(0.0, 0.0, sandbox_zoom);
+	glRotated(sandbox_angle_x, 1.0, 0.0, 0.0);
+	glRotated(sandbox_angle_y, 0.0, 1.0, 0.0);
+
+	/* draw square of cubes */
 	glPushMatrix();
 		glTranslated(-1.5, -1.5, 0.0);
 		glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, indicies);
@@ -179,97 +178,77 @@ bool sandbox_renderframe(void)
 		glTranslated(0.0, -1.0, 0.0);
 		glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, indicies);
 	glPopMatrix();
+
+	/* draw inner moving cube */
 	glPushMatrix();
-		glTranslated(0.0, 0.0, z_dist);
+		glTranslated(0.0, 0.0, sandbox_mid_z);
 		glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, indicies);
 	glPopMatrix();
 	
-	/* Flush */
+	/* flush */
 	glFlush();
+
+	/* display */
+	#ifdef WIN32
+		SwapBuffers(dc);
+	#else
+		glXSwapBuffers(dpy, window);
+	#endif /* WIN32 */
 	
 	return true;
 }
 
 /*
- * sandbox_move - handle movement
+ * sandbox_input - handle input
  */
-bool sandbox_move(void)
+bool sandbox_input(void)
 {
-	/* w - spin up */
-	if (key & KEY_W)
-		angleX -= 1.0;
-		
-	/* s - spin down */
-	if (key & KEY_S)
-		angleX += 1.0;
-		
-	/* a - spin left */
-	if (key & KEY_A)
-		angleY -= 1.0;
-		
-	/* d - spin right */
-	if (key & KEY_D)
-		angleY += 1.0;
+	/* movement */
+	/* w - spin up */			if (key & KEY_W) sandbox_angle_x -= 1.0;
+	/* s - spin down */			if (key & KEY_S) sandbox_angle_x += 1.0;
+	/* a - spin left */			if (key & KEY_A) sandbox_angle_y -= 1.0;
+	/* d - spin right */		if (key & KEY_D) sandbox_angle_y += 1.0;
+	/* z - zoom in */			if (key & KEY_Z) sandbox_zoom += 0.1;
+	/* x - zoom out */			if (key & KEY_X) sandbox_zoom -= 0.1;
+
+	/* effects */
+	/* f - flat shading */		if (key & KEY_F) sandbox_shading_smooth = false;
+	/* g - smooth shading */	if (key & KEY_G) sandbox_shading_smooth = true;
 	
-	/* f - flat shading */
-	if (key & KEY_F) {
-		smoothShading = false;
-		flatShading = true;
-	}
-	
-	/* g - smooth shading */
-	if (key & KEY_G) {
-		smoothShading = true;
-		flatShading = false;
-	}
-	
-	/* z - zoom in */
-	if (key & KEY_Z)
-		zoom += 0.1;
-	
-	/* x - zoom out */
-	if (key & KEY_X)
-		zoom -= 0.1;
-	
-	/* q - quit */
-	if (key & KEY_Q)
-		quit = true;
-	
-	/* limits */
-	if (angleX > 360.0)
-		angleX = 0.0;
-	else if (angleX < 0.0)
-		angleX = 360.0;
-	
-	if (angleY > 360.0)
-		angleY = 0.0;
-	else if (angleY < 0.0)
-		angleY = 360.0;
-	
-	if (zoom > -3.82)
-		zoom = -3.82;
-	
-	if (zoom < -10.18)
-		zoom = -10.18;
-	
-	if (z_pos)
-	{
-		if (z_dist <= 2.0)
-			z_dist += 0.1;
-		else
-			z_pos = false;
-	} else {
-		if (z_dist >= -2.0)
-			z_dist -= 0.1;
-		else
-			z_pos = true;
-	}	
-	
+	/* actions */
+	/* q - quit */				if (key & KEY_Q) quit = true;
+
 	return true;
 }
 
 /*
- * sandbox_free - Free OpenGL assets
+ * sandbox_routine - main routine
+ */
+bool sandbox_routine(void)
+{
+	/* constraints */
+		/* angle */
+		sandbox_angle_x = fmod(sandbox_angle_x, 360);
+		sandbox_angle_y = fmod(sandbox_angle_y, 360);
+
+		/* zoom */
+		if (sandbox_zoom > -3.82) sandbox_zoom = -3.82;
+		if (sandbox_zoom < -10.18) sandbox_zoom = -10.18;
+
+		/* middle cube movement */
+		if (sandbox_mid_pos) {
+			if (sandbox_mid_z <= 2.0) sandbox_mid_z += 0.1;
+			else sandbox_mid_pos = false;
+		} else {
+			if (sandbox_mid_z >= -2.0) sandbox_mid_z -= 0.1;
+			else sandbox_mid_pos = true;
+		}
+
+	return true;
+}
+
+/*
+ * sandbox_free - free OpenGL assets
  */
 bool sandbox_free(void)
 {
