@@ -97,7 +97,7 @@ bool map_input(void)
 	
 	#ifndef NDEBUG
 	/* hot mode switching for debugging */
-	if (ISNUM(key) && !(key & KEY_2)) {
+	if (KEY_ISNUM(key) && !(key & KEY_2)) {
 		map_free();
 		switch (key) {
 			case KEY_1:

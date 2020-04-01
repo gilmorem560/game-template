@@ -126,7 +126,7 @@ bool diamond_input(void)
 	
 	#ifndef NDEBUG
 	/* hot mode switching for debugging */
-	if (ISNUM(key) && !(key & KEY_1)) {
+	if (KEY_ISNUM(key) && !(key & KEY_1)) {
 		diamond_free();
 		switch (key) {
 			case KEY_2:

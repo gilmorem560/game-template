@@ -220,7 +220,7 @@ bool sandbox_input(void)
 	
 	#ifndef NDEBUG
 	/* hot mode switching for debugging */
-	if (ISNUM(key) && !(key & KEY_3)) {
+	if (KEY_ISNUM(key) && !(key & KEY_3)) {
 		sandbox_free();
 		switch (key) {
 			case KEY_1:
