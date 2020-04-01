@@ -8,12 +8,23 @@
  */
 bool stage_init(void)
 {
+	#ifndef NDEBUG
+	printf("stage: init\n");
+	#endif /* NDEBUG */
+	
+	/* enable GL states */
 	glEnable(GL_DEPTH_TEST);	/* operating in 3D space */
 	glEnable(GL_CULL_FACE);
 	
+	/* set background color */
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	/* black background */
 	
+	/* back surface culling */
 	glCullFace(GL_BACK);
+	
+	/* setup projection */
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 	
 	return true;
 }
@@ -25,6 +36,10 @@ bool stage_render(void)
 {
 	/* clear the scene */
     glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT |  GL_STENCIL_BUFFER_BIT);
+	
+	/* begin rendering models */
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	
 	/* flush */
 	glFlush();
@@ -49,7 +64,7 @@ bool stage_input(void)
 	
 	#ifndef NDEBUG
 	/* hot mode switching for debugging */
-	if (ISNUM(key)) {
+	if (ISNUM(key) && !(key & KEY_4)) {
 		stage_free();
 		switch (key) {
 			case KEY_1:
@@ -63,10 +78,6 @@ bool stage_input(void)
 			case KEY_3:
 				sandbox_init();
 				game_mode = GM_SANDBOX;
-				break;
-			case KEY_4:
-				stage_init();
-				game_mode = GM_STAGE;
 				break;
 			default:
 				quit = true;
@@ -91,5 +102,9 @@ bool stage_routine(void)
  */
 bool stage_free(void)
 {
+	#ifndef NDEBUG
+	printf("stage: free\n");
+	#endif /* NDEBUG */
+	
 	return true;
 }

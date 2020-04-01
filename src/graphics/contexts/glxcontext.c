@@ -1,9 +1,6 @@
  /*
   * glxcontext - OpenGL for X11
   */
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "glcontext.h"
 
 /*

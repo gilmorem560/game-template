@@ -62,7 +62,7 @@ static GLint texture;
 bool sandbox_init(void)
 {	
 	#ifndef NDEBUG
-	fprintf(stdout, "sandbox: init\n");
+	printf("sandbox: init\n");
 	#endif /* NDEBUG */
 	
 	/* enable GL features */
@@ -220,7 +220,7 @@ bool sandbox_input(void)
 	
 	#ifndef NDEBUG
 	/* hot mode switching for debugging */
-	if (ISNUM(key)) {
+	if (ISNUM(key) && !(key & KEY_3)) {
 		sandbox_free();
 		switch (key) {
 			case KEY_1:
@@ -230,10 +230,6 @@ bool sandbox_input(void)
 			case KEY_2:
 				map_init();
 				game_mode = GM_MAP;
-				break;
-			case KEY_3:
-				sandbox_init();
-				game_mode = GM_SANDBOX;
 				break;
 			case KEY_4:
 				stage_init();
@@ -281,7 +277,7 @@ bool sandbox_routine(void)
 bool sandbox_free(void)
 {
 	#ifndef NDEBUG
-	fprintf(stdout, "sandbox: free\n");
+	printf("sandbox: free\n");
 	#endif /* NDEBUG */
 	
 	glDeleteTextures(1, &texture);

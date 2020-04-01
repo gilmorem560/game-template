@@ -9,7 +9,7 @@
 bool map_init(void)
 {
 	#ifndef NDEBUG
-	fprintf(stdout, "map: init\n");
+	printf("map: init\n");
 	#endif /* NDEBUG */
 	
 	/* enable GL features */
@@ -59,6 +59,7 @@ bool map_render(void)
     
     /* render display lists and apply transformations */
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
     glPushMatrix();
 		glTranslated(actor_x, actor_y, -actor_z);
 		glRotated(actor_angle, 0.0, 1.0, 0.0);
@@ -96,16 +97,12 @@ bool map_input(void)
 	
 	#ifndef NDEBUG
 	/* hot mode switching for debugging */
-	if (ISNUM(key)) {
+	if (ISNUM(key) && !(key & KEY_2)) {
 		map_free();
 		switch (key) {
 			case KEY_1:
 				diamond_init();
 				game_mode = GM_DIAMONDS;
-				break;
-			case KEY_2:
-				map_init();
-				game_mode = GM_MAP;
 				break;
 			case KEY_3:
 				sandbox_init();
@@ -154,7 +151,7 @@ bool map_routine(void)
 bool map_free(void)
 {
 	#ifndef NDEBUG
-	fprintf(stdout, "map: free\n");
+	printf("map: free\n");
 	#endif /* NDEBUG */
 	
     /* free display lists */

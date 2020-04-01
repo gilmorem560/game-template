@@ -13,6 +13,7 @@ extern "C" {
 #include <string.h>
 #include <math.h>
 #include <assert.h>
+#include <ctype.h>
 
 #ifdef _WIN32
 #include "wglcontext.h"

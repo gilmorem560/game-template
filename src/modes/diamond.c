@@ -9,7 +9,7 @@
 bool diamond_init(void)
 {
 	#ifndef NDEBUG
-	fprintf(stdout, "diamond: init\n");
+	printf("diamond: init\n");
 	#endif /* NDEBUG */
 	
 	glEnable(GL_DEPTH_TEST);
@@ -126,13 +126,9 @@ bool diamond_input(void)
 	
 	#ifndef NDEBUG
 	/* hot mode switching for debugging */
-	if (ISNUM(key)) {
+	if (ISNUM(key) && !(key & KEY_1)) {
 		diamond_free();
 		switch (key) {
-			case KEY_1:
-				diamond_init();
-				game_mode = GM_DIAMONDS;
-				break;
 			case KEY_2:
 				map_init();
 				game_mode = GM_MAP;
@@ -173,7 +169,7 @@ bool diamond_routine(void)
 bool diamond_free(void)
 {
 	#ifndef NDEBUG
-	fprintf(stdout, "diamond: free\n");
+	printf("diamond: free\n");
 	#endif /* NDEBUG */
 	
     glDeleteLists(diamond1, 1);

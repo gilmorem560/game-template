@@ -63,7 +63,7 @@ extern "C" {
 
 /* key masks */
 unsigned long key;
-unsigned long keyHeld;
+unsigned long key_held;
 
 /* quit state */
 bool quit;
