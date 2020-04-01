@@ -25,7 +25,7 @@ int game_mode;
 #include "sandbox.h"
 	#define GM_SANDBOX	2
 #include "stage.h"
-	#define GM_STAGE 3
+	#define GM_STAGE 	3
 	
 #ifdef __cplusplus
 };

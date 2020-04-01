@@ -1,5 +1,7 @@
 bin_PROGRAMS = main
 main_SOURCES = \
+	assets/font.c \
+	assets/menu_texture.c \
 	graphics/contexts/glxcontext.c \
 	graphics/primitives/grid2d.c \
 	graphics/primitives/grid3d.c \

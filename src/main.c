@@ -22,8 +22,6 @@
 #include "modes/modes.h"
 
 /* defaults */
-#define XRES    	640
-#define YRES    	480
 #define	INITIAL_GM	GM_DIAMONDS
 
 #ifndef _WIN32

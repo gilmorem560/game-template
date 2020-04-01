@@ -20,6 +20,9 @@ extern "C" {
 #else
 #include "glxcontext.h"
 #endif /* _WIN32 */
+
+#define XRES    	640
+#define YRES    	480
     
 #ifdef __cplusplus
 };
