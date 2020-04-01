@@ -48,6 +48,18 @@ extern "C" {
 #define KEY_RIGHT   ((unsigned long) 1 << 0x1D)
 #define KEY_SPACE   ((unsigned long) 1 << 0x1E)
 #define KEY_ENTER   ((unsigned long) 1 << 0x1F)
+#define KEY_0		((unsigned long) 1 << 0x20)
+#define KEY_1		((unsigned long) 1 << 0x21)
+#define KEY_2		((unsigned long) 1 << 0x22)
+#define KEY_3		((unsigned long) 1 << 0x23)
+#define KEY_4		((unsigned long) 1 << 0x24)
+#define KEY_5		((unsigned long) 1 << 0x25)
+#define KEY_6		((unsigned long) 1 << 0x26)
+#define KEY_7		((unsigned long) 1 << 0x27)
+#define KEY_8		((unsigned long) 1 << 0x28)
+#define KEY_9		((unsigned long) 1 << 0x29)
+
+#define ISNUM(x)	x >> 0x20
 
 /* key masks */
 unsigned long key;

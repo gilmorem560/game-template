@@ -73,7 +73,7 @@ bool sandbox_init(void)
 	glEnable(GL_COLOR_MATERIAL);	/* allow vertex color in lighting */
 	glEnable(GL_FOG);				/* fog calculations */
 	glEnable(GL_TEXTURE_2D);		/* enable texturing */
-	glEnableClientState(GL_NORMAL_ARRAY);	/* enable handling of */
+	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -217,6 +217,34 @@ bool sandbox_input(void)
 	
 	/* actions */
 	/* q - quit */				if (key & KEY_Q) quit = true;
+	
+	#ifndef NDEBUG
+	/* hot mode switching for debugging */
+	if (ISNUM(key)) {
+		sandbox_free();
+		switch (key) {
+			case KEY_1:
+				diamond_init();
+				game_mode = GM_DIAMONDS;
+				break;
+			case KEY_2:
+				map_init();
+				game_mode = GM_MAP;
+				break;
+			case KEY_3:
+				sandbox_init();
+				game_mode = GM_SANDBOX;
+				break;
+			case KEY_4:
+				stage_init();
+				game_mode = GM_STAGE;
+				break;
+			default:
+				quit = true;
+				break;
+		}
+	}
+	#endif /* NDEBUG */
 
 	return true;
 }

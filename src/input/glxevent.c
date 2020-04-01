@@ -85,6 +85,46 @@ void glxevent(Display *dpy)
                 case XK_z:
                     key |= KEY_Z;
                     break;
+				case XK_KP_0:
+				case XK_0:
+					key |= KEY_0;
+					break;
+				case XK_KP_1:
+				case XK_1:
+					key |= KEY_1;
+					break;
+				case XK_KP_2:
+				case XK_2:
+					key |= KEY_2;
+					break;
+				case XK_KP_3:
+				case XK_3:
+					key |= KEY_3;
+					break;
+				case XK_KP_4:
+				case XK_4:
+					key |= KEY_4;
+					break;
+				case XK_KP_5:
+				case XK_5:
+					key |= KEY_5;
+					break;
+				case XK_KP_6:
+				case XK_6:
+					key |= KEY_6;
+					break;
+				case XK_KP_7:
+				case XK_7:
+					key |= KEY_7;
+					break;
+				case XK_KP_8:
+				case XK_8:
+					key |= KEY_8;
+					break;
+				case XK_KP_9:
+				case XK_9:
+					key |= KEY_9;
+					break;
                 default:
                     break;
             }
@@ -134,6 +174,46 @@ void glxevent(Display *dpy)
                 case XK_z:
                     key &= ~KEY_Z;
                     break;
+				case XK_KP_0:
+				case XK_0:
+					key &= ~KEY_0;
+					break;
+				case XK_KP_1:
+				case XK_1:
+					key &= ~KEY_1;
+					break;
+				case XK_KP_2:
+				case XK_2:
+					key &= ~KEY_2;
+					break;
+				case XK_KP_3:
+				case XK_3:
+					key &= ~KEY_3;
+					break;
+				case XK_KP_4:
+				case XK_4:
+					key &= ~KEY_4;
+					break;
+				case XK_KP_5:
+				case XK_5:
+					key &= ~KEY_5;
+					break;
+				case XK_KP_6:
+				case XK_6:
+					key &= ~KEY_6;
+					break;
+				case XK_KP_7:
+				case XK_7:
+					key &= ~KEY_7;
+					break;
+				case XK_KP_8:
+				case XK_8:
+					key &= ~KEY_8;
+					break;
+				case XK_KP_9:
+				case XK_9:
+					key &= ~KEY_9;
+					break;
                 default:
                     break;
             }

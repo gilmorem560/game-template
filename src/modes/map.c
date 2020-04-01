@@ -15,6 +15,18 @@ bool map_init(void)
 	/* enable GL features */
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHT0);
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_FOG);
+	glDisable(GL_TEXTURE_2D);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	
 	glCullFace(GL_BACK);
 	
 	/* prepare display lists */
@@ -33,6 +45,7 @@ bool map_init(void)
 	actor_y = 0.0;
 	actor_z = 5.0;
 	actor_angle = 0.0;
+	
 	return true;
 }
 
@@ -80,6 +93,34 @@ bool map_input(void)
     
 	/* actions */
     /* q - quit */		if (key & KEY_Q) quit = true;
+	
+	#ifndef NDEBUG
+	/* hot mode switching for debugging */
+	if (ISNUM(key)) {
+		map_free();
+		switch (key) {
+			case KEY_1:
+				diamond_init();
+				game_mode = GM_DIAMONDS;
+				break;
+			case KEY_2:
+				map_init();
+				game_mode = GM_MAP;
+				break;
+			case KEY_3:
+				sandbox_init();
+				game_mode = GM_SANDBOX;
+				break;
+			case KEY_4:
+				stage_init();
+				game_mode = GM_STAGE;
+				break;
+			default:
+				quit = true;
+				break;
+		}
+	}
+	#endif /* NDEBUG */
 
     return true;
 }

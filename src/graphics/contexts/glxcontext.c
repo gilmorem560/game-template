@@ -32,11 +32,11 @@ void glxinit(int xres, int yres)
     }
     
     /* check that it is sufficient */
-    if (decimal(major, minor) < 1.3) {
+    /*if (decimal(major, minor) < 1.3) {
         fprintf(stderr, "glxinit: version 1.3 or greater required, version %f detected\n", decimal(major, minor));
         XCloseDisplay(dpy);
         exit(EXIT_FAILURE);
-    }
+    }*/
     
     /* determine default screen */
     screen_number = XDefaultScreen(dpy);

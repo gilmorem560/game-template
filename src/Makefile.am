@@ -13,5 +13,6 @@ main_SOURCES = \
 	modes/diamond.c \
 	modes/map.c \
 	modes/sandbox.c \
+	modes/stage.c \
 	main.c
 main_LDFLAGS = -lX11

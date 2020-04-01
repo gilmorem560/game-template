@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
     game_mode = atoi(argv[1]);
 
-    if (game_mode < GM_DIAMONDS || game_mode > GM_SANDBOX) {
+    if (game_mode < GM_DIAMONDS || game_mode > GM_STAGE) {
         fprintf(stderr, "Modenum not implemented: %d\n", game_mode);
         return EXIT_FAILURE;
     }
@@ -64,6 +64,9 @@ int main(int argc, char *argv[])
 	    break;
 	case GM_SANDBOX:
 		sandbox_init();
+		break;
+	case GM_STAGE:
+		stage_init();
 		break;
     default:
         break;
@@ -100,13 +103,19 @@ int main(int argc, char *argv[])
             /* run mode routine */
             sandbox_routine();
 			break;
+		case GM_STAGE:
+			/* process next frame */
+			stage_render();
+			/* process movement */
+			stage_input();
+			/* run mode routine */
+			stage_routine();
+			break;
 		default:
 			fprintf(stderr, "Unknown game mode: %d\n", game_mode);
 			quit = true;
 			break;
 		}
-
-		glXSwapBuffers(dpy, window);
     }
 
     /* unload OpenGL assets */
@@ -119,6 +128,9 @@ int main(int argc, char *argv[])
 		break;
 	case GM_SANDBOX:
 		sandbox_free();
+		break;
+	case GM_STAGE:
+		stage_free();
 		break;
     default:
         break;
@@ -146,7 +158,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     game_mode = atoi(__argv[1]);
 
-    if (game_mode < GM_DIAMONDS || game_mode > GM_SANDBOX) {
+    if (game_mode < GM_DIAMONDS || game_mode > GM_STAGE) {
         fprintf(stderr, "Modenum not implemented: %d\n", game_mode);
         return EXIT_FAILURE;
     }
@@ -168,6 +180,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     case GM_SANDBOX:
         sandbox_init();
         break;
+	case GM_STAGE:
+		stage_init();
+		break;
     default:
         break;
     }
@@ -202,6 +217,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
             /* run mode routine */
             sandbox_routine();
             break;
+		case GM_STAGE:
+			/* process next frame */
+			stage_render();
+			/* process input */
+			stage_input();
+			/* run mode routine */
+			stage_routine();
+			break;
         default:
             fprintf(stderr, "Unknown game mode: %d\n", game_mode);
             quit = true;
@@ -220,6 +243,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     case GM_SANDBOX:
         sandbox_free();
         break;
+	case GM_STAGE:
+		stage_free();
+		break;
     default:
         break;
     }

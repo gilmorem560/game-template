@@ -13,6 +13,20 @@ bool diamond_init(void)
 	#endif /* NDEBUG */
 	
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHT0);
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_FOG);
+	glDisable(GL_TEXTURE_2D);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	
+	glCullFace(GL_BACK);
 	
 	diamond1 = glGenLists(1);
 	glNewList(diamond1, GL_COMPILE);
@@ -109,6 +123,34 @@ bool diamond_input(void)
 
 	/* actions */
     /* q - quit */			if (key & KEY_Q) quit = true;
+	
+	#ifndef NDEBUG
+	/* hot mode switching for debugging */
+	if (ISNUM(key)) {
+		diamond_free();
+		switch (key) {
+			case KEY_1:
+				diamond_init();
+				game_mode = GM_DIAMONDS;
+				break;
+			case KEY_2:
+				map_init();
+				game_mode = GM_MAP;
+				break;
+			case KEY_3:
+				sandbox_init();
+				game_mode = GM_SANDBOX;
+				break;
+			case KEY_4:
+				stage_init();
+				game_mode = GM_STAGE;
+				break;
+			default:
+				quit = true;
+				break;
+		}
+	}
+	#endif /* NDEBUG */
 
     return true;
 }
