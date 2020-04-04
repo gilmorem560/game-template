@@ -12,7 +12,7 @@ extern "C" {
 /* common includes */
 #include "modes.h"
 /* additional objects */
-#include "../assets/assets.h"
+#include "../graphics/objects/texture.h"
 
 /* game mode methods */
 bool stage_init(void);		/* OpenGL init */

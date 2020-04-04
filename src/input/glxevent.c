@@ -61,12 +61,6 @@ void glxevent(Display *dpy)
 						key_held |= KEY_G;
                     key |= KEY_G;
                     break;
-                case XK_M:
-                case XK_m:
-					if (key & KEY_M)
-						key_held |= KEY_M;
-                    key |= KEY_M;
-                    break;
                 case XK_Q:
                 case XK_q:
 					if (key & KEY_Q)
@@ -191,11 +185,6 @@ void glxevent(Display *dpy)
                 case XK_g:
                     key &= ~KEY_G;
 					key_held &= ~KEY_G;
-                    break;
-                case XK_M:
-                case XK_m:
-                    key &= ~KEY_M;
-					key_held &= ~KEY_M;
                     break;
                 case XK_R:
                 case XK_r:

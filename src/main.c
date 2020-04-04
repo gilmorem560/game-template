@@ -5,19 +5,6 @@
 #include "../config.h"
 #endif  /* _WIN32 */
 
-/* graphics handler */
-#include "graphics/contexts/glcontext.h"
-
-/* input handler */
-#include "input/input.h"
-
-/* basic objects */
-#include "graphics/primitives/coord.h"
-#include "graphics/primitives/prim.h"
-
-/* composite objects */
-#include "graphics/objects/hedrons.h"
-
 /* game modes */
 #include "modes/modes.h"
 

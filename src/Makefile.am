@@ -1,7 +1,5 @@
 bin_PROGRAMS = main
 main_SOURCES = \
-	assets/font.c \
-	assets/menu_texture.c \
 	graphics/contexts/glxcontext.c \
 	graphics/primitives/grid2d.c \
 	graphics/primitives/grid3d.c \
@@ -11,6 +9,7 @@ main_SOURCES = \
 	graphics/primitives/poly3d.c \
 	graphics/objects/hedrons.c \
 	graphics/objects/prisms.c \
+	graphics/objects/texture.c \
 	input/glxevent.c \
 	modes/diamond.c \
 	modes/map.c \

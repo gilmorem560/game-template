@@ -54,7 +54,7 @@ static GLubyte texture_image[] = { 0 ,255 ,0   ,255
 								  ,0 ,0   ,255 ,255
 								  ,0 ,255 ,0   ,255
 								  ,0 ,0   ,255 ,255 };
-static GLint texture;
+static GLint sandbox_texture;
 
 /*
  * sandbox_init - OpenGL init
@@ -106,8 +106,8 @@ bool sandbox_init(void)
 	
 	/* texture setup */
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glGenTextures(1, &sandbox_texture);
+	glBindTexture(GL_TEXTURE_2D, sandbox_texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -280,7 +280,7 @@ bool sandbox_free(void)
 	printf("sandbox: free\n");
 	#endif /* NDEBUG */
 	
-	glDeleteTextures(1, &texture);
+	glDeleteTextures(1, &sandbox_texture);
 	
 	return true;
 }

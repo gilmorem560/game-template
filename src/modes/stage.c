@@ -3,6 +3,11 @@
  */
 #include "stage.h"
 
+static FILE *rgba_menu;
+static FILE *rgba_font;
+static texture_rgba *menu_texture;
+static texture_rgba *font;
+
 static GLdouble box_width_hot;
 static GLdouble box_height_hot;
 static const GLdouble box_width = 2.0;
@@ -39,6 +44,14 @@ bool stage_init(void)
 	glCullFace(GL_BACK);
 	
 	/* texture setup */
+	rgba_menu = fopen("assets/rgba_menu.bin", "rb");
+	menu_texture = texture_rgba_new(rgba_menu, 640, 160, 4);
+	fclose(rgba_menu);
+	
+	rgba_font = fopen("assets/rgba_font.bin", "rb");
+	font = texture_rgba_new(rgba_font, 97, 47, 4);
+	fclose(rgba_font);
+	
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glGenTextures(1, &stage_menu_texture);
 	glBindTexture(GL_TEXTURE_2D, stage_menu_texture);
@@ -46,15 +59,15 @@ bool stage_init(void)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, menu_texture.width, menu_texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &menu_texture.pixel_data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, menu_texture->width, menu_texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, menu_texture->data);
 		
 	glGenTextures(1, &stage_font_texture);
 	glBindTexture(GL_TEXTURE_2D, stage_font_texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, font.width, font.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &font.pixel_data);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, font->width, font->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, font->data);
 
 	/* setup projection */
 	glMatrixMode(GL_PROJECTION);
@@ -63,8 +76,8 @@ bool stage_init(void)
 	box_width_hot = 0.0;
 	box_height_hot = 0.0;
 	box_display = false;
-	letter_height = font.height;
-	letter_width = font.width / 3.0;
+	letter_height = font->height;
+	letter_width = font->width / 3.0;
 	print_message = false;
 	message_counter = 0.0;
 	
@@ -230,7 +243,9 @@ bool stage_free(void)
 	#endif /* NDEBUG */
 	
 	glDeleteTextures(1, &stage_menu_texture);
+	texture_free(menu_texture);
 	glDeleteTextures(1, &stage_font_texture);
+	texture_free(font);
 	
 	return true;
 }
