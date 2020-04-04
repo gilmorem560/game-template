@@ -68,11 +68,11 @@ bool sandbox_init(void)
 	/* enable GL features */
 	glEnable(GL_DEPTH_TEST);		/* operating in 3 dimensions */
 	glEnable(GL_CULL_FACE);			/* allow culling for performance boost */
+	glEnable(GL_TEXTURE_2D);		/* enable texturing */
 	glEnable(GL_LIGHTING);			/* apply lighting */
 	glEnable(GL_LIGHT0);			/* use first light */
 	glEnable(GL_COLOR_MATERIAL);	/* allow vertex color in lighting */
 	glEnable(GL_FOG);				/* fog calculations */
-	glEnable(GL_TEXTURE_2D);		/* enable texturing */
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -219,6 +219,8 @@ bool sandbox_input(void)
 	/* q - quit */				if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG
+	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
+	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
 	if (KEY_ISNUM(key) && !(key & KEY_3)) {
 		sandbox_free();
@@ -234,6 +236,10 @@ bool sandbox_input(void)
 			case KEY_4:
 				stage_init();
 				game_mode = GM_STAGE;
+				break;
+			case KEY_5:
+				scene_test_init();
+				game_mode = GM_SCENE_TEST;
 				break;
 			default:
 				quit = true;

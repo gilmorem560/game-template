@@ -33,9 +33,17 @@ bool stage_init(void)
 	#endif /* NDEBUG */
 	
 	/* enable GL states */
-	glDisable(GL_DEPTH_TEST);	/* operating in 3D space */
-	glDisable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);	/* operating in 3D space */
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);		/* enable texturing */
+	glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHT0);
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_FOG);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	/* set background color */
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	/* black background */
@@ -44,11 +52,11 @@ bool stage_init(void)
 	glCullFace(GL_BACK);
 	
 	/* texture setup */
-	rgba_menu = fopen("assets/rgba_menu.bin", "rb");
+	rgba_menu = fopen("data/textures/rgba_menu.bin", "rb");
 	menu_texture = texture_rgba_new(rgba_menu, 640, 160, 4);
 	fclose(rgba_menu);
 	
-	rgba_font = fopen("assets/rgba_font.bin", "rb");
+	rgba_font = fopen("data/textures/rgba_font.bin", "rb");
 	font = texture_rgba_new(rgba_font, 97, 47, 4);
 	fclose(rgba_font);
 	
@@ -72,6 +80,7 @@ bool stage_init(void)
 	/* setup projection */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 5.0);
 	
 	box_width_hot = 0.0;
 	box_height_hot = 0.0;
@@ -95,6 +104,15 @@ bool stage_render(void)
 	/* begin rendering models */
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	glPushMatrix();
+		glBegin(GL_TRIANGLES);
+		glColor3d(1.0, 1.0, 1.0);
+		glVertex3d(0.0, 0.5, -3.0);
+		glVertex3d(-0.5, -0.1, -3.0);
+		glVertex3d(0.5, -0.1, -3.0);
+		glEnd();
+	glPopMatrix();
 	
 	glPushMatrix();
 	
@@ -103,13 +121,13 @@ bool stage_render(void)
 		glBegin(GL_QUADS);
 			glColor3d(0.0, 0.0, 0.0);
 			glTexCoord2d(0.0, 0.0);
-			glVertex3d(box_pos_x, box_pos_y, 0.0);
+			glVertex3d(box_pos_x, box_pos_y, -2.0);
 			glTexCoord2d(1.0, 0.0);
-			glVertex3d(box_pos_x + box_width_hot, box_pos_y, 0.0);
+			glVertex3d(box_pos_x + box_width_hot, box_pos_y, -2.0);
 			glTexCoord2d(1.0, 1.0);
-			glVertex3d(box_pos_x + box_width_hot, box_pos_y + box_height_hot, 0.0);
+			glVertex3d(box_pos_x + box_width_hot, box_pos_y + box_height_hot, -2.0);
 			glTexCoord2d(0.0, 1.0);
-			glVertex3d(box_pos_x, box_pos_y + box_height_hot, 0.0);
+			glVertex3d(box_pos_x, box_pos_y + box_height_hot, -2.0);
 		glEnd();
 		
 		/* render text */
@@ -117,31 +135,31 @@ bool stage_render(void)
 			glBindTexture(GL_TEXTURE_2D, stage_font_texture);
 			glBegin(GL_QUADS);
 				glTexCoord2d(0.0, 0.0);
-				glVertex3d(message_pos, 1.0 - (0.1 + letter_height), 0.0);
+				glVertex3d(message_pos, 1.0 - (0.1 + letter_height), -2.0);
 				glTexCoord2d(letter_width, 0.0);
-				glVertex3d(message_pos + letter_width, 1.0 - (0.1 + letter_height), 0.0);
+				glVertex3d(message_pos + letter_width, 1.0 - (0.1 + letter_height), -2.0);
 				glTexCoord2d(letter_width, letter_height);
-				glVertex3d(message_pos + letter_width, 0.9, 0.0);
+				glVertex3d(message_pos + letter_width, 0.9, -2.0);
 				glTexCoord2d(0.0, letter_height);
-				glVertex3d(message_pos, 0.9, 0.0);
+				glVertex3d(message_pos, 0.9, -2.0);
 				if (message_counter > 2.0) {
 					glTexCoord2d(letter_width, 0.0);
-					glVertex3d(message_pos + letter_width, 1.0 - (0.1 + letter_height), 0.0);
+					glVertex3d(message_pos + letter_width, 1.0 - (0.1 + letter_height), -2.0);
 					glTexCoord2d(letter_width * 2, 0.0);
-					glVertex3d(message_pos + (letter_width * 2), 1.0 - (0.1 + letter_height), 0.0);
+					glVertex3d(message_pos + (letter_width * 2), 1.0 - (0.1 + letter_height), -2.0);
 					glTexCoord2d(letter_width * 2, letter_height);
-					glVertex3d(message_pos + (letter_width * 2), 0.9, 0.0);
+					glVertex3d(message_pos + (letter_width * 2), 0.9, -2.0);
 					glTexCoord2d(letter_width, letter_height);
-					glVertex3d(message_pos + letter_width, 0.9, 0.0);
+					glVertex3d(message_pos + letter_width, 0.9, -2.0);
 					if (message_counter > 3.0) {
 						glTexCoord2d(letter_width * 2, 0.0);
-						glVertex3d(message_pos + (letter_width * 2), 1.0 - (0.1 + letter_height), 0.0);
+						glVertex3d(message_pos + (letter_width * 2), 1.0 - (0.1 + letter_height), -2.0);
 						glTexCoord2d(letter_width * 3, 0.0);
-						glVertex3d(message_pos + (letter_width * 3), 1.0 - (0.1 + letter_height), 0.0);
+						glVertex3d(message_pos + (letter_width * 3), 1.0 - (0.1 + letter_height), -2.0);
 						glTexCoord2d(letter_width * 3, letter_height);
-						glVertex3d(message_pos + (letter_width * 3), 0.9, 0.0);
+						glVertex3d(message_pos + (letter_width * 3), 0.9, -2.0);
 						glTexCoord2d(letter_width * 2, letter_height);
-						glVertex3d(message_pos + (letter_width * 2), 0.9, 0.0);
+						glVertex3d(message_pos + (letter_width * 2), 0.9, -2.0);
 					}
 				}
 			glEnd();
@@ -172,6 +190,8 @@ bool stage_input(void)
 	/* q - quit */	if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG
+	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
+	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
 	if (KEY_ISNUM(key) && !(key & KEY_4)) {
 		stage_free();
@@ -187,6 +207,10 @@ bool stage_input(void)
 			case KEY_3:
 				sandbox_init();
 				game_mode = GM_SANDBOX;
+				break;
+			case KEY_5:
+				scene_test_init();
+				game_mode = GM_SCENE_TEST;
 				break;
 			default:
 				quit = true;

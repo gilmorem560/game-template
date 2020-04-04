@@ -7,13 +7,6 @@ extern "C" {
 
 /* OpenGL context */
 #include "../graphics/contexts/glcontext.h"
-    
-#ifndef _WIN32
-#include <X11/Xlib.h>   /* X11 libraries */
-#include <X11/keysym.h> /* X11 key constants */
-#else
-#include <Windows.h>    /* WinAPI libraries */
-#endif /* _WIN32 */
   
 /* key mask values */
 #define KEY_Q       ((unsigned long) 1 << 0x00)
@@ -53,6 +46,13 @@ extern "C" {
 unsigned long key;
 unsigned long key_held;
 
+/* mouse state */
+bool mouse_moved_x;
+bool mouse_moved_y;
+bool mouse_x_positive;
+bool mouse_y_positive;
+bool mouse_captured;
+
 /* quit state */
 bool quit;
 
@@ -65,6 +65,10 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 /* glxevent - process X11 input */
  void glxevent(Display *dpy);
 #endif  /* _WIN32 */
+ 
+#ifndef NDEBUG
+bool debug_cursor_changed;
+#endif
     
 #ifdef __cplusplus
 };

@@ -15,11 +15,11 @@ bool map_init(void)
 	/* enable GL features */
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_FOG);
-	glDisable(GL_TEXTURE_2D);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -61,6 +61,13 @@ bool map_render(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
     glPushMatrix();
+		glBegin(GL_QUADS);
+			glColor3d(0.5, 0.5, 0.5);
+			glVertex3d(-10.0, 10.0, -9.9);
+			glVertex3d(-10.0, -10.0, -9.9);
+			glVertex3d(10.0, -10.0, -9.9);
+			glVertex3d(10.0, 10.0, -9.9);
+		glEnd();
 		glTranslated(actor_x, actor_y, -actor_z);
 		glRotated(actor_angle, 0.0, 1.0, 0.0);
 		glCallList(actor);
@@ -85,10 +92,10 @@ bool map_render(void)
 bool map_input(void)
 {
 	/* movement */
-    /* w - up */		if (key & KEY_W) actor_y += 0.01;
-    /* s - down */		if (key & KEY_S) actor_y -= 0.01;
-    /* a - left */		if (key & KEY_A) actor_x -= 0.01;
-    /* d - right */		if (key & KEY_D) actor_x += 0.01;  
+    /* w - up */		if (key & KEY_W) actor_y += 0.1;
+    /* s - down */		if (key & KEY_S) actor_y -= 0.1;
+    /* a - left */		if (key & KEY_A) actor_x -= 0.1;
+    /* d - right */		if (key & KEY_D) actor_x += 0.1;  
     /* z - zoom in */	if (key & KEY_Z) actor_z -= 0.1;  
     /* x - zoom out */	if (key & KEY_X) actor_z += 0.1;
     
@@ -96,6 +103,8 @@ bool map_input(void)
     /* q - quit */		if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG
+	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
+	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
 	if (KEY_ISNUM(key) && !(key & KEY_2)) {
 		map_free();
@@ -111,6 +120,10 @@ bool map_input(void)
 			case KEY_4:
 				stage_init();
 				game_mode = GM_STAGE;
+				break;
+			case KEY_5:
+				scene_test_init();
+				game_mode = GM_SCENE_TEST;
 				break;
 			default:
 				quit = true;
@@ -132,11 +145,11 @@ bool map_routine(void)
 		actor_angle = fmod(++actor_angle, 360);
 
 		/* edges */
-		if (actor_y > 1.0) actor_y = 1.0;
-		if (actor_y < -1.0) actor_y = -1.0;
+		if (actor_y > actor_z) actor_y = actor_z;
+		if (actor_y < -actor_z) actor_y = -actor_z;
 
-		if (actor_x > 1.0) actor_x = 1.0;
-		if (actor_x < -1.0) actor_x = -1.0;
+		if (actor_x > actor_z) actor_x = actor_z;
+		if (actor_x < -actor_z) actor_x = -actor_z;
 
 		/* zoom */
 		if (actor_z < 3.0) actor_z = 3.0;

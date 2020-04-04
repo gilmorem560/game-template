@@ -31,13 +31,14 @@ int main(int argc, char *argv[])
 	game_mode = INITIAL_GM;
 	#endif /* NDEBUG */
 
-    if (game_mode < GM_DIAMONDS || game_mode > GM_STAGE) {
-        fprintf(stderr, "Modenum not implemented: %d\n", game_mode);
-        return EXIT_FAILURE;
-    }
-
     key = 0;    /* initialize key bitfield here for now */
+    mouse_moved_x = false;
+	mouse_moved_y = false;
+	mouse_captured = true;
     quit = false;
+	#ifndef NDEBUG
+	debug_cursor_changed = false;
+	#endif
 
     /* initialize OpenGL for X11 */
     glxinit(XRES, YRES);
@@ -56,15 +57,31 @@ int main(int argc, char *argv[])
 	case GM_STAGE:
 		stage_init();
 		break;
+	case GM_SCENE_TEST:
+		scene_test_init();
+		break;
     default:
         break;
     }
 
     /* main loop */
     while (!quit) {
+		#ifndef NDEBUG
+		/* can uncapture mouse when debugging, need to display cursor too */
+		if (debug_cursor_changed) {
+			if (!mouse_captured) {
+				/* return visible cursor */
+				XUndefineCursor(dpy, win);
+			} else {
+				/* associate it */
+				XDefineCursor(dpy, win, cursor);
+			}
+			debug_cursor_changed = false;
+		}
+		#endif /* NDEBUG */
+		
         /* begin processing events */
-        if (XPending(dpy))
-            glxevent(dpy);
+		glxevent(dpy);
 
 		switch (game_mode) {
 		case GM_DIAMONDS:
@@ -99,6 +116,14 @@ int main(int argc, char *argv[])
 			/* run mode routine */
 			stage_routine();
 			break;
+		case GM_SCENE_TEST:
+			/* process next frame */
+			scene_test_render();
+			/* process movement */
+			scene_test_input();
+			/* run mode routine */
+			scene_test_routine();
+			break;
 		default:
 			fprintf(stderr, "Unknown game mode: %d\n", game_mode);
 			quit = true;
@@ -119,6 +144,9 @@ int main(int argc, char *argv[])
 		break;
 	case GM_STAGE:
 		stage_free();
+		break;
+	case GM_SCENE_TEST:
+		scene_test_free();
 		break;
     default:
         break;
@@ -169,6 +197,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	case GM_STAGE:
 		stage_init();
 		break;
+	case GM_SCENE_TEST:
+		scene_test_init();
+		break;
     default:
         break;
     }
@@ -211,6 +242,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			/* run mode routine */
 			stage_routine();
 			break;
+		case GM_SCENE_TEST:
+			/* process next frame */
+			scene_test_render();
+			/* process input */
+			scene_test_input();
+			/* run mode routine */
+			scene_test_routine();
+			break;
         default:
             fprintf(stderr, "Unknown game mode: %d\n", game_mode);
             quit = true;
@@ -231,6 +270,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         break;
 	case GM_STAGE:
 		stage_free();
+		break;
+	case GM_SCENE_TEST:
+		scene_test_free();
 		break;
     default:
         break;

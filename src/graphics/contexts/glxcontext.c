@@ -9,6 +9,9 @@
 void glxinit(int xres, int yres)
 {
     XSetWindowAttributes attrs;
+	XColor cursor_color = { 0, 0, 0, 0, 0, 0 };
+	Pixmap cursor_pixmap;
+	const char null_bitmap[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
     int major, minor;
     int config_count;
     dpy = NULL;
@@ -27,13 +30,6 @@ void glxinit(int xres, int yres)
         XCloseDisplay(dpy);
         exit(EXIT_FAILURE);
     }
-    
-    /* check that it is sufficient */
-    /*if (decimal(major, minor) < 1.3) {
-        fprintf(stderr, "glxinit: version 1.3 or greater required, version %f detected\n", decimal(major, minor));
-        XCloseDisplay(dpy);
-        exit(EXIT_FAILURE);
-    }*/
     
     /* determine default screen */
     screen_number = XDefaultScreen(dpy);
@@ -85,7 +81,7 @@ void glxinit(int xres, int yres)
         }
     
     /* set input events */
-    attrs.event_mask = KeyPressMask | KeyReleaseMask | StructureNotifyMask;
+    attrs.event_mask = KeyPressMask | KeyReleaseMask | StructureNotifyMask | PointerMotionMask;
     
     /* create window */
     win = XCreateWindow(
@@ -107,6 +103,18 @@ void glxinit(int xres, int yres)
     
     /* create on-screen rendering area */
     window = glXCreateWindow(dpy, *config, win, NULL);
+	
+	/* create invisible cursor pixmap */
+	cursor_pixmap = XCreateBitmapFromData(dpy, win, null_bitmap, 8, 8);
+	
+	/* create custom (invisible) cursor - modes must implement cursors */
+	cursor = XCreatePixmapCursor(dpy, cursor_pixmap, cursor_pixmap, &cursor_color, &cursor_color, 0, 0);
+	
+	/* free pixmap now that we're done */
+	XFreePixmap(dpy, cursor_pixmap);
+	
+	/* associate it */
+	XDefineCursor(dpy, win, cursor);
     
     /* associate context to window */
     if (!glXMakeCurrent(dpy, window, context)) {
@@ -139,6 +147,15 @@ void glxfree(void)
     
     /* dissociate context from window */
     glXMakeCurrent(dpy, None, NULL);
+	
+	/* ungrab pointer */
+	XUngrabPointer(dpy, CurrentTime);
+	
+	/* return visible cursor */
+	XUndefineCursor(dpy, win);
+	
+	/* delete cursor */
+	XFreeCursor(dpy, cursor);
     
     /* destroy on-screen rendering area */
     glXDestroyWindow(dpy, window);

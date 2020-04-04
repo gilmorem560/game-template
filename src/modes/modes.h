@@ -19,13 +19,15 @@ extern "C" {
 /* game modes */
 int game_mode;
 #include "diamond.h"
-	#define	GM_DIAMONDS	0
+	#define	GM_DIAMONDS		0
 #include "map.h"
-	#define GM_MAP		1
+	#define GM_MAP			1
 #include "sandbox.h"
-	#define GM_SANDBOX	2
+	#define GM_SANDBOX		2
 #include "stage.h"
-	#define GM_STAGE 	3
+	#define GM_STAGE 		3
+#include "scene_test.h"
+	#define GM_SCENE_TEST	4
 	
 #ifdef __cplusplus
 };

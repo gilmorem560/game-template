@@ -14,11 +14,11 @@ bool diamond_init(void)
 	
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_FOG);
-	glDisable(GL_TEXTURE_2D);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -125,6 +125,8 @@ bool diamond_input(void)
     /* q - quit */			if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG
+	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
+	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
 	if (KEY_ISNUM(key) && !(key & KEY_1)) {
 		diamond_free();
@@ -140,6 +142,10 @@ bool diamond_input(void)
 			case KEY_4:
 				stage_init();
 				game_mode = GM_STAGE;
+				break;
+			case KEY_5:
+				scene_test_init();
+				game_mode = GM_SCENE_TEST;
 				break;
 			default:
 				quit = true;
