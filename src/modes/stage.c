@@ -187,6 +187,8 @@ bool stage_input(void)
 	/* actions */
 	/* d - display box */	if (key & KEY_D) box_display = true;
 	/* w - wipe box */		if (key & KEY_W) box_display = false;
+	/* r - windowed */		if (key & KEY_R)	setwindowed(640, 480);
+	/* f - fullscreen */	if (key & KEY_F)	setfullscreen();
 	/* q - quit */	if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG

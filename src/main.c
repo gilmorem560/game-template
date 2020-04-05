@@ -18,6 +18,7 @@
 int main(int argc, char *argv[])
 {
 	#ifndef NDEBUG
+	/* debugging can choose games 1-9 on command line */
     if (argc > 1) {
 		if (strlen(argv[1]) > 1 || !isdigit((int) argv[1][0])) {
 			fprintf(stderr, "Malformed modenum: %s\n", argv[1]);
@@ -34,14 +35,16 @@ int main(int argc, char *argv[])
     key = 0;    /* initialize key bitfield here for now */
     mouse_moved_x = false;
 	mouse_moved_y = false;
-	mouse_captured = true;
+	isfullscreen = true;
     quit = false;
 	#ifndef NDEBUG
+	/* debugging can uncapture pointer */
+	mouse_captured = true;
 	debug_cursor_changed = false;
 	#endif
 
     /* initialize OpenGL for X11 */
-    glxinit(XRES, YRES);
+    glxinit();
 
     /* prepare OpenGL assets */
     switch (game_mode) {

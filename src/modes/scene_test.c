@@ -36,6 +36,9 @@ static GLubyte vao_indicies[24] = { 0, 1, 2, 3
 								  ,7, 6, 1, 0
 								  ,7, 0, 3, 4
 								  ,1, 6, 5, 2 };
+								  
+								  
+static GLfloat fog_color[] = { 0.3f, 0.3f, 0.3f, 1.0f };
 							
 static GLdouble xpos;
 static GLdouble ypos;
@@ -59,19 +62,25 @@ bool scene_test_init(void)
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 	glDisable(GL_COLOR_MATERIAL);
-	glDisable(GL_FOG);
+	glEnable(GL_FOG);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	/* set background color */
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	/* black background */
+	/* color settings */
+	glClearColor(fog_color[0], fog_color[1], fog_color[2], fog_color[3]);
+	glShadeModel(GL_SMOOTH);
 	
 	/* setup culling */
 	glCullFace(GL_BACK);
 	
-	glShadeModel(GL_SMOOTH);
+	/* fog setup */
+	glFogi(GL_FOG_MODE, GL_EXP);
+	glFogfv(GL_FOG_COLOR, fog_color);
+	glFogf(GL_FOG_DENSITY, 0.45f);
+	glFogf(GL_FOG_START, 1.0f);
+	glFogf(GL_FOG_END, 10.0f);
 	
 	/* setup projection */
 	glMatrixMode(GL_PROJECTION);
@@ -90,8 +99,8 @@ bool scene_test_init(void)
 	graph->prj[1] = 1.0;
 	graph->prj[2] = -1.0;
 	graph->prj[3] = 1.0;
-	graph->prj[4] = 5.0;
-	graph->prj[5] = 70.0;
+	graph->prj[4] = 1.0;
+	graph->prj[5] = 11.0;
 	graph->prj_type = PROJECTION_FRUSTUM;
 	
 	xpos = 0.0;
@@ -148,10 +157,26 @@ bool scene_test_render(void)
 	glLoadIdentity();
 	
 	glPushMatrix();
-		glTranslated(xpos, ypos, zpos + ((graph->prj[4] + graph->prj[5]) / 2));
 		glRotated(view_x, 0.0, 1.0, 0.0);
-		glRotated(view_y, 1.0, 0.0, 0.0);
-		/* draw door */
+		if (view_x <= -270)
+			glRotated(view_y, -sin(degtorad(fmod(view_x, 90))), 0.0, cos(degtorad(fmod(view_x, 90))));
+		else if (view_x <= -180)
+			glRotated(view_y, -cos(degtorad(fmod(view_x, 90))), 0.0, -sin(degtorad(fmod(view_x, 90))));
+		else if (view_x <= -90)
+			glRotated(view_y, sin(degtorad(fmod(view_x, 90))), 0.0, -cos(degtorad(fmod(view_x, 90))));
+		else if (view_x < 0)
+			glRotated(view_y, cos(degtorad(fmod(view_x, 90))), 0.0, sin(degtorad(fmod(view_x, 90))));
+		else if (view_x < 90)
+			glRotated(view_y, cos(degtorad(fmod(view_x, 90))), 0.0, sin(degtorad(fmod(view_x, 90)))); /* the extra math does nothing useful!!! */
+		else if (view_x < 180)
+			glRotated(view_y, -sin(degtorad(fmod(view_x, 90))), 0.0, cos(degtorad(fmod(view_x, 90))));
+		else if (view_x < 270)
+			glRotated(view_y, -cos(degtorad(fmod(view_x, 90))), 0.0, -sin(degtorad(fmod(view_x, 90))));
+		else
+			glRotated(view_y, sin(degtorad(fmod(view_x, 90))), 0.0, -cos(degtorad(fmod(view_x, 90))));
+		/* TODO: Modify translation position calc to honor viewing angle */
+		glTranslated(xpos, ypos, zpos + ((graph->prj[4] + graph->prj[5]) / 2));
+		/* draw wall */
 		glPushMatrix();
 			glTranslated(-2.0, 0.0, 0.0);
 			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_node->vao_indicies);
@@ -349,20 +374,18 @@ bool scene_test_render(void)
 bool scene_test_input(void)
 {	
 	/* movement */
-	/* w - up */	if (key & KEY_W || key_held & KEY_W) zpos += 0.5;
-	/* s - down */	if (key & KEY_S || key_held & KEY_S) zpos -= 0.5;
-	/* a - left */	if (key & KEY_A || key_held & KEY_A) xpos += 0.1;
-	/* d - right */ if (key & KEY_D || key_held & KEY_D) xpos -= 0.1;
+	/* w - up */	if (key & KEY_W || key_held & KEY_W) zpos += 0.3;
+	/* s - down */	if (key & KEY_S || key_held & KEY_S) zpos -= 0.3;
+	/* a - left */	if (key & KEY_A || key_held & KEY_A) xpos += 0.3;
+	/* d - right */ if (key & KEY_D || key_held & KEY_D) xpos -= 0.3;
 	
 	/* mouse controls view angle */
-	if (mouse_moved_x) {
-		view_x += 1.0 * (mouse_x_positive ? 1.0 : -1.0);
-	}
-	if (mouse_moved_y) {
-		view_y += 1.0 * (mouse_y_positive ? 1.0 : -1.0);
-	}
+	if (mouse_moved_x) view_x += 2.0 * (mouse_x_positive ? 1.0 : -1.0);
+	if (mouse_moved_y) view_y += 2.0 * (mouse_y_positive ? 1.0 : -1.0);
 	
 	/* actions */
+	/* r - windowed */		if (key & KEY_R)	setwindowed(640, 480);
+	/* f - fullscreen */	if (key & KEY_F)	setfullscreen();
 	/* q - quit */	if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG

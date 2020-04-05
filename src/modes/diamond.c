@@ -119,9 +119,11 @@ bool diamond_render(void)
 bool diamond_input(void)
 {
 	/* movement */
-	/* r - rotate model */	if (key & KEY_R) diamond_angle++;
+	/* a - animate model */	if (key & KEY_A) diamond_angle++;
 
 	/* actions */
+	/* r - windowed */		if (key & KEY_R)	setwindowed(640, 480);
+	/* f - fullscreen */	if (key & KEY_F)	setfullscreen();
     /* q - quit */			if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG

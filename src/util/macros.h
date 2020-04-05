@@ -9,6 +9,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* if there were macros you would see them here */
+#define	degtorad(x)	(x / 360) * 2 * 3.14
 
 #ifdef __cplusplus
 };

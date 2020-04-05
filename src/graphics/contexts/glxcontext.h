@@ -42,7 +42,7 @@ GLXContext context;
 GLXWindow window;
 
 /* glxinit - initialize OpenGL for X11 */
-void glxinit(int xres, int yres);
+void glxinit();
 
 /* glxfree - close OpenGL for X11 */
 void glxfree(void);

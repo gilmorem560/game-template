@@ -47,17 +47,19 @@ void glxevent(Display *dpy)
 					mouse_y_positive = (event_return.xmotion.y > (x_height / 2)) ? true : false;
 				}
 
-				/* if mouse is captured, keep it in place
-				 * TODO: Assess whether this needs to be as dynamic
-				 */
+				#ifndef NDEBUG
+				/* debuggers can uncapture the cursor */
 				if (mouse_captured) {
+				#endif /* NDEBUG */
+					/* keep undelrying cursor in center of the screen */
 					new_attribs.event_mask = current_attribs.your_event_mask &= ~PointerMotionMask;
 					XChangeWindowAttributes(dpy, win, CWEventMask, &new_attribs);
 					XWarpPointer(dpy, None, win, x_width / 2, x_height / 2, 0, 0, x_width / 2, x_height / 2);
 					new_attribs.event_mask |= PointerMotionMask;
 					XChangeWindowAttributes(dpy, win, CWEventMask, &new_attribs);
+				#ifndef NDEBUG
 				}
-				
+				#endif /* NDEBUG */
 				break;
 			case ConfigureNotify:
 				#ifndef NDEBUG
@@ -68,16 +70,19 @@ void glxevent(Display *dpy)
 				/* Keep OpenGL viewport in sync */
 				glViewport(0, 0, (GLsizei) x_width, (GLsizei) x_height);
 				
-				/* if mouse is captured, keep it in the middle on resize
-				 * TODO: Assess whether this needs to be as dynamic
-				 */
+				#ifndef NDEBUG
+				/* debuggers can uncapture the cursor */
 				if (mouse_captured) {
+				#endif /* NDEBUG */
+					/* need to reposition cursor in the event of resizing */
 					new_attribs.event_mask = current_attribs.your_event_mask &= ~PointerMotionMask;
 					XChangeWindowAttributes(dpy, win, CWEventMask, &new_attribs);
 					XWarpPointer(dpy, None, win, x_width / 2, x_height / 2, 0, 0, x_width / 2, x_height / 2);
 					new_attribs.event_mask |= PointerMotionMask;
 					XChangeWindowAttributes(dpy, win, CWEventMask, &new_attribs);
+				#ifndef NDEBUG
 				}
+				#endif /* NDEBUG */
 				break;
 			case KeyPress:
 				#ifndef NDEBUG

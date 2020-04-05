@@ -21,8 +21,12 @@ extern "C" {
 #include "glxcontext.h"
 #endif /* _WIN32 */
 
-#define XRES    	640
-#define YRES    	480
+unsigned short xres;
+unsigned short yres;
+bool isfullscreen;
+
+void setwindowed(unsigned short w_xres, unsigned short w_yres);
+void setfullscreen(void);
     
 #ifdef __cplusplus
 };

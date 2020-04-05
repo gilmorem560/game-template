@@ -51,7 +51,6 @@ bool mouse_moved_x;
 bool mouse_moved_y;
 bool mouse_x_positive;
 bool mouse_y_positive;
-bool mouse_captured;
 
 /* quit state */
 bool quit;
@@ -67,6 +66,7 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 #endif  /* _WIN32 */
  
 #ifndef NDEBUG
+bool mouse_captured;
 bool debug_cursor_changed;
 #endif
     

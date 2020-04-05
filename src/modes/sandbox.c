@@ -80,6 +80,7 @@ bool sandbox_init(void)
 	
 	/* fog background */
 	glClearColor(fog_color[0], fog_color[1], fog_color[2], fog_color[3]);
+	glShadeModel(GL_SMOOTH);
 	
 	/* culling */
 	glCullFace(GL_BACK);
@@ -138,11 +139,6 @@ bool sandbox_render(void)
 {
     /* clear the scene */
     glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT |  GL_STENCIL_BUFFER_BIT);
-	
-	if (sandbox_shading_smooth)
-		glShadeModel(GL_SMOOTH);
-	else
-		glShadeModel(GL_FLAT);
 	
 	/* render objects */
 	glMatrixMode(GL_MODELVIEW);
@@ -210,12 +206,10 @@ bool sandbox_input(void)
 	/* d - spin right */		if (key & KEY_D) sandbox_angle_y += 1.0;
 	/* z - zoom in */			if (key & KEY_Z) sandbox_zoom += 0.1;
 	/* x - zoom out */			if (key & KEY_X) sandbox_zoom -= 0.1;
-
-	/* effects */
-	/* f - flat shading */		if (key & KEY_F) sandbox_shading_smooth = false;
-	/* g - smooth shading */	if (key & KEY_G) sandbox_shading_smooth = true;
 	
 	/* actions */
+	/* r - windowed */			if (key & KEY_R)	setwindowed(640, 480);
+	/* f - fullscreen */		if (key & KEY_F)	setfullscreen();
 	/* q - quit */				if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG

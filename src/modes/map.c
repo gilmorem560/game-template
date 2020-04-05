@@ -100,6 +100,8 @@ bool map_input(void)
     /* x - zoom out */	if (key & KEY_X) actor_z += 0.1;
     
 	/* actions */
+	/* r - windowed */			if (key & KEY_R)	setwindowed(640, 480);
+	/* f - fullscreen */		if (key & KEY_F)	setfullscreen();
     /* q - quit */		if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG
