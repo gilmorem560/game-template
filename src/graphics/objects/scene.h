@@ -7,8 +7,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-	
-#include <GL/gl.h>	/* for types */
+
+/* include GL for types */
+#include "../contexts/glcontext.h"
 	
 enum projection_type {
 	PROJECTION_ORTHAGONAL
