@@ -6,9 +6,12 @@
 /*
  * wglinit - initialize OpenGL for WinAPI
  */
-void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc, int xres, int yres)
+void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 {
 	int pixel_format = 0;
+	POINT monitor_point = { 0, 0 };
+	MONITORINFO monitor_info;
+	monitor_info.cbSize = sizeof (MONITORINFO);
     
     /* TODO: query WGL version */
 
@@ -24,6 +27,16 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc, int xres, int y
 	wndclass.lpszMenuName = L"MainMenu";
 	wndclass.lpszClassName = L"MainWndClass";
 	RegisterClass(&wndclass);
+
+	/* determine default monitor */
+	monitor = MonitorFromPoint(monitor_point, MONITOR_DEFAULTTOPRIMARY);
+
+	/* get monitor information */
+	GetMonitorInfo(monitor, &monitor_info);
+
+	/* get resolution */
+	xres = (unsigned short) (monitor_info.rcMonitor.right - monitor_info.rcMonitor.left);
+	yres = (unsigned short) (monitor_info.rcMonitor.bottom - monitor_info.rcMonitor.top);
 
 	/* set pixel format attributes */
 	PIXELFORMATDESCRIPTOR pfd = {
@@ -49,7 +62,7 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc, int xres, int y
 	wnd = CreateWindow(
 		L"MainWndClass"
 		,L"OpenGL"
-		,WS_OVERLAPPEDWINDOW
+		,WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
 		,CW_USEDEFAULT
 		,CW_USEDEFAULT
 		,xres
@@ -81,6 +94,9 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc, int xres, int y
 	/* create context */
 	context = wglCreateContext(dc);
 
+	/* hide cursor */
+	ShowCursor(FALSE);
+
 	/* associate context to window */
 	wglMakeCurrent(dc, context);
 
@@ -92,6 +108,12 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc, int xres, int y
 			UnregisterClass(L"MainWndClass", hInstance);
 			exit(EXIT_FAILURE);
 		}
+
+	/* force into foreground */
+	SetForegroundWindow(wnd);
+
+	/* assign input to window */
+	SetFocus(wnd);
 
 	return;
 }
@@ -107,6 +129,9 @@ void wglfree(HINSTANCE hInstance)
 	/* dissociate context from window */
 	wglMakeCurrent(NULL, NULL);
 
+	/* show cursor */
+	ShowCursor(TRUE);
+
 	/* destroy context */
 	wglDeleteContext(context);
 
@@ -120,4 +145,14 @@ void wglfree(HINSTANCE hInstance)
 	UnregisterClass(L"MainWndClass", hInstance);
 
 	return;
+}
+
+void setwindowed(unsigned short w_xres, unsigned short w_yres)
+{
+
+}
+
+void setfullscreen(void)
+{
+
 }

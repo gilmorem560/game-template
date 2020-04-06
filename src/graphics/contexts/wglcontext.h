@@ -15,6 +15,7 @@ extern "C" {
 
 /* WinAPI variables */
 WNDCLASS wndclass;
+HMONITOR monitor;
 HWND wnd;
 HDC dc;
 
@@ -22,7 +23,7 @@ HDC dc;
 HGLRC context;
 
 /* wglinit - initialize OpenGL for WinAPI */
-void wglinit(HINSTANCE hInstance, int nCmdShow, WNDPROC wndproc, int xres, int yres);
+void wglinit(HINSTANCE hInstance, int nCmdShow, WNDPROC wndproc);
 
 /* wglfree - close OpenGL for WinAPI */
 void wglfree(HINSTANCE hInstance);

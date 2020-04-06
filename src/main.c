@@ -72,13 +72,12 @@ int main(int argc, char *argv[])
 		#ifndef NDEBUG
 		/* can uncapture mouse when debugging, need to display cursor too */
 		if (debug_cursor_changed) {
-			if (!mouse_captured) {
+			if (!mouse_captured)
 				/* return visible cursor */
 				XUndefineCursor(dpy, win);
-			} else {
+			else
 				/* associate it */
 				XDefineCursor(dpy, win, cursor);
-			}
 			debug_cursor_changed = false;
 		}
 		#endif /* NDEBUG */
@@ -167,24 +166,33 @@ int main(int argc, char *argv[])
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
 	#ifndef NDEBUG
-    if (__argc > 1) {
+	/* debugging can choose games 1-9 on command line */
+	if (__argc > 1) {
 		if (strlen(__argv[1]) > 1 || !isdigit((int) __argv[1][0])) {
 			fprintf(stderr, "Malformed modenum: %s\n", __argv[1]);
 			return EXIT_FAILURE;
 		}
 		game_mode = atoi(__argv[1]);
-    } else {
+	} else {
 		game_mode = INITIAL_GM;
 	}
 	#else
 	game_mode = INITIAL_GM;
 	#endif /* NDEBUG */
 
-    key = 0;    /* initialize key bitfield here for now */
-    quit = false;
+	key = 0;    /* initialize key bitfield here for now */
+	mouse_moved_x = false;
+	mouse_moved_y = false;
+	isfullscreen = true;
+	quit = false;
+	#ifndef NDEBUG
+	/* debugging can uncapture pointer */
+	mouse_captured = true;
+	debug_cursor_changed = false;
+	#endif
 
     /* initialize OpenGL for WinAPI */
-    wglinit(hInstance, nShowCmd, wndproc, XRES, YRES);
+    wglinit(hInstance, nShowCmd, wndproc);
 
     /* prepare OpenGL assets */
     switch (game_mode) {
@@ -209,6 +217,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     /* main loop */
     while (!quit) {
+		#ifndef NDEBUG
+		/* TODO: can uncapture mouse when debugging, need to display cursor too */
+		if (debug_cursor_changed) {
+			if (!mouse_captured)
+				/* return visible cursor */
+				ShowCursor(FALSE);
+			else
+				/* associate it */
+				ShowCursor(TRUE);
+			debug_cursor_changed = false;
+		}
+		#endif /* NDEBUG */
+
         /* begin processing events */
         wglevent(wnd);
 
