@@ -217,7 +217,15 @@ void wglfree(HINSTANCE hInstance)
 
 void setwindowed(unsigned short w_xres, unsigned short w_yres)
 {
+	RECT client_rect;
+
 	if (isfullscreen) {
+		/* prepare rect for recalc of area */
+		client_rect.top = 0;
+		client_rect.bottom = w_yres;
+		client_rect.left = 0;
+		client_rect.right = w_xres;
+
 		/* hide window */
 		ShowWindow(wnd, SW_HIDE);
 
@@ -230,8 +238,10 @@ void setwindowed(unsigned short w_xres, unsigned short w_yres)
 		/* change window type */
 		SetWindowLongPtr(wnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
 
+		AdjustWindowRect(&client_rect, WS_OVERLAPPEDWINDOW, FALSE);
+
 		/* resize window */
-		SetWindowPos(wnd, HWND_TOP, CW_USEDEFAULT, CW_USEDEFAULT, w_xres, w_yres, SWP_NOMOVE);
+		SetWindowPos(wnd, HWND_TOP, CW_USEDEFAULT, CW_USEDEFAULT, (int) (client_rect.right - client_rect.left), (int) (client_rect.bottom - client_rect.top), SWP_NOMOVE);
 
 		/* associate context to window */
 		wglMakeCurrent(dc, context);
