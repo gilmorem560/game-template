@@ -6,13 +6,17 @@
 /*
  * glxinit - initialize OpenGL for X11
  */
-void glxinit(int xres, int yres)
+void glxinit()
 {
     XSetWindowAttributes attrs;
+	XColor cursor_color = { 0, 0, 0, 0, 0, 0 };
+	Pixmap cursor_pixmap;
+	const char null_bitmap[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
     int major, minor;
     int config_count;
     dpy = NULL;
     vis = NULL;
+	isfullscreen = true;
     
     /* open X display */
     dpy = XOpenDisplay(NULL);
@@ -28,15 +32,12 @@ void glxinit(int xres, int yres)
         exit(EXIT_FAILURE);
     }
     
-    /* check that it is sufficient */
-    /*if (decimal(major, minor) < 1.3) {
-        fprintf(stderr, "glxinit: version 1.3 or greater required, version %f detected\n", decimal(major, minor));
-        XCloseDisplay(dpy);
-        exit(EXIT_FAILURE);
-    }*/
-    
     /* determine default screen */
     screen_number = XDefaultScreen(dpy);
+	
+	/* get resolution */
+	xres = XDisplayWidth(dpy, screen_number);
+	yres = XDisplayHeight(dpy, screen_number);
     
     /* retrieve root window */
     root = XRootWindow(dpy, screen_number);
@@ -85,21 +86,22 @@ void glxinit(int xres, int yres)
         }
     
     /* set input events */
-    attrs.event_mask = KeyPressMask | KeyReleaseMask | StructureNotifyMask;
+    attrs.event_mask = KeyPressMask | KeyReleaseMask | StructureNotifyMask | PointerMotionMask;
+	attrs.override_redirect = True;
     
     /* create window */
     win = XCreateWindow(
         dpy                 /* Display *display */
         ,root               /* Window parent */
-        ,400                /* int x */
-        ,400                /* int y */
+        ,0                  /* int x */
+        ,0	                /* int y */
         ,xres               /* unsigned int width */
         ,yres               /* unsigned int height */
         ,1                  /* unsigned int border_width */
         ,CopyFromParent     /* int depth */
         ,CopyFromParent     /* unsigned int class */
         ,vis->visual        /* Visual *visual */
-        ,CWEventMask        /* unsigned long valuemask */
+        ,CWEventMask | CWOverrideRedirect /* unsigned long valuemask */
         ,&attrs);             /* XSetWindowAttributes *attributes */
     
     /* allow auto-repeat of keys */
@@ -107,6 +109,18 @@ void glxinit(int xres, int yres)
     
     /* create on-screen rendering area */
     window = glXCreateWindow(dpy, *config, win, NULL);
+	
+	/* create invisible cursor pixmap */
+	cursor_pixmap = XCreateBitmapFromData(dpy, win, null_bitmap, 8, 8);
+	
+	/* create custom (invisible) cursor - modes must implement cursors */
+	cursor = XCreatePixmapCursor(dpy, cursor_pixmap, cursor_pixmap, &cursor_color, &cursor_color, 0, 0);
+	
+	/* free pixmap now that we're done */
+	XFreePixmap(dpy, cursor_pixmap);
+	
+	/* associate it */
+	XDefineCursor(dpy, win, cursor);
     
     /* associate context to window */
     if (!glXMakeCurrent(dpy, window, context)) {
@@ -125,6 +139,9 @@ void glxinit(int xres, int yres)
     
     /* display window */
     XMapWindow(dpy, win);
+	
+	/* grab keyboard */
+	XGrabKeyboard(dpy, win, False, GrabModeAsync, GrabModeAsync, CurrentTime);
     
     return;
 }
@@ -134,17 +151,32 @@ void glxinit(int xres, int yres)
  */
 void glxfree(void)
 {
+	XSetWindowAttributes attrs;
+		attrs.override_redirect = False;
+		
+	/* ungrab keyboard */
+	XUngrabKeyboard(dpy, CurrentTime);
+	
     /* hide window */
     XUnmapWindow(dpy, win);
     
     /* dissociate context from window */
     glXMakeCurrent(dpy, None, NULL);
+	
+	/* return visible cursor */
+	XUndefineCursor(dpy, win);
     
     /* destroy on-screen rendering area */
     glXDestroyWindow(dpy, window);
+	
+	/* need to return the window to the window manager to close properly */
+	XChangeWindowAttributes(dpy, win, CWOverrideRedirect, &attrs);
     
     /* destroy window */
     XDestroyWindow(dpy, win);
+	
+	/* delete cursor */
+	XFreeCursor(dpy, cursor);
     
     /* destroy context */
     glXDestroyContext(dpy, context);
@@ -159,4 +191,104 @@ void glxfree(void)
     XCloseDisplay(dpy);
     
     return;
+}
+
+void setwindowed(unsigned short w_xres, unsigned short w_yres)
+{
+	if (isfullscreen) {
+		XSetWindowAttributes attrs;
+		attrs.override_redirect = False;
+		
+		/* ungrab keyboard */
+		XUngrabKeyboard(dpy, CurrentTime);
+		
+		/* hide window */
+		XUnmapWindow(dpy, win);
+		
+		/* dissociate context from window */
+		glXMakeCurrent(dpy, None, NULL);
+		
+		/* destroy on-screen rendering area */
+		glXDestroyWindow(dpy, window);
+		
+		/* return control to window manager */
+		XChangeWindowAttributes(dpy, win, CWOverrideRedirect, &attrs);
+		
+		/* resize window */
+		XResizeWindow(dpy, win, w_xres, w_yres);
+		
+		/* create on-screen rendering area */
+		window = glXCreateWindow(dpy, *config, win, NULL);
+		
+		/* associate context to window */
+		if (!glXMakeCurrent(dpy, window, context)) {
+			fprintf(stderr, "glxinit: could not associate context with window\n");
+			glXDestroyWindow(dpy, window);
+			XDestroyWindow(dpy, win);
+			glXDestroyContext(dpy, context);
+			XFree(vis);
+			XFree(config);
+			XCloseDisplay(dpy);
+			exit(EXIT_FAILURE);
+		}
+		
+		/* reshow window */
+		XMapWindow(dpy, win);
+		
+		XGrabKeyboard(dpy, win, False, GrabModeAsync, GrabModeAsync, CurrentTime);
+		
+		/* mark windowed */
+		isfullscreen = false;
+	}
+	
+	return;
+}
+
+void setfullscreen(void)
+{
+	if (!isfullscreen) {
+		XSetWindowAttributes attrs;
+		attrs.override_redirect = True;
+		
+		/* hide window */
+		XUnmapWindow(dpy, win);
+		
+		/* dissociate context from window */
+		glXMakeCurrent(dpy, None, NULL);
+		
+		/* destroy on-screen rendering area */
+		glXDestroyWindow(dpy, window);
+		
+		/* take control from window manager */
+		XChangeWindowAttributes(dpy, win, CWOverrideRedirect, &attrs);
+		
+		/* create on-screen rendering area */
+		window = glXCreateWindow(dpy, *config, win, NULL);
+		
+		/* associate context to window */
+		if (!glXMakeCurrent(dpy, window, context)) {
+			fprintf(stderr, "glxinit: could not associate context with window\n");
+			glXDestroyWindow(dpy, window);
+			XDestroyWindow(dpy, win);
+			glXDestroyContext(dpy, context);
+			XFree(vis);
+			XFree(config);
+			XCloseDisplay(dpy);
+			exit(EXIT_FAILURE);
+		}
+		
+		/* resize window */
+		XMoveResizeWindow(dpy, win, 0, 0, xres, yres);
+		
+		/* unhide window */
+		XMapWindow(dpy, win);
+		
+		/* grab keyboard */
+		XGrabKeyboard(dpy, win, False, GrabModeAsync, GrabModeAsync, CurrentTime);
+	
+		/* mark fullscreen */
+		isfullscreen = true;
+	}
+	
+	return;
 }

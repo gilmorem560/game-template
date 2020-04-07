@@ -54,7 +54,7 @@ static GLubyte texture_image[] = { 0 ,255 ,0   ,255
 								  ,0 ,0   ,255 ,255
 								  ,0 ,255 ,0   ,255
 								  ,0 ,0   ,255 ,255 };
-static GLint texture;
+static GLint sandbox_texture;
 
 /*
  * sandbox_init - OpenGL init
@@ -68,11 +68,11 @@ bool sandbox_init(void)
 	/* enable GL features */
 	glEnable(GL_DEPTH_TEST);		/* operating in 3 dimensions */
 	glEnable(GL_CULL_FACE);			/* allow culling for performance boost */
+	glEnable(GL_TEXTURE_2D);		/* enable texturing */
 	glEnable(GL_LIGHTING);			/* apply lighting */
 	glEnable(GL_LIGHT0);			/* use first light */
 	glEnable(GL_COLOR_MATERIAL);	/* allow vertex color in lighting */
 	glEnable(GL_FOG);				/* fog calculations */
-	glEnable(GL_TEXTURE_2D);		/* enable texturing */
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -80,6 +80,7 @@ bool sandbox_init(void)
 	
 	/* fog background */
 	glClearColor(fog_color[0], fog_color[1], fog_color[2], fog_color[3]);
+	glShadeModel(GL_SMOOTH);
 	
 	/* culling */
 	glCullFace(GL_BACK);
@@ -106,8 +107,8 @@ bool sandbox_init(void)
 	
 	/* texture setup */
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glGenTextures(1, &sandbox_texture);
+	glBindTexture(GL_TEXTURE_2D, sandbox_texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -138,11 +139,6 @@ bool sandbox_render(void)
 {
     /* clear the scene */
     glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT |  GL_STENCIL_BUFFER_BIT);
-	
-	if (sandbox_shading_smooth)
-		glShadeModel(GL_SMOOTH);
-	else
-		glShadeModel(GL_FLAT);
 	
 	/* render objects */
 	glMatrixMode(GL_MODELVIEW);
@@ -210,17 +206,15 @@ bool sandbox_input(void)
 	/* d - spin right */		if (key & KEY_D) sandbox_angle_y += 1.0;
 	/* z - zoom in */			if (key & KEY_Z) sandbox_zoom += 0.1;
 	/* x - zoom out */			if (key & KEY_X) sandbox_zoom -= 0.1;
-
-	/* effects */
-	/* f - flat shading */		if (key & KEY_F) sandbox_shading_smooth = false;
-	/* g - smooth shading */	if (key & KEY_G) sandbox_shading_smooth = true;
-	
-	/* actions */
-	/* q - quit */				if (key & KEY_Q) quit = true;
 	
 	#ifndef NDEBUG
+	/* r - windowed */		if (key & KEY_R) { setwindowed(640, 480); key &= ~KEY_R; }
+	/* f - fullscreen */	if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; }
+	/* q - quit */				if (key & KEY_Q) quit = true;
+	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
+	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
-	if (ISNUM(key) && !(key & KEY_3)) {
+	if (KEY_ISNUM(key) && !(key & KEY_3)) {
 		sandbox_free();
 		switch (key) {
 			case KEY_1:
@@ -234,6 +228,10 @@ bool sandbox_input(void)
 			case KEY_4:
 				stage_init();
 				game_mode = GM_STAGE;
+				break;
+			case KEY_5:
+				scene_test_init();
+				game_mode = GM_SCENE_TEST;
 				break;
 			default:
 				quit = true;
@@ -280,7 +278,7 @@ bool sandbox_free(void)
 	printf("sandbox: free\n");
 	#endif /* NDEBUG */
 	
-	glDeleteTextures(1, &texture);
+	glDeleteTextures(1, &sandbox_texture);
 	
 	return true;
 }

@@ -11,6 +11,8 @@ extern "C" {
 	
 /* common includes */
 #include "modes.h"
+/* additional objects */
+#include "../graphics/objects/texture.h"
 
 /* game mode methods */
 bool stage_init(void);		/* OpenGL init */
@@ -18,6 +20,10 @@ bool stage_render(void);	/* OpenGL rendering */
 bool stage_input(void);		/* handle movement */
 bool stage_routine(void);   /* process object routine */
 bool stage_free(void);		/* OpenGL free */
+
+/* assets */
+GLuint stage_menu_texture;
+GLuint stage_font_texture;
 
 #ifdef __cplusplus
 };

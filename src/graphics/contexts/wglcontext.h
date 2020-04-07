@@ -10,11 +10,15 @@ extern "C" {
 
 #include <Windows.h>    /* WinAPI libraries */
 #include <GL/gl.h>      /* OpenGL libraries */
+#include <GL/wglext.h>  /* OpenGL extensions */
     
 #include "../../util/macros.h"     /* useful macros */
 
 /* WinAPI variables */
+HINSTANCE wgl_hInstance;
+int wgl_nShowCmd;
 WNDCLASS wndclass;
+HMONITOR monitor;
 HWND wnd;
 HDC dc;
 
@@ -22,7 +26,7 @@ HDC dc;
 HGLRC context;
 
 /* wglinit - initialize OpenGL for WinAPI */
-void wglinit(HINSTANCE hInstance, int nCmdShow, WNDPROC wndproc, int xres, int yres);
+void wglinit(HINSTANCE hInstance, int nCmdShow, WNDPROC wndproc);
 
 /* wglfree - close OpenGL for WinAPI */
 void wglfree(HINSTANCE hInstance);

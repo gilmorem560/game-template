@@ -98,7 +98,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
@@ -130,7 +130,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -142,6 +142,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\graphics\objects\hedrons.c" />
+    <ClCompile Include="src\graphics\objects\scene.c" />
+    <ClCompile Include="src\graphics\objects\texture.c" />
     <ClCompile Include="src\graphics\primitives\grid2d.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
     </ClCompile>
@@ -172,11 +174,15 @@
     <ClCompile Include="src\modes\diamond.c" />
     <ClCompile Include="src\modes\map.c" />
     <ClCompile Include="src\modes\sandbox.c" />
+    <ClCompile Include="src\modes\scene_test.c" />
     <ClCompile Include="src\modes\stage.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\assets\assets.h" />
     <ClInclude Include="src\graphics\contexts\glcontext.h" />
     <ClInclude Include="src\graphics\objects\hedrons.h" />
+    <ClInclude Include="src\graphics\objects\scene.h" />
+    <ClInclude Include="src\graphics\objects\texture.h" />
     <ClInclude Include="src\graphics\primitives\coord.h" />
     <ClInclude Include="src\graphics\primitives\prim.h" />
     <ClInclude Include="src\graphics\contexts\wglcontext.h" />
@@ -185,8 +191,13 @@
     <ClInclude Include="src\modes\map.h" />
     <ClInclude Include="src\modes\modes.h" />
     <ClInclude Include="src\modes\sandbox.h" />
+    <ClInclude Include="src\modes\scene_test.h" />
     <ClInclude Include="src\modes\stage.h" />
     <ClInclude Include="src\util\macros.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\textures\rgba_font.bin" />
+    <None Include="data\textures\rgba_menu.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

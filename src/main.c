@@ -5,25 +5,10 @@
 #include "../config.h"
 #endif  /* _WIN32 */
 
-/* graphics handler */
-#include "graphics/contexts/glcontext.h"
-
-/* input handler */
-#include "input/input.h"
-
-/* basic objects */
-#include "graphics/primitives/coord.h"
-#include "graphics/primitives/prim.h"
-
-/* composite objects */
-#include "graphics/objects/hedrons.h"
-
 /* game modes */
 #include "modes/modes.h"
 
 /* defaults */
-#define XRES    	640
-#define YRES    	480
 #define	INITIAL_GM	GM_DIAMONDS
 
 #ifndef _WIN32
@@ -33,6 +18,7 @@
 int main(int argc, char *argv[])
 {
 	#ifndef NDEBUG
+	/* debugging can choose games 1-9 on command line */
     if (argc > 1) {
 		if (strlen(argv[1]) > 1 || !isdigit((int) argv[1][0])) {
 			fprintf(stderr, "Malformed modenum: %s\n", argv[1]);
@@ -46,16 +32,18 @@ int main(int argc, char *argv[])
 	game_mode = INITIAL_GM;
 	#endif /* NDEBUG */
 
-    if (game_mode < GM_DIAMONDS || game_mode > GM_STAGE) {
-        fprintf(stderr, "Modenum not implemented: %d\n", game_mode);
-        return EXIT_FAILURE;
-    }
-
     key = 0;    /* initialize key bitfield here for now */
+    mouse_moved_x = false;
+	mouse_moved_y = false;
     quit = false;
+	#ifndef NDEBUG
+	/* debugging can uncapture pointer */
+	mouse_captured = true;
+	debug_cursor_changed = false;
+	#endif
 
     /* initialize OpenGL for X11 */
-    glxinit(XRES, YRES);
+    glxinit();
 
     /* prepare OpenGL assets */
     switch (game_mode) {
@@ -71,15 +59,30 @@ int main(int argc, char *argv[])
 	case GM_STAGE:
 		stage_init();
 		break;
+	case GM_SCENE_TEST:
+		scene_test_init();
+		break;
     default:
         break;
     }
 
     /* main loop */
     while (!quit) {
+		#ifndef NDEBUG
+		/* can uncapture mouse when debugging, need to display cursor too */
+		if (debug_cursor_changed) {
+			if (!mouse_captured)
+				/* return visible cursor */
+				XUndefineCursor(dpy, win);
+			else
+				/* associate it */
+				XDefineCursor(dpy, win, cursor);
+			debug_cursor_changed = false;
+		}
+		#endif /* NDEBUG */
+		
         /* begin processing events */
-        if (XPending(dpy))
-            glxevent(dpy);
+		glxevent(dpy);
 
 		switch (game_mode) {
 		case GM_DIAMONDS:
@@ -114,6 +117,14 @@ int main(int argc, char *argv[])
 			/* run mode routine */
 			stage_routine();
 			break;
+		case GM_SCENE_TEST:
+			/* process next frame */
+			scene_test_render();
+			/* process movement */
+			scene_test_input();
+			/* run mode routine */
+			scene_test_routine();
+			break;
 		default:
 			fprintf(stderr, "Unknown game mode: %d\n", game_mode);
 			quit = true;
@@ -135,6 +146,9 @@ int main(int argc, char *argv[])
 	case GM_STAGE:
 		stage_free();
 		break;
+	case GM_SCENE_TEST:
+		scene_test_free();
+		break;
     default:
         break;
     }
@@ -151,24 +165,32 @@ int main(int argc, char *argv[])
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
 	#ifndef NDEBUG
-    if (__argc > 1) {
+	/* debugging can choose games 1-9 on command line */
+	if (__argc > 1) {
 		if (strlen(__argv[1]) > 1 || !isdigit((int) __argv[1][0])) {
 			fprintf(stderr, "Malformed modenum: %s\n", __argv[1]);
 			return EXIT_FAILURE;
 		}
 		game_mode = atoi(__argv[1]);
-    } else {
+	} else {
 		game_mode = INITIAL_GM;
 	}
 	#else
 	game_mode = INITIAL_GM;
 	#endif /* NDEBUG */
 
-    key = 0;    /* initialize key bitfield here for now */
-    quit = false;
+	key = 0;    /* initialize key bitfield here for now */
+	mouse_moved_x = false;
+	mouse_moved_y = false;
+	quit = false;
+	#ifndef NDEBUG
+	/* debugging can uncapture pointer */
+	mouse_captured = true;
+	debug_cursor_changed = false;
+	#endif
 
     /* initialize OpenGL for WinAPI */
-    wglinit(hInstance, nShowCmd, wndproc, XRES, YRES);
+    wglinit(hInstance, nShowCmd, wndproc);
 
     /* prepare OpenGL assets */
     switch (game_mode) {
@@ -184,12 +206,28 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	case GM_STAGE:
 		stage_init();
 		break;
+	case GM_SCENE_TEST:
+		scene_test_init();
+		break;
     default:
         break;
     }
 
     /* main loop */
     while (!quit) {
+		#ifndef NDEBUG
+		/* TODO: can uncapture mouse when debugging, need to display cursor too */
+		if (debug_cursor_changed) {
+			if (!mouse_captured)
+				/* return visible cursor */
+				ShowCursor(FALSE);
+			else
+				/* associate it */
+				ShowCursor(TRUE);
+			debug_cursor_changed = false;
+		}
+		#endif /* NDEBUG */
+
         /* begin processing events */
         wglevent(wnd);
 
@@ -226,6 +264,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			/* run mode routine */
 			stage_routine();
 			break;
+		case GM_SCENE_TEST:
+			/* process next frame */
+			scene_test_render();
+			/* process input */
+			scene_test_input();
+			/* run mode routine */
+			scene_test_routine();
+			break;
         default:
             fprintf(stderr, "Unknown game mode: %d\n", game_mode);
             quit = true;
@@ -246,6 +292,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         break;
 	case GM_STAGE:
 		stage_free();
+		break;
+	case GM_SCENE_TEST:
+		scene_test_free();
 		break;
     default:
         break;
