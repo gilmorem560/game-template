@@ -382,13 +382,11 @@ bool scene_test_input(void)
 	/* mouse controls view angle */
 	if (mouse_moved_x) view_x += 2.0 * (mouse_x_positive ? 1.0 : -1.0);
 	if (mouse_moved_y) view_y += 2.0 * (mouse_y_positive ? 1.0 : -1.0);
-	
-	/* actions */
-	/* r - windowed */		if (key & KEY_R)	setwindowed(640, 480);
-	/* f - fullscreen */	if (key & KEY_F)	setfullscreen();
-	/* q - quit */	if (key & KEY_Q) quit = true;
-	
+
 	#ifndef NDEBUG
+	/* r - windowed */		if (key & KEY_R) { setwindowed(640, 480); key &= ~KEY_R; }
+	/* f - fullscreen */	if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; }
+	/* q - quit */	if (key & KEY_Q) quit = true;
 	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
 	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
@@ -445,7 +443,7 @@ bool scene_test_free(void)
 	#ifndef NDEBUG
 	printf("scene_test: free\n");
 	#endif /* NDEBUG */
-	
+
 	free(graph->prj);
 	free(graph);
 	

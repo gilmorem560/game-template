@@ -207,12 +207,10 @@ bool sandbox_input(void)
 	/* z - zoom in */			if (key & KEY_Z) sandbox_zoom += 0.1;
 	/* x - zoom out */			if (key & KEY_X) sandbox_zoom -= 0.1;
 	
-	/* actions */
-	/* r - windowed */			if (key & KEY_R)	setwindowed(640, 480);
-	/* f - fullscreen */		if (key & KEY_F)	setfullscreen();
-	/* q - quit */				if (key & KEY_Q) quit = true;
-	
 	#ifndef NDEBUG
+	/* r - windowed */		if (key & KEY_R) { setwindowed(640, 480); key &= ~KEY_R; }
+	/* f - fullscreen */	if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; }
+	/* q - quit */				if (key & KEY_Q) quit = true;
 	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
 	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */

@@ -3,9 +3,6 @@
  */
 #include "input.h"
 
-/* maximum number of events to process in a single cycle */
-#define EVENT_LIMIT 10
- 
 /*
  * glxevent - event processing for OpenGL in X11
  */

@@ -16,6 +16,7 @@ void glxinit()
     int config_count;
     dpy = NULL;
     vis = NULL;
+	isfullscreen = true;
     
     /* open X display */
     dpy = XOpenDisplay(NULL);

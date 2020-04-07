@@ -23,8 +23,18 @@ void wglevent(HWND hWnd)
  */
 LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	RECT wnd_rect;
+	printf("wndproc: ");
     switch (uMsg)
     {
+	case WM_SIZE:
+		#ifndef NDEBUG
+		printf("WM_SIZE");
+		#endif /* NDEBUG */
+		GetWindowRect(wnd, &wnd_rect);
+		/* Keep OpenGL viewport in sync */
+		glViewport(0, 0, (GLsizei) (wnd_rect.right - wnd_rect.left), (GLsizei) (wnd_rect.bottom - wnd_rect.top));
+		break;
     case WM_KEYDOWN:
         #ifndef NDEBUG
         printf("WM_KEYDOWN\n");
@@ -42,6 +52,12 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				key_held |= KEY_D;
             key |= KEY_D;
             break;
+		case 'F':
+		case 'f':
+			if (key & KEY_F)
+				key_held |= KEY_F;
+			key |= KEY_F;
+			break;
         case 'Q':
         case 'q':
 			if (key & KEY_Q)
@@ -147,6 +163,11 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             key &= ~KEY_D;
 			key_held &= ~KEY_D;
             break;
+		case 'F':
+		case 'f':
+			key &= ~KEY_F;
+			key_held &= ~KEY_F;
+			break;
         case 'R':
         case 'r':
             key &= ~KEY_R;

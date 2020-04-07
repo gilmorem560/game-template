@@ -10,10 +10,13 @@ extern "C" {
 
 #include <Windows.h>    /* WinAPI libraries */
 #include <GL/gl.h>      /* OpenGL libraries */
+#include <GL/wglext.h>  /* OpenGL extensions */
     
 #include "../../util/macros.h"     /* useful macros */
 
 /* WinAPI variables */
+HINSTANCE wgl_hInstance;
+int wgl_nShowCmd;
 WNDCLASS wndclass;
 HMONITOR monitor;
 HWND wnd;

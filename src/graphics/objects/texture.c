@@ -28,7 +28,7 @@ void texture_free(texture *texture)
 texture_rgba *texture_rgba_new(FILE *rgba_data, unsigned int width, unsigned int height, unsigned int bpp)
 {
 	texture_rgba *texture = texture_new(width, height, bpp);
-	fread(texture->data, sizeof (char), width*height*bpp, rgba_data);
+	fread(texture->data, sizeof (char), (size_t) width*height*bpp, rgba_data);
 	
 	return texture;
 }

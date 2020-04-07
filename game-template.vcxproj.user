@@ -5,4 +5,9 @@
     </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>2&gt; &amp;1</LocalDebuggerCommandArguments>
+  </PropertyGroup>
 </Project>

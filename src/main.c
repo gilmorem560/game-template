@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
     key = 0;    /* initialize key bitfield here for now */
     mouse_moved_x = false;
 	mouse_moved_y = false;
-	isfullscreen = true;
     quit = false;
 	#ifndef NDEBUG
 	/* debugging can uncapture pointer */
@@ -183,7 +182,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	key = 0;    /* initialize key bitfield here for now */
 	mouse_moved_x = false;
 	mouse_moved_y = false;
-	isfullscreen = true;
 	quit = false;
 	#ifndef NDEBUG
 	/* debugging can uncapture pointer */
