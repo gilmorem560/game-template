@@ -13,6 +13,8 @@ extern "C" {
 #include "modes.h"
 /* additional objects */
 #include "../graphics/objects/scene.h"
+/* use vector component calcs */
+#include "../util/veccomp.h"
 
 /* game mode methods */
 bool scene_test_init(void);		/* OpenGL init */

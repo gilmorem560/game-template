@@ -17,5 +17,6 @@ main_SOURCES = \
 	modes/sandbox.c \
 	modes/scene_test.c \
 	modes/stage.c \
+	util/veccomp.c \
 	main.c
 main_LDFLAGS = -lX11

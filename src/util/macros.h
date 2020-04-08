@@ -7,9 +7,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+	
+#include <math.h>
 
 /* if there were macros you would see them here */
-#define	degtorad(x)	(x / 360) * 2 * 3.14
+#define	degtorad(x)	(x / 360) * 2 * M_PI
 
 #ifdef __cplusplus
 };

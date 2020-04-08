@@ -39,12 +39,18 @@ static GLubyte vao_indicies[24] = { 0, 1, 2, 3
 								  
 								  
 static GLfloat fog_color[] = { 0.3f, 0.3f, 0.3f, 1.0f };
-							
+				
+static GLdouble forward;
+static GLdouble right;
 static GLdouble xpos;
 static GLdouble ypos;
 static GLdouble zpos;
 static GLdouble view_x;
 static GLdouble view_y;
+
+static veccomp2d view_xz;
+static veccomp2d forward_xz;
+static veccomp2d right_xz;
 
 /*
  * scene_test_init - OpenGL init
@@ -149,6 +155,7 @@ bool scene_test_init(void)
  */
 bool scene_test_render(void)
 {
+	
 	/* clear the scene */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -158,23 +165,7 @@ bool scene_test_render(void)
 	
 	glPushMatrix();
 		glRotated(view_x, 0.0, 1.0, 0.0);
-		if (view_x <= -270)
-			glRotated(view_y, -sin(degtorad(fmod(view_x, 90))), 0.0, cos(degtorad(fmod(view_x, 90))));
-		else if (view_x <= -180)
-			glRotated(view_y, -cos(degtorad(fmod(view_x, 90))), 0.0, -sin(degtorad(fmod(view_x, 90))));
-		else if (view_x <= -90)
-			glRotated(view_y, sin(degtorad(fmod(view_x, 90))), 0.0, -cos(degtorad(fmod(view_x, 90))));
-		else if (view_x < 0)
-			glRotated(view_y, cos(degtorad(fmod(view_x, 90))), 0.0, sin(degtorad(fmod(view_x, 90))));
-		else if (view_x < 90)
-			glRotated(view_y, cos(degtorad(fmod(view_x, 90))), 0.0, sin(degtorad(fmod(view_x, 90)))); /* the extra math does nothing useful!!! */
-		else if (view_x < 180)
-			glRotated(view_y, -sin(degtorad(fmod(view_x, 90))), 0.0, cos(degtorad(fmod(view_x, 90))));
-		else if (view_x < 270)
-			glRotated(view_y, -cos(degtorad(fmod(view_x, 90))), 0.0, -sin(degtorad(fmod(view_x, 90))));
-		else
-			glRotated(view_y, sin(degtorad(fmod(view_x, 90))), 0.0, -cos(degtorad(fmod(view_x, 90))));
-		/* TODO: Modify translation position calc to honor viewing angle */
+		glRotated(view_y, view_xz.x, 0.0, view_xz.y);
 		glTranslated(xpos, ypos, zpos + ((graph->prj[4] + graph->prj[5]) / 2));
 		/* draw wall */
 		glPushMatrix();
@@ -374,10 +365,10 @@ bool scene_test_render(void)
 bool scene_test_input(void)
 {	
 	/* movement */
-	/* w - up */	if (key & KEY_W || key_held & KEY_W) zpos += 0.3;
-	/* s - down */	if (key & KEY_S || key_held & KEY_S) zpos -= 0.3;
-	/* a - left */	if (key & KEY_A || key_held & KEY_A) xpos += 0.3;
-	/* d - right */ if (key & KEY_D || key_held & KEY_D) xpos -= 0.3;
+	/* w - up */	if (key & KEY_W || key_held & KEY_W) forward += 0.3;
+	/* s - down */	if (key & KEY_S || key_held & KEY_S) forward -= 0.3;
+	/* a - left */	if (key & KEY_A || key_held & KEY_A) right += 0.3;
+	/* d - right */ if (key & KEY_D || key_held & KEY_D) right -= 0.3;
 	
 	/* mouse controls view angle */
 	if (mouse_moved_x) view_x += 2.0 * (mouse_x_positive ? 1.0 : -1.0);
@@ -424,14 +415,27 @@ bool scene_test_input(void)
  */
 bool scene_test_routine(void)
 {
+	/* normalize angles */
 	view_x = fmod(view_x, 360);
 	view_y = fmod(view_y, 360);
-	//if (xpos > 3) xpos = 3;
-	//if (xpos < -3) xpos = -3;
-	if (ypos > 3) ypos = 3;
-	if (ypos < -3) ypos = -3;
-	//if (zpos > (-graph->prj[4] - 1) + 2) zpos = (-graph->prj[4] - 1) + 2;
-	//if (zpos < -graph->prj[5] + 1) zpos = -graph->prj[5] + 1;
+	
+	/* calculate y rotation vector */
+	veccomp2d_calc(1.0, view_x, &view_xz);
+	
+	/* calculation motion vector */
+	if (forward) {
+		veccomp2d_calc(forward, view_x, &forward_xz);
+		xpos -= forward_xz.y;
+		zpos += forward_xz.x;
+		forward = 0.0;
+	}
+	if (right) {
+		veccomp2d_calc(right, view_x, &right_xz);
+		xpos += right_xz.x;
+		zpos += right_xz.y;
+		right = 0.0;
+	}
+	
 	return true;
 }
 
@@ -449,3 +453,4 @@ bool scene_test_free(void)
 	
 	return true;
 }
+
