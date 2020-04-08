@@ -350,11 +350,7 @@ bool scene_test_render(void)
 	glFlush();
 
 	/* display */
-	#ifdef WIN32
-		SwapBuffers(dc);
-	#else
-		glXSwapBuffers(dpy, window);
-	#endif /* WIN32 */
+	drawframe();
 	
 	return true;
 }
@@ -435,6 +431,8 @@ bool scene_test_routine(void)
 		zpos += right_xz.y;
 		right = 0.0;
 	}
+	
+	
 	
 	return true;
 }

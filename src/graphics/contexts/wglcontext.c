@@ -215,6 +215,9 @@ void wglfree(HINSTANCE hInstance)
 	return;
 }
 
+/*
+ * setwindowed - pop out to window of defined resolution
+ */
 void setwindowed(unsigned short w_xres, unsigned short w_yres)
 {
 	RECT client_rect;
@@ -264,6 +267,9 @@ void setwindowed(unsigned short w_xres, unsigned short w_yres)
 	return;
 }
 
+/*
+ * setfullscreen - set to fullscreen at current resolution
+ */
 void setfullscreen(void)
 {
 	if (!isfullscreen) {
@@ -306,5 +312,13 @@ void setfullscreen(void)
 		isfullscreen = true;
 	}
 
+	return;
+}
+
+/*
+ * render a frame
+ */
+void drawframe() {
+	SwapBuffers(dc);
 	return;
 }

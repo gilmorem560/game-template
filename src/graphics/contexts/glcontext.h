@@ -14,6 +14,7 @@ extern "C" {
 #include <math.h>
 #include <assert.h>
 #include <ctype.h>
+#include <time.h>
 
 #ifdef _WIN32
 #include "wglcontext.h"
@@ -25,6 +26,7 @@ unsigned short xres;
 unsigned short yres;
 bool isfullscreen;
 
+void drawframe();
 void setwindowed(unsigned short w_xres, unsigned short w_yres);
 void setfullscreen(void);
     
@@ -33,3 +35,5 @@ void setfullscreen(void);
 #endif /* __cplusplus */
 
 #endif /* __GLCONTEXT_H__ */
+
+

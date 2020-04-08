@@ -104,11 +104,7 @@ bool diamond_render(void)
 	
 	glFlush();
 
-	#ifdef WIN32
-		SwapBuffers(dc);
-	#else
-		glXSwapBuffers(dpy, window);
-	#endif /* WIN32 */
+	drawframe();
 
     return true;
 }

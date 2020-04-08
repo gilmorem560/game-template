@@ -11,7 +11,7 @@ extern "C" {
 #include <math.h>
 
 /* if there were macros you would see them here */
-#define	degtorad(x)	(x / 360) * 2 * M_PI
+#define	degtorad(x)	(x / 360.0) * 2.0 * M_PI
 
 #ifdef __cplusplus
 };

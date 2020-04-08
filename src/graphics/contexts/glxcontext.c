@@ -193,6 +193,9 @@ void glxfree(void)
     return;
 }
 
+/*
+ * setwindowed - pop out to window of defined resolution
+ */
 void setwindowed(unsigned short w_xres, unsigned short w_yres)
 {
 	if (isfullscreen) {
@@ -244,6 +247,9 @@ void setwindowed(unsigned short w_xres, unsigned short w_yres)
 	return;
 }
 
+/*
+ * setfullscreen - set to fullscreen at current resolution
+ */
 void setfullscreen(void)
 {
 	if (!isfullscreen) {
@@ -290,5 +296,13 @@ void setfullscreen(void)
 		isfullscreen = true;
 	}
 	
+	return;
+}
+
+/*
+ * render a frame
+ */
+void drawframe() {
+	glXSwapBuffers(dpy, window);
 	return;
 }
