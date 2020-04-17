@@ -64,6 +64,9 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	/* get resolution */
 	xres = (unsigned short) (monitor_info.rcMonitor.right - monitor_info.rcMonitor.left);
 	yres = (unsigned short) (monitor_info.rcMonitor.bottom - monitor_info.rcMonitor.top);
+	
+	/* set aspect ratio */
+	current_ratio = (double) xres / (double) yres;
 
 	/* set pixel format attributes */
 	PIXELFORMATDESCRIPTOR pfd = {

@@ -38,6 +38,9 @@ void glxinit()
 	/* get resolution */
 	xres = XDisplayWidth(dpy, screen_number);
 	yres = XDisplayHeight(dpy, screen_number);
+	
+	/* set aspect ratio */
+	current_ratio = (double) xres / (double) yres;
     
     /* retrieve root window */
     root = XRootWindow(dpy, screen_number);

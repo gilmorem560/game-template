@@ -24,6 +24,7 @@ extern "C" {
 
 unsigned short xres;
 unsigned short yres;
+double current_ratio;
 bool isfullscreen;
 
 void drawframe();

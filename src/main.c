@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	/* debugging can uncapture pointer */
 	mouse_captured = true;
 	debug_cursor_changed = false;
-	#endif
+	#endif /* NDEBUG */
 
     /* initialize OpenGL for X11 */
     glxinit();
@@ -187,7 +187,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	/* debugging can uncapture pointer */
 	mouse_captured = true;
 	debug_cursor_changed = false;
-	#endif
+	#endif /* NDEBUG */
 
     /* initialize OpenGL for WinAPI */
     wglinit(hInstance, nShowCmd, wndproc);

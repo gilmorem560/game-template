@@ -26,6 +26,9 @@ bool scene_test_free(void);		/* OpenGL free */
 /* assets */
 scene *graph;
 
+/* actor types - modes define actor types */
+#define	ST_ACTOR_CAMERA	0
+
 #ifdef __cplusplus
 };
 #endif /* __cplusplus */

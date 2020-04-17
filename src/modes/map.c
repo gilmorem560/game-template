@@ -30,8 +30,8 @@ bool map_init(void)
 	glCullFace(GL_BACK);
 	
 	/* prepare display lists */
-	actor = glGenLists(1);
-	glNewList(actor, GL_COMPILE);
+	map_actor = glGenLists(1);
+	glNewList(map_actor, GL_COMPILE);
 	tetrahedron(1.0);
 	glEndList();
 	
@@ -70,7 +70,7 @@ bool map_render(void)
 		glEnd();
 		glTranslated(actor_x, actor_y, -actor_z);
 		glRotated(actor_angle, 0.0, 1.0, 0.0);
-		glCallList(actor);
+		glCallList(map_actor);
     glPopMatrix();
 	
 	/* flush */
@@ -164,7 +164,7 @@ bool map_free(void)
 	#endif /* NDEBUG */
 	
     /* free display lists */
-    glDeleteLists(actor, 1);
+    glDeleteLists(map_actor, 1);
 	
     return true;
 }

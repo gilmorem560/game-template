@@ -66,6 +66,7 @@ void glxevent(Display *dpy)
 				x_height = event_return.xconfigure.height;
 				/* Keep OpenGL viewport in sync */
 				glViewport(0, 0, (GLsizei) x_width, (GLsizei) x_height);
+				current_ratio = x_width / x_height;
 				
 				#ifndef NDEBUG
 				/* debuggers can uncapture the cursor */
