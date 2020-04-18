@@ -66,24 +66,24 @@ bool scene_test_init(void)
 	/* --- scene init --- */
 	
 	/* create graph */
-	graph = (scene *) malloc(sizeof (graph));
+	graph = malloc(sizeof (graph));
 	graph->node_count = 0;
 	
 	/* create environment */
-	graph->root_environment = (environment *) malloc(sizeof (environment));
+	graph->root_environment = malloc(sizeof (environment));
 	graph->root_environment->actor.id = SCENE_ACTOR_NULL;
 	graph->root_environment->children = NULL;
 	graph->root_environment->children_count = 0;
 	
 	/* create camera */
-	graph->camera = (actor *) malloc(sizeof (actor));
+	graph->camera = malloc(sizeof (actor));
 		graph->camera->type = ST_ACTOR_CAMERA;
 		graph->camera->type_router = false;
 		graph->camera->routine = ACTOR_ROUTINE_NULL;
 		graph->camera->router = NULL;
 	
 	/* create root node - camera */
-	graph->root_node = (node *) malloc(sizeof (node));
+	graph->root_node = malloc(sizeof (node));
 		graph->root_node->actor.id = 0;
 		graph->root_node->actor.actor_obj = graph->camera;	/* camera is root node & object */
 		
@@ -482,6 +482,7 @@ bool scene_test_free(void)
 	printf("scene_test: free\n");
 	#endif /* NDEBUG */
 
+	/* TODO: Solve heap corruption issue */
 	free(graph->root_node);
 	free(graph->camera);
 	free(graph->root_environment);

@@ -101,6 +101,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,9 +142,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\objects\actor.c" />
+    <ClCompile Include="src\graphics\objects\collision_index.c" />
     <ClCompile Include="src\graphics\objects\hedrons.c" />
+    <ClCompile Include="src\graphics\objects\prisms.c" />
     <ClCompile Include="src\graphics\objects\scene.c" />
     <ClCompile Include="src\graphics\objects\texture.c" />
+    <ClCompile Include="src\graphics\primitives\collision\collision_box.c" />
+    <ClCompile Include="src\graphics\primitives\collision\collision_router.c" />
     <ClCompile Include="src\graphics\primitives\grid2d.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
     </ClCompile>
@@ -176,13 +182,18 @@
     <ClCompile Include="src\modes\sandbox.c" />
     <ClCompile Include="src\modes\scene_test.c" />
     <ClCompile Include="src\modes\stage.c" />
+    <ClCompile Include="src\util\veccomp.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assets\assets.h" />
     <ClInclude Include="src\graphics\contexts\glcontext.h" />
+    <ClInclude Include="src\graphics\objects\actor.h" />
+    <ClInclude Include="src\graphics\objects\collision_index.h" />
     <ClInclude Include="src\graphics\objects\hedrons.h" />
+    <ClInclude Include="src\graphics\objects\prisms.h" />
     <ClInclude Include="src\graphics\objects\scene.h" />
     <ClInclude Include="src\graphics\objects\texture.h" />
+    <ClInclude Include="src\graphics\primitives\collision.h" />
     <ClInclude Include="src\graphics\primitives\coord.h" />
     <ClInclude Include="src\graphics\primitives\prim.h" />
     <ClInclude Include="src\graphics\contexts\wglcontext.h" />
@@ -194,6 +205,7 @@
     <ClInclude Include="src\modes\scene_test.h" />
     <ClInclude Include="src\modes\stage.h" />
     <ClInclude Include="src\util\macros.h" />
+    <ClInclude Include="src\util\veccomp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\textures\rgba_font.bin" />

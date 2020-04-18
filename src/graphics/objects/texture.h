@@ -13,12 +13,12 @@ extern "C" {
  */
 typedef struct texture {
 	unsigned char	*data;
-	unsigned int	width;
-	unsigned int	height;
-	unsigned int	bpp; /* 2:RGB16, 3:RGB, 4:RGBA */ 
+    size_t      	width;
+    size_t      	height;
+    size_t      	bpp; /* 2:RGB16, 3:RGB, 4:RGBA */
 } texture;
 
-texture *texture_new(unsigned int width, unsigned int height, unsigned int bpp);
+texture *texture_new(size_t width, size_t height, size_t bpp);
 void texture_free(texture *texture);
 
 /*
@@ -26,7 +26,7 @@ void texture_free(texture *texture);
  */
 typedef texture texture_rgba;
 
-texture_rgba *texture_rgba_new(FILE *rgba_data, unsigned int width, unsigned int height, unsigned int bpp);
+texture_rgba *texture_rgba_new(FILE *rgba_data, size_t width, size_t height, size_t bpp);
 
 #ifdef __cplusplus
 };

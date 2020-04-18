@@ -71,7 +71,7 @@ typedef struct scene {
 	collision_index *collision_table;
 } scene;
 
-void scene_projection_new(scene *graph, projection_type type, double x_axis, double y_axis, double near, double far);
+void scene_projection_new(scene *graph, projection_type type, double x_axis, double y_axis, double near_plane, double far_plane);
 	
 #ifdef __cplusplus
 };
