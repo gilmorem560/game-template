@@ -66,12 +66,12 @@ bool scene_test_init(void)
 	/* --- scene init --- */
 	
 	/* create graph */
-	graph = malloc(sizeof (graph));
+	graph = malloc(sizeof (scene));
 	graph->node_count = 0;
 	
 	/* create environment */
 	graph->root_environment = malloc(sizeof (environment));
-	graph->root_environment->actor.id = SCENE_ACTOR_NULL;
+	graph->root_environment->actor_entry.id = SCENE_ACTOR_NULL;
 	graph->root_environment->children = NULL;
 	graph->root_environment->children_count = 0;
 	
@@ -84,8 +84,8 @@ bool scene_test_init(void)
 	
 	/* create root node - camera */
 	graph->root_node = malloc(sizeof (node));
-		graph->root_node->actor.id = 0;
-		graph->root_node->actor.actor_obj = graph->camera;	/* camera is root node & object */
+		graph->root_node->actor_entry.id = 0;
+		graph->root_node->actor_entry.actor_obj = graph->camera;	/* camera is root node & object */
 		
 	/* register root node in node collection */
 	graph->nodes = graph->root_node;
@@ -397,21 +397,16 @@ bool scene_test_render(void)
 bool scene_test_input(void)
 {	
 	/* movement */
-	/* w - up */	if (key & KEY_W || key_held & KEY_W) forward += 0.3;
-	/* s - down */	if (key & KEY_S || key_held & KEY_S) forward -= 0.3;
-	/* a - left */	if (key & KEY_A || key_held & KEY_A) right += 0.3;
-	/* d - right */ if (key & KEY_D || key_held & KEY_D) right -= 0.3;
+	/* w - up */	if (key & KEY_W) forward += 0.3;
+	/* s - down */	if (key & KEY_S) forward -= 0.3;
+	/* a - left */	if (key & KEY_A) right += 0.3;
+	/* d - right */ if (key & KEY_D) right -= 0.3;
 	
 	/* mouse controls view angle */
 	if (mouse_moved_x) view_x += 2.0 * (mouse_x_positive ? 1.0 : -1.0);
 	if (mouse_moved_y) view_y += 2.0 * (mouse_y_positive ? 1.0 : -1.0);
 
 	#ifndef NDEBUG
-	/* r - windowed */		if (key & KEY_R) { setwindowed(640, 480); key &= ~KEY_R; }
-	/* f - fullscreen */	if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; }
-	/* q - quit */	if (key & KEY_Q) quit = true;
-	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
-	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
 	if (KEY_ISNUM(key) && !(key & KEY_5)) {
 		scene_test_free();
@@ -437,6 +432,8 @@ bool scene_test_input(void)
 				break;
 		}
 	}
+	
+	debug_pollkeys(key);
 	#endif /* NDEBUG */
 	
 	return true;

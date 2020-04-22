@@ -118,11 +118,6 @@ bool diamond_input(void)
 	/* a - animate model */	if (key & KEY_A) diamond_angle++;
 	
 	#ifndef NDEBUG
-	/* r - windowed */		if (key & KEY_R) { setwindowed(640, 480); key &= ~KEY_R; }
-	/* f - fullscreen */	if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; }
-	/* q - quit */				if (key & KEY_Q) quit = true;
-	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
-	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
 	if (KEY_ISNUM(key) && !(key & KEY_1)) {
 		diamond_free();
@@ -148,6 +143,8 @@ bool diamond_input(void)
 				break;
 		}
 	}
+	
+	debug_pollkeys(key);
 	#endif /* NDEBUG */
 
     return true;

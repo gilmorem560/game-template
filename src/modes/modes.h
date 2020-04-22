@@ -15,6 +15,8 @@ extern "C" {
 #include "../input/input.h"
 /* basic objects */
 #include "../graphics/primitives/prim.h"
+/* useful macros */
+#include "../util/macros.h"
 	
 /* game modes */
 int game_mode;

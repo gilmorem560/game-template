@@ -17,22 +17,41 @@ extern "C" {
 /* if there were macros you would see them here */
 #define	degtorad(x)	(x / 360.0) * 2.0 * M_PI
 
-/* drop in debug inspector, pulls errors sitting on the stack at insertion point 
- * GLenum gl_errno - a GLenum to hold the state
+/* debugging functionality */
+
+#ifndef NDEBUG
+
+/*
+ * drop in debug inspector, pulls errors sitting on the stack at insertion point
+ * using standard C streams, pipeable
  */
-#define debug_inspectglerrors(gl_errno) 		while ((gl_errno = glGetError()) != GL_NO_ERROR) { \
-													if (gl_errno | GL_INVALID_ENUM) \
-														fprintf(stderr, "OpenGL: Invalid enum\n"); \
-													else if (gl_errno | GL_INVALID_VALUE) \
-														fprintf(stderr, "OpenGL: Invalid value\n"); \
-													else if (gl_errno | GL_INVALID_OPERATION) \
-														fprintf(stderr, "OpenGL: Invalid operation\n"); \
-													else if (gl_errno | GL_OUT_OF_MEMORY) \
-														fprintf(stderr, "OpenGL: Out of memory\n"); \
-													else \
-														fprintf(stderr, "OpenGL: Undefined error %d\n", gl_errno); \
-												} \
-												fprintf(stderr, "OpenGL: Error inspection complete.\n"); \
+#define INSPECT_GL 		while ((gl_errno = glGetError()) != GL_NO_ERROR) { \
+							if (gl_errno | GL_INVALID_ENUM) \
+								fputs("OpenGL: Invalid enum\n", stderr); \
+							else if (gl_errno | GL_INVALID_VALUE) \
+								fputs("OpenGL: Invalid value\n", stderr); \
+							else if (gl_errno | GL_INVALID_OPERATION) \
+								fputs("OpenGL: Invalid operation\n", stderr); \
+							else if (gl_errno | GL_OUT_OF_MEMORY) \
+								fputs("OpenGL: Out of memory\n", stderr); \
+							else \
+								fprintf(stderr, "OpenGL: Undefined error %d\n", gl_errno); \
+						} \
+						printf("OpenGL: Error inspection complete.\n"); \
+												
+
+/* drop in gdb interrupt */
+#define GDB_INTERRUPT raise(SIGINT);
+
+/* debugging key handlers */
+#define debug_pollkeys(key) \
+/* q - quit */				if ((key & KEY_Q) && (key & KEY_T)) quit = true;	/* must be after modeswitch or free will happen twice */ \
+/* r - windowed */			if ((key & KEY_R) && (key & KEY_T)) { setwindowed(640, 480); key &= ~KEY_R; } \
+/* f - fullscreen */		if ((key & KEY_F) && (key & KEY_T)) { setfullscreen(); key &= ~KEY_F; } \
+/* v - uncapture mouse */	if ((key & KEY_V) && (key & KEY_T)) { mouse_captured = false; debug_cursor_changed = true; } \
+/* c - uncapture mouse */	if ((key & KEY_C) && (key & KEY_T)) { mouse_captured = true;  debug_cursor_changed = true; } \
+
+#endif /* NDEBUG */
 
 #ifdef __cplusplus
 };

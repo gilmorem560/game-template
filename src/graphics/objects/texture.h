@@ -8,6 +8,8 @@
 extern "C" {
 #endif /* __cplusplus */
 	
+#include "../../util/macros.h"
+	
 /*
  * texture - a raw texture consisting of uncompressed pixel data
  */

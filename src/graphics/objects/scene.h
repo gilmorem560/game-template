@@ -34,7 +34,7 @@ typedef struct {
  * 
  */
 typedef struct node {
-	scene_actor actor;
+	scene_actor actor_entry;
 	GLdouble *vertex_array;
 	GLdouble *normal_array;
 	GLdouble *color_array;
