@@ -39,4 +39,4 @@ void veccomp2d_calc(double magnitude, double angle, veccomp2d *new)
 	new->y *= magnitude;
 		
 	return;
-} 
+}

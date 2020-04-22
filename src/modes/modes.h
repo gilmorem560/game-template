@@ -30,6 +30,8 @@ int game_mode;
 	#define GM_STAGE 		3
 #include "scene_test.h"
 	#define GM_SCENE_TEST	4
+#include "actor_test.h"
+	#define GM_ACTOR_TEST	5
 	
 #ifdef __cplusplus
 };

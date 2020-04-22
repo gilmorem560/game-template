@@ -16,6 +16,7 @@ extern "C" {
 
 /* if there were macros you would see them here */
 #define	degtorad(x)	(x / 360.0) * 2.0 * M_PI
+#define radtodeg(x) (x * 360) / (2.0 * M_PI)
 
 /* debugging functionality */
 
@@ -43,13 +44,16 @@ extern "C" {
 /* drop in gdb interrupt */
 #define GDB_INTERRUPT raise(SIGINT);
 
-/* debugging key handlers */
+/* debugging key handlers, hold t + key */
 #define debug_pollkeys(key) \
-/* q - quit */				if ((key & KEY_Q) && (key & KEY_T)) quit = true;	/* must be after modeswitch or free will happen twice */ \
-/* r - windowed */			if ((key & KEY_R) && (key & KEY_T)) { setwindowed(640, 480); key &= ~KEY_R; } \
-/* f - fullscreen */		if ((key & KEY_F) && (key & KEY_T)) { setfullscreen(); key &= ~KEY_F; } \
-/* v - uncapture mouse */	if ((key & KEY_V) && (key & KEY_T)) { mouse_captured = false; debug_cursor_changed = true; } \
-/* c - uncapture mouse */	if ((key & KEY_C) && (key & KEY_T)) { mouse_captured = true;  debug_cursor_changed = true; } \
+						if (key & KEY_T) { \
+/* q - quit */				if (key & KEY_Q) quit = true;	/* must be after modeswitch or free will happen twice */ \
+/* r - windowed */			if (key & KEY_R) { setwindowed(640, 480); key &= ~KEY_R; } \
+/* f - fullscreen */		if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; } \
+/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; } \
+/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; } \
+/* b - break (gdb) */		if (key & KEY_B) GDB_INTERRUPT \
+						}
 
 #endif /* NDEBUG */
 

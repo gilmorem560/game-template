@@ -116,6 +116,10 @@ bool map_input(void)
 				scene_test_init();
 				game_mode = GM_SCENE_TEST;
 				break;
+			case KEY_6:
+				actor_test_init();
+				game_mode = GM_ACTOR_TEST;
+				break;
 			default:
 				quit = true;
 				break;

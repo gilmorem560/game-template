@@ -122,6 +122,10 @@ bool diamond_input(void)
 	if (KEY_ISNUM(key) && !(key & KEY_1)) {
 		diamond_free();
 		switch (key) {
+			case KEY_1:
+				diamond_init();
+				game_mode = GM_DIAMONDS;
+				break;
 			case KEY_2:
 				map_init();
 				game_mode = GM_MAP;
@@ -137,6 +141,10 @@ bool diamond_input(void)
 			case KEY_5:
 				scene_test_init();
 				game_mode = GM_SCENE_TEST;
+				break;
+			case KEY_6:
+				actor_test_init();
+				game_mode = GM_ACTOR_TEST;
 				break;
 			default:
 				quit = true;

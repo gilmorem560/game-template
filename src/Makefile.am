@@ -16,6 +16,7 @@ main_SOURCES = \
 	graphics/primitives/poly2d.c \
 	graphics/primitives/poly3d.c \
 	input/glxevent.c \
+	modes/actor_test.c \
 	modes/diamond.c \
 	modes/map.c \
 	modes/sandbox.c \

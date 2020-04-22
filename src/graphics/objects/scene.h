@@ -35,11 +35,12 @@ typedef struct {
  */
 typedef struct node {
 	scene_actor actor_entry;
+	double position[3];
 	GLdouble *vertex_array;
 	GLdouble *normal_array;
 	GLdouble *color_array;
 	GLubyte *vao_indicies;
-	struct node *children;
+	struct node **children;
 	unsigned int children_count;
 	/* the node will be responsible for maintaining and cleaning its children records */
 	/*	note: a scene does not require a collision table
@@ -49,6 +50,7 @@ typedef struct node {
 	* 		with no index is undefined
 	*/
 } node;
+typedef node camera;
 typedef node environment;
 	
 /* scene graph
@@ -63,15 +65,22 @@ typedef node environment;
 typedef struct scene {
 	GLdouble prj[6];
 	projection_type prj_type;
-	node *root_node;
-	environment *root_environment;
-	actor *camera;
-	node *nodes;
-	int node_count;
+	double bounding_box[6];
 	collision_index *collision_table;
+	node **nodes;
+	int node_count;
+	node *root_node;
+	camera *root_camera;
+	environment *root_environment;
 } scene;
 
 void scene_projection_new(scene *graph, projection_type type, double x_axis, double y_axis, double near_plane, double far_plane);
+
+signed short scene_addnode(scene *graph, signed short type, bool type_router, signed char routine, void (*router)(void));
+void scene_enforceboundingnode(scene *graph, signed short node_id);
+void scene_setchildnode(scene *graph, signed int parent, signed int child);
+void scene_skinnode(scene *graph, signed int node_id, GLdouble *verticies, GLdouble *normals, GLdouble *colors, GLubyte *vaos);
+void scene_positionnode(scene *graph, signed short node_id, double xpos, double ypos, double zpos);
 	
 #ifdef __cplusplus
 };

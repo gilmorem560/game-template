@@ -62,6 +62,9 @@ int main(int argc, char *argv[])
 	case GM_SCENE_TEST:
 		scene_test_init();
 		break;
+	case GM_ACTOR_TEST:
+		actor_test_init();
+		break;
     default:
         break;
     }
@@ -125,6 +128,14 @@ int main(int argc, char *argv[])
 			/* run mode routine */
 			scene_test_routine();
 			break;
+		case GM_ACTOR_TEST:
+			/* process next frame */
+			actor_test_render();
+			/* process movement */
+			actor_test_input();
+			/* run mode routine */
+			actor_test_routine();
+			break;
 		default:
 			fprintf(stderr, "Unknown game mode: %d\n", game_mode);
 			quit = true;
@@ -148,6 +159,9 @@ int main(int argc, char *argv[])
 		break;
 	case GM_SCENE_TEST:
 		scene_test_free();
+		break;
+	case GM_ACTOR_TEST:
+		actor_test_free();
 		break;
     default:
         break;
