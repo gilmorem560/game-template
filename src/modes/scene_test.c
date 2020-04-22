@@ -92,7 +92,7 @@ bool scene_test_init(void)
 	graph->node_count++;
 		
 	/* scene projection */
-	scene_projection_new(graph, PROJECTION_FRUSTUM, current_ratio, 1.0, 1.0, 11.0);
+	scene_projection_new(graph, PROJECTION_FRUSTUM, current_ratio, 1.0, 1.0, 30.0);
 	
 	/* setup camera properties */
 	xpos = 0.0;
@@ -187,13 +187,13 @@ bool scene_test_render(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	/* update projection if viewport changes shape */
-	//if (graph->prj[1] != current_ratio) {
-	//	glMatrixMode(GL_PROJECTION);
-	//	glLoadIdentity();
-	//	graph->prj[0] = -current_ratio;
-	//	graph->prj[1] = current_ratio;
-	//	glFrustum(graph->prj[0], graph->prj[1], graph->prj[2], graph->prj[3], graph->prj[4], graph->prj[5]);
-	//}
+	if (graph->prj[1] != current_ratio) {
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		graph->prj[0] = -current_ratio;
+		graph->prj[1] = current_ratio;
+		glFrustum(graph->prj[0], graph->prj[1], graph->prj[2], graph->prj[3], graph->prj[4], graph->prj[5]);
+	}
 
 	/* begin rendering models */
 	glMatrixMode(GL_MODELVIEW);
@@ -203,6 +203,12 @@ bool scene_test_render(void)
 		glRotated(view_x, 0.0, 1.0, 0.0);
 		glRotated(view_y, view_xz.x, 0.0, view_xz.y);
 		glTranslated(xpos, ypos, zpos + ((graph->prj[4] + graph->prj[5]) / 2));
+		/* draw actor */
+		glPushMatrix();
+			glScaled(0.1, 0.1, 0.1);
+			glTranslated(0.0, -7.0, -50.0);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+		glPopMatrix();
 		/* draw wall */
 		glPushMatrix();
 			glTranslated(-2.0, 0.0, 0.0);
@@ -479,11 +485,9 @@ bool scene_test_free(void)
 	printf("scene_test: free\n");
 	#endif /* NDEBUG */
 
-	/* TODO: Solve heap corruption issue */
 	free(graph->root_node);
 	free(graph->camera);
 	free(graph->root_environment);
-	free(graph->prj);
 	free(graph);
 	
 	return true;

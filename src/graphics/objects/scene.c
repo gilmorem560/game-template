@@ -10,7 +10,6 @@ void scene_projection_new(scene *graph, projection_type type, double x_axis, dou
 		free(graph->prj);
 	}
 	
-	graph->prj = malloc(6 * sizeof (GLdouble));
 	graph->prj[0] = -x_axis;
 	graph->prj[1] = x_axis;
 	graph->prj[2] = -y_axis;

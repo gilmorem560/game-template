@@ -61,7 +61,7 @@ typedef node environment;
  *   and freeing of old data
  */
 typedef struct scene {
-	GLdouble *prj;
+	GLdouble prj[6];
 	projection_type prj_type;
 	node *root_node;
 	environment *root_environment;
