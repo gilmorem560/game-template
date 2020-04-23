@@ -14,6 +14,7 @@ typedef struct veccomp2d {
 } veccomp2d;
 	
 void veccomp2d_calc(double magnitude, double angle, veccomp2d *new);
+double vecang2d_calc(double x_comp, double y_comp);
 	
 #ifdef __cplusplus
 };

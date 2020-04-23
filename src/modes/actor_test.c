@@ -53,11 +53,15 @@ static signed int player_node;
 	static GLdouble player_move_forward;
 	static GLdouble player_move_right;
 	static GLdouble player_move_up;
+	static GLdouble player_vertical_vel;
+	static GLdouble player_vertical_accel;
 	static veccomp2d forward_xz;
 	static veccomp2d right_xz;
 	static veccomp2d up_xz;
+	static bool trigger_jump;
 	
 static double motion_constant = 0.1;
+static double gravity_constant = -0.09;
 
 /*
  * actor_test_init - OpenGL init
@@ -83,8 +87,8 @@ bool actor_test_init(void)
 	graph->bounding_box[1] = 2.9;
 	graph->bounding_box[2] = -2.9;
 	graph->bounding_box[3] = 2.9;
-	graph->bounding_box[4] = -12.9;
-	graph->bounding_box[5] = -8.5;
+	graph->bounding_box[4] = -6.0;
+	graph->bounding_box[5] = -1.1;
 	
 	/* create node collection */
 	
@@ -92,38 +96,27 @@ bool actor_test_init(void)
 	environment_node = scene_addnode(graph, AT_ACTOR_ENVIRONMENT, false, ACTOR_ROUTINE_NULL, NULL);
 	scene_positionnode(graph, environment_node, 0.0, 0.0, 0.0);
 	scene_skinnode(graph, environment_node, vertex_array, normal_array, color_array, vao_indicies);
+	scene_positionenv(graph, 0.0, 0.0, 0.0);
 	
 	/* create node 01 - camera */
 	camera_node = scene_addnode(graph, AT_ACTOR_CAMERA, false, ACTOR_ROUTINE_NULL, NULL);
-	scene_positionnode(graph, camera_node, 0.0, 0.0, -((graph->prj[4] + graph->prj[5]) / 2));
+	scene_positionnode(graph, camera_node, 0.0, 0.0, -5.0);
 	scene_setchildnode(graph, environment_node, camera_node);
 		
 	/* create node 02 - player box */
 	player_node = scene_addnode(graph, AT_ACTOR_BLOCK, false, ACTOR_ROUTINE_NULL, NULL);
-	scene_positionnode(graph, player_node, 0.0, -2.9, 0.0);
+	scene_positionnode(graph, player_node, 0.0, 0.0, -2.0);
 	scene_skinnode(graph, player_node, vertex_array, normal_array, color_array, vao_indicies);
 	scene_setchildnode(graph, environment_node, player_node);
 	
 	/* assign environment */
-	graph->root_environment = graph->nodes[environment_node];
+	graph->environment = graph->nodes[environment_node];
 	
 	/* assign camera */
-	graph->root_camera = graph->nodes[camera_node];
+	graph->camera = graph->nodes[camera_node];
 	
 	/* assign environment as our root node */
-	graph->root_node = graph->root_environment;
-	
-	if (!z_adjusted) {
-		graph->root_environment->vertex_array[2] += graph->nodes[camera_node]->position[2];
-		graph->root_environment->vertex_array[5] += graph->nodes[camera_node]->position[2];
-		graph->root_environment->vertex_array[8] += graph->nodes[camera_node]->position[2];
-		graph->root_environment->vertex_array[11] += graph->nodes[camera_node]->position[2];
-		graph->root_environment->vertex_array[14] += graph->nodes[camera_node]->position[2];
-		graph->root_environment->vertex_array[17] += graph->nodes[camera_node]->position[2];
-		graph->root_environment->vertex_array[20] += graph->nodes[camera_node]->position[2];
-		graph->root_environment->vertex_array[23] += graph->nodes[camera_node]->position[2];
-		z_adjusted = true;
-	}
+	graph->root_node = graph->environment;
 	
 	/* --- OpenGL Init --- */
 	
@@ -171,16 +164,18 @@ bool actor_test_init(void)
 		break;
 	}
 	
-	/* set initial camera position */
-	scene_positionnode(graph, camera_node, 0.0, 0.0, -5.0);
-	camera_view_x = -15.0;
-	camera_view_y = 60.0;
+	/* set initial camera angle */
+	camera_view_x = 0.0;
+	camera_view_y = 0.0;
 	veccomp2d_calc(1.0, camera_view_x, &camera_view_xz);
 	
 	/* set player properties */
 	player_move_forward = 0.0;
 	player_move_right = 0.0;
 	player_move_up = 0.0;
+	player_vertical_vel = 0.0;
+	player_vertical_accel = gravity_constant;
+	trigger_jump = false;
 	
 	return true;
 }
@@ -212,189 +207,189 @@ bool actor_test_render(void)
 		/* perform camera transformation */
 		glRotated(camera_view_x, 0.0, 1.0, 0.0);
 		glRotated(camera_view_y, camera_view_xz.x, 0.0, camera_view_xz.y);
-		glTranslated(graph->root_camera->position[0], graph->root_camera->position[1], graph->root_camera->position[2] + ((graph->prj[4] + graph->prj[5]) / 2));
+		glTranslated(graph->camera->position[0], graph->camera->position[1], graph->camera->position[2]);
 		
 		/* bind environment arrays */
-		glVertexPointer(3, GL_DOUBLE, 0, graph->root_environment->vertex_array);
-		glNormalPointer(GL_DOUBLE, 0, graph->root_environment->normal_array);
-		glColorPointer(3, GL_DOUBLE, 0, graph->root_environment->color_array);
+		glVertexPointer(3, GL_DOUBLE, 0, graph->environment->vertex_array);
+		glNormalPointer(GL_DOUBLE, 0, graph->environment->normal_array);
+		glColorPointer(3, GL_DOUBLE, 0, graph->environment->color_array);
 		
 		/* draw wall */
 		glPushMatrix();
 			glTranslated(-2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, -2.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 2.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 2.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(-2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(-2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 		glPopMatrix();
 		/* draw floor */
 		glPushMatrix();
 			glTranslated(-2.0, -4.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 		glPopMatrix();
 		/* draw walls */
 		glPushMatrix();
 			glRotated(90.0, 0.0, 0.0, 1.0);
 			glTranslated(-2.0, -4.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 		glPopMatrix();
 		glPushMatrix();
 			glRotated(90.0, 0.0, 0.0, -1.0);
 			glTranslated(-2.0, -4.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 		glPopMatrix();
 		/* draw ceiling */
 		glPushMatrix();
 			glRotated(180.0, 0.0, 0.0, 1.0);
 			glTranslated(-2.0, -4.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, -2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(2.0, 0.0, 0.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 			glTranslated(0.0, 0.0, 2.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 		glPopMatrix();
 				
 		/* bind player arrays */
@@ -404,9 +399,9 @@ bool actor_test_render(void)
 		
 		/* draw actor */
 		glPushMatrix();
-			glTranslated(graph->nodes[player_node]->position[0], graph->nodes[player_node]->position[1], graph->nodes[player_node]->position[2]);
+			glTranslated(graph->nodes[player_node]->position[0], graph->nodes[player_node]->position[1], -graph->nodes[player_node]->position[2]);
 			glScaled(0.1, 0.1, 0.1);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->root_environment->vao_indicies);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->nodes[player_node]->vao_indicies);
 		glPopMatrix();
 		
 	glPopMatrix();
@@ -426,13 +421,15 @@ bool actor_test_render(void)
 bool actor_test_input(void)
 {	
 	/* movement */
-	/* w - forward */	if (key & KEY_W) player_move_forward -= motion_constant;
-	/* s - back */		if (key & KEY_S) player_move_forward += motion_constant;
-	/* a - left */		if (key & KEY_A) player_move_right -= motion_constant;
-	/* d - right */ 	if (key & KEY_D) player_move_right += motion_constant;
+	/* w - forward */	if (key & KEY_W) player_move_forward += motion_constant;
+	/* s - back */		if (key & KEY_S) player_move_forward -= motion_constant;
+	/* a - left */		if (key & KEY_A) player_move_right += motion_constant;
+	/* d - right */ 	if (key & KEY_D) player_move_right -= motion_constant;
 	
-	/* r - up */		if (key & KEY_R) player_move_up += motion_constant;
-	/* f - down */		if (key & KEY_F) player_move_up -= motion_constant;
+	/* r - up */		if (key & KEY_R) player_move_up -= motion_constant;
+	/* f - down */		if (key & KEY_F) player_move_up += motion_constant;
+	
+	/* e - jump */		if (key & KEY_E) { trigger_jump = true; }
 
 	#ifndef NDEBUG
 	/* hot mode switching for debugging */
@@ -476,34 +473,38 @@ bool actor_test_input(void)
  */
 bool actor_test_routine(void)
 {
+	double camera_dist_x, camera_dist_y, camera_dist_z;
+	
 	/* player */
 	/* motion */
-	if (player_move_up) {
-		graph->nodes[player_node]->position[1] += player_move_up;
-		player_move_up = 0.0;
-	}
 	if (player_move_forward) {
-		veccomp2d_calc(player_move_forward, camera_view_x, &forward_xz);
-		graph->nodes[player_node]->position[0] -= forward_xz.y;
-		graph->nodes[player_node]->position[2] += forward_xz.x;
+		graph->nodes[player_node]->position[2] += player_move_forward;
 		player_move_forward = 0.0;
 	}
 	if (player_move_right) {
-		veccomp2d_calc(player_move_right, camera_view_x, &right_xz);
-		graph->nodes[player_node]->position[0] += right_xz.x;
-		graph->nodes[player_node]->position[2] += right_xz.y;
+		graph->nodes[player_node]->position[0] += player_move_right;
 		player_move_right = 0.0;
 	}
+	/* jump */
+	if (trigger_jump) {
+		player_vertical_vel = -0.5;
+		trigger_jump = false;
+	}
+	/* vertical accel and velocity */
+	player_vertical_vel -= player_vertical_accel;
+	graph->nodes[player_node]->position[1] += player_vertical_vel;
 	/* collision */
 	scene_enforceboundingnode(graph, player_node);
-	
 	
 	/* camera */
 	/* move camera */
 	
 	/* position camera */
-	camera_view_x = -radtodeg(atan((graph->nodes[player_node]->position[0] - graph->nodes[camera_node]->position[0]) / (graph->nodes[player_node]->position[2] - graph->nodes[camera_node]->position[2])));
-	camera_view_y = radtodeg(atan((graph->nodes[player_node]->position[1] - graph->nodes[camera_node]->position[1]) / (graph->nodes[player_node]->position[2] - graph->nodes[camera_node]->position[2])));
+	camera_dist_x = graph->camera->position[0] - graph->nodes[player_node]->position[0];
+	camera_dist_y = graph->camera->position[1] - graph->nodes[player_node]->position[1];
+	camera_dist_z = graph->camera->position[2] - graph->nodes[player_node]->position[2];
+	camera_view_x = vecang2d_calc(camera_dist_x, camera_dist_z);
+	camera_view_y = vecang2d_calc(camera_dist_y, camera_dist_z);
 	
 	/* normalize angles */
 	camera_view_x = fmod(camera_view_x, 360);

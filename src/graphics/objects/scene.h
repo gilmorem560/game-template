@@ -50,8 +50,6 @@ typedef struct node {
 	* 		with no index is undefined
 	*/
 } node;
-typedef node camera;
-typedef node environment;
 	
 /* scene graph
  *	 contains the collection of actors in the scene, as well as the nodes that connect them
@@ -70,11 +68,13 @@ typedef struct scene {
 	node **nodes;
 	int node_count;
 	node *root_node;
-	camera *root_camera;
-	environment *root_environment;
+	node *camera;
+	node *environment;
+	double environment_pos[3];
 } scene;
 
 void scene_projection_new(scene *graph, projection_type type, double x_axis, double y_axis, double near_plane, double far_plane);
+void scene_positionenv(scene *graph, double xpos, double ypos, double zpos);
 
 signed short scene_addnode(scene *graph, signed short type, bool type_router, signed char routine, void (*router)(void));
 void scene_enforceboundingnode(scene *graph, signed short node_id);

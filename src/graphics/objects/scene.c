@@ -16,6 +16,15 @@ void scene_projection_new(scene *graph, projection_type type, double x_axis, dou
 	return;
 }
 
+void scene_positionenv(scene *graph, double xpos, double ypos, double zpos)
+{
+	graph->environment_pos[0] = xpos;
+	graph->environment_pos[1] = ypos;
+	graph->environment_pos[2] = zpos;
+	
+	return;
+}
+
 signed short scene_addnode(scene *graph, signed short type, bool type_router, signed char routine, void (*router)(void))
 {
 	signed short id;

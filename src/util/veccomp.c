@@ -40,3 +40,59 @@ void veccomp2d_calc(double magnitude, double angle, veccomp2d *new)
 		
 	return;
 }
+
+/*
+ * vecang2d_calc - calculate the angle from normal for a displacement using arctangent
+ */
+double vecang2d_calc(double x_comp, double y_comp)
+{
+	double angle;
+	double abs_x_comp = fabs(x_comp);
+	double abs_y_comp = fabs(y_comp);
+	
+	if (x_comp == 0 && y_comp == 0)
+		return 0.0;
+	else if (x_comp == 0) {
+		if (y_comp > 0)
+			return 0.0;
+		else
+			return 180.0;
+	} else if (y_comp == 0) {
+		if (x_comp > 0)
+			return 90.0;
+		else
+			return -90.0;
+	}
+	
+	if (x_comp > 0 && y_comp > 0) {
+		if (abs_y_comp > abs_x_comp)
+			return radtodeg(atan(abs_x_comp / abs_y_comp));
+		else if (abs_y_comp < abs_x_comp)
+			return 90.0 - radtodeg(atan(abs_y_comp / abs_x_comp));
+		else
+			return 45.0;
+	} else if (x_comp > 0 && y_comp < 0) {
+		if (abs_x_comp > abs_y_comp)
+			return radtodeg(atan(abs_y_comp / abs_x_comp)) + 90.0;
+		else if (abs_x_comp < abs_y_comp)
+			return 180.0 - radtodeg(atan(abs_x_comp / abs_y_comp));
+		else
+			return 135.0;
+	} else if (x_comp < 0 && y_comp < 0) {
+		if (abs_y_comp > abs_x_comp)
+			return -180.0 + radtodeg(atan(abs_x_comp / abs_y_comp));
+		else if (abs_y_comp < abs_x_comp)
+			return -90.0 - radtodeg(atan(abs_y_comp / abs_x_comp));
+		else
+			return -135.0;
+	} else {
+		if (abs_x_comp > abs_y_comp)
+			return -90.0 + radtodeg(atan(abs_y_comp / abs_x_comp));
+		else if (abs_x_comp < abs_y_comp)
+			return -radtodeg(atan(abs_x_comp / abs_y_comp));
+		else
+			return -45.0;
+	}
+	
+	return angle;
+}

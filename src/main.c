@@ -9,7 +9,7 @@
 #include "modes/modes.h"
 
 /* defaults */
-#define	INITIAL_GM	GM_DIAMONDS
+#define	INITIAL_GM	GM_ACTOR_TEST
 
 #ifndef _WIN32
 /*
@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
     key = 0;    /* initialize key bitfield here for now */
     mouse_moved_x = false;
 	mouse_moved_y = false;
+	isfullscreen = false;
     quit = false;
 	#ifndef NDEBUG
 	/* debugging can uncapture pointer */

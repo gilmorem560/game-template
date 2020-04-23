@@ -16,7 +16,6 @@ void glxinit()
     int config_count;
     dpy = NULL;
     vis = NULL;
-	isfullscreen = true;
     
     /* open X display */
     dpy = XOpenDisplay(NULL);
@@ -35,9 +34,15 @@ void glxinit()
     /* determine default screen */
     screen_number = XDefaultScreen(dpy);
 	
-	/* get resolution */
-	xres = XDisplayWidth(dpy, screen_number);
-	yres = XDisplayHeight(dpy, screen_number);
+	if (isfullscreen) {
+		/* get resolution */
+		xres = XDisplayWidth(dpy, screen_number);
+		yres = XDisplayHeight(dpy, screen_number);
+	}
+	else {
+		xres = 640;
+		yres = 480;
+	}
 	
 	/* set aspect ratio */
 	current_ratio = (double) xres / (double) yres;
@@ -90,7 +95,8 @@ void glxinit()
     
     /* set input events */
     attrs.event_mask = KeyPressMask | KeyReleaseMask | StructureNotifyMask | PointerMotionMask;
-	attrs.override_redirect = True;
+	
+	attrs.override_redirect = isfullscreen ? True : False;
     
     /* create window */
     win = XCreateWindow(
@@ -285,6 +291,13 @@ void setfullscreen(void)
 			XCloseDisplay(dpy);
 			exit(EXIT_FAILURE);
 		}
+		
+		/* determine default screen */
+		screen_number = XDefaultScreen(dpy);
+		
+		/* get resolution */
+		xres = XDisplayWidth(dpy, screen_number);
+		yres = XDisplayHeight(dpy, screen_number);
 		
 		/* resize window */
 		XMoveResizeWindow(dpy, win, 0, 0, xres, yres);

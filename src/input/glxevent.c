@@ -103,6 +103,10 @@ void glxevent(Display *dpy)
 					case XK_d:
 						key |= KEY_D;
 						break;
+					case XK_E:
+					case XK_e:
+						key |= KEY_E;
+						break;
 					case XK_F:
 					case XK_f:
 						key |= KEY_F;
@@ -207,6 +211,10 @@ void glxevent(Display *dpy)
 					case XK_D:
 					case XK_d:
 						key &= ~KEY_D;
+						break;
+					case XK_E:
+					case XK_e:
+						key &= ~KEY_E;
 						break;
 					case XK_F:
 					case XK_f:
