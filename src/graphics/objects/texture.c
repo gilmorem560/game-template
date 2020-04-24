@@ -3,33 +3,36 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include "texture.h"
 
 /* general texture */
-texture *texture_new(unsigned int width, unsigned int height, unsigned int bpp)
+texture *texture_new(size_t width, size_t height, size_t bpp)
 {	
-	unsigned int data_size = width * height * bpp;
-	texture *texture = malloc(sizeof (texture));
-		texture->data = (unsigned char *) malloc(data_size * sizeof (char));
-		texture->width = width;
-		texture->height = height;
-		texture->bpp = bpp;
+	size_t data_size = width * height * bpp;
+	texture *new_texture = malloc(sizeof (texture));
+		new_texture->data = malloc(data_size * sizeof (char));
+		new_texture->width = width;
+		new_texture->height = height;
+		new_texture->bpp = bpp;
 	
-	return texture;
-}
-
-void texture_free(texture *texture)
-{
-	free(texture->data);
-	free(texture);
+	return new_texture;
 }
 
 /* texture_rgba - uncompressed rgba data */
-texture_rgba *texture_rgba_new(FILE *rgba_data, unsigned int width, unsigned int height, unsigned int bpp)
+texture_rgba *texture_rgba_new(FILE *rgba_data, size_t width, size_t height, size_t bpp)
 {
-	texture_rgba *texture = texture_new(width, height, bpp);
-	fread(texture->data, sizeof (char), (size_t) width*height*bpp, rgba_data);
+	texture_rgba *new_texture = texture_new(width, height, bpp);
+	fread(new_texture->data, sizeof (char), width*height*bpp, rgba_data);
 	
-	return texture;
+	return new_texture;
 }
+
+void texture_free(texture *texture_0)
+{
+	free(texture_0->data);
+	free(texture_0);
+}
+
+
 

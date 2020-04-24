@@ -46,6 +46,12 @@
     <Filter Include="Resource Files\data\textures">
       <UniqueIdentifier>{a58543b1-e451-49f9-8eeb-58b7a45fa8d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\util">
+      <UniqueIdentifier>{1e656dd0-50ee-4d6a-aecb-1fb3b9f7a250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\util">
+      <UniqueIdentifier>{854bd0cd-243c-4e01-b9c2-5102dc972d40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
@@ -99,6 +105,27 @@
     <ClCompile Include="src\graphics\objects\texture.c">
       <Filter>Source Files\obj</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\primitives\collision\collision_box.c">
+      <Filter>Source Files\obj\prim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\collision\collision_router.c">
+      <Filter>Source Files\obj\prim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\objects\actor.c">
+      <Filter>Source Files\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\objects\collision_index.c">
+      <Filter>Source Files\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\objects\prisms.c">
+      <Filter>Source Files\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\veccomp.c">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\actor_test.c">
+      <Filter>Source Files\mode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\input\input.h">
@@ -148,6 +175,24 @@
     </ClInclude>
     <ClInclude Include="src\graphics\objects\texture.h">
       <Filter>Header Files\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\veccomp.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\objects\actor.h">
+      <Filter>Header Files\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\objects\collision_index.h">
+      <Filter>Header Files\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\objects\prisms.h">
+      <Filter>Header Files\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\primitives\collision.h">
+      <Filter>Header Files\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\actor_test.h">
+      <Filter>Header Files\mode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 /*
- * scene_test - a test of scene graphs
+ * actor_test - a test of scene graphs
  */
-#include "scene_test.h"
+#include "actor_test.h"
 
 static GLdouble vertex_array[24] = { -1.0,  1.0, 1.0
 									,-1.0, -1.0, 1.0
@@ -39,98 +39,83 @@ static GLubyte vao_indicies[24] = { 0, 1, 2, 3
 								  
 								  
 static GLfloat fog_color[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+
+#define pointdistance(x, y) sqrt((y[0] - x[0])*(y[0] - x[0]) + (y[1] - x[1])*(y[1] - x[1]) + (y[2] - x[2])*(y[2] - x[2]))
 				
-static GLdouble forward;
-static GLdouble right;
-static GLdouble xpos;
-static GLdouble ypos;
-static GLdouble zpos;
-static GLdouble view_x;
-static GLdouble view_y;
+/* static nodes */
+static signed int environment_node;
 
-static veccomp2d view_xz;
-static veccomp2d forward_xz;
-static veccomp2d right_xz;
+static signed int camera_node;
+	static GLdouble camera_view_x;
+	static GLdouble camera_view_y;
+	static veccomp2d camera_view_xz;
+	static bool z_adjusted = false;
 
-static bool z_adjusted = false;
+static signed int player_node;
+	static GLdouble player_move_forward;
+	static GLdouble player_move_right;
+	static GLdouble player_move_up;
+	static GLdouble player_vertical_vel;
+	static GLdouble player_vertical_accel;
+	static bool trigger_jump;
+	
+static double motion_constant = 0.1;
+static double gravity_constant = -0.09;
 
 /*
- * scene_test_init - OpenGL init
+ * actor_test_init - OpenGL init
  */
-bool scene_test_init(void)
+bool actor_test_init(void)
 {
-	node **root_node;
-
 	#ifndef NDEBUG
-	printf("scene_test: init\n");
+	printf("actor_test: init\n");
 	#endif /* NDEBUG */
 	
 	/* --- scene init --- */
 	
 	/* create graph */
 	graph = malloc(sizeof (scene));
-	graph->node_count = 0;
 	graph->nodes = NULL;
+	graph->node_count = 0;
 	
-	/* create environment */
-	graph->environment = malloc(sizeof (node));
-	graph->environment->actor_entry.id = SCENE_ACTOR_NULL;
-	graph->environment->children = NULL;
-	graph->environment->children_count = 0;
-	
-	/* create root node - camera */
-	graph->root_node = malloc(sizeof (node));
-		graph->root_node->actor_entry.id = 0;
-		graph->root_node->actor_entry.actor_obj = malloc(sizeof (actor));
-		graph->root_node->actor_entry.actor_obj->type = ST_ACTOR_CAMERA;
-		graph->root_node->actor_entry.actor_obj->type_router = false;
-		graph->root_node->actor_entry.actor_obj->routine = ACTOR_ROUTINE_NULL;
-		graph->root_node->actor_entry.actor_obj->router = NULL;
-		
-	/* register root node in node collection */
-	root_node = realloc(graph->nodes, ++graph->node_count * sizeof (node *));
-	graph->nodes = root_node;
-	graph->nodes[graph->node_count - 1] = graph->root_node;
-		
 	/* scene projection */
 	scene_projection_new(graph, PROJECTION_FRUSTUM, current_ratio, 1.0, 1.0, 30.0);
-	
-	/* setup camera properties */
-	xpos = 0.0;
-	ypos = 0.0;
-	zpos = -((graph->prj[4] + graph->prj[5]) / 2);
-	view_x = 0.0;
-	view_y = 0.0;
-	forward = 0.0;
-	right = 0.0;
-	view_xz.x = 0.0;
-	view_xz.y = 0.0;
-	
-	/* scene geometry */
-	graph->environment->vertex_array = vertex_array;
-	graph->environment->normal_array = normal_array;
-	graph->environment->color_array = color_array;
-	graph->environment->vao_indicies = vao_indicies;
-	
-	if (!z_adjusted) {
-		graph->environment->vertex_array[2] += zpos;
-		graph->environment->vertex_array[5] += zpos;
-		graph->environment->vertex_array[8] += zpos;
-		graph->environment->vertex_array[11] += zpos;
-		graph->environment->vertex_array[14] += zpos;
-		graph->environment->vertex_array[17] += zpos;
-		graph->environment->vertex_array[20] += zpos;
-		graph->environment->vertex_array[23] += zpos;
-		z_adjusted = true;
-	}
-	
+
 	/* setup collision bounding box */
-	graph->bounding_box[0] = -3.0;
-	graph->bounding_box[1] = 3.0;
-	graph->bounding_box[2] = -3.0;
-	graph->bounding_box[3] = 3.0;
-	graph->bounding_box[4] = 3.0;
-	graph->bounding_box[5] = 7.0;
+	graph->bounding_box[0] = -2.9;
+	graph->bounding_box[1] = 2.9;
+	graph->bounding_box[2] = -2.9;
+	graph->bounding_box[3] = 2.9;
+	graph->bounding_box[4] = -11.0;
+	graph->bounding_box[5] = -1.1;
+	
+	/* create node collection */
+	
+	/* create node 00 - environment */
+	environment_node = scene_addnode(graph, AT_ACTOR_ENVIRONMENT, false, ACTOR_ROUTINE_NULL, NULL);
+	scene_positionnode(graph, environment_node, 0.0, 0.0, 0.0);
+	scene_skinnode(graph, environment_node, vertex_array, normal_array, color_array, vao_indicies);
+	scene_positionenv(graph, 0.0, 0.0, 0.0);
+	
+	/* create node 01 - camera */
+	camera_node = scene_addnode(graph, AT_ACTOR_CAMERA, false, ACTOR_ROUTINE_NULL, NULL);
+	scene_positionnode(graph, camera_node, 0.0, 0.0, -5.0);
+	scene_setchildnode(graph, environment_node, camera_node);
+		
+	/* create node 02 - player box */
+	player_node = scene_addnode(graph, AT_ACTOR_BLOCK, false, ACTOR_ROUTINE_NULL, NULL);
+	scene_positionnode(graph, player_node, 0.0, 0.0, -2.0);
+	scene_skinnode(graph, player_node, vertex_array, normal_array, color_array, vao_indicies);
+	scene_setchildnode(graph, environment_node, player_node);
+	
+	/* assign environment */
+	graph->environment = graph->nodes[environment_node];
+	
+	/* assign camera */
+	graph->camera = graph->nodes[camera_node];
+	
+	/* assign environment as our root node */
+	graph->root_node = graph->environment;
 	
 	/* --- OpenGL Init --- */
 	
@@ -177,18 +162,27 @@ bool scene_test_init(void)
 		return false;
 		break;
 	}
-
-	glVertexPointer(3, GL_DOUBLE, 0, graph->environment->vertex_array);
-	glNormalPointer(GL_DOUBLE, 0, graph->environment->normal_array);
-	glColorPointer(3, GL_DOUBLE, 0, graph->environment->color_array);
+	
+	/* set initial camera angle */
+	camera_view_x = 0.0;
+	camera_view_y = 0.0;
+	veccomp2d_calc(1.0, camera_view_x, &camera_view_xz);
+	
+	/* set player properties */
+	player_move_forward = 0.0;
+	player_move_right = 0.0;
+	player_move_up = 0.0;
+	player_vertical_vel = 0.0;
+	player_vertical_accel = gravity_constant;
+	trigger_jump = false;
 	
 	return true;
 }
 
 /*
- * scene_test_render - OpenGL rendering
+ * actor_test_render - OpenGL rendering
  */
-bool scene_test_render(void)
+bool actor_test_render(void)
 {
 	int i = 0, j = 0;
 	
@@ -209,16 +203,16 @@ bool scene_test_render(void)
 	glLoadIdentity();
 	
 	glPushMatrix();
-		glRotated(view_x, 0.0, 1.0, 0.0);
-		glRotated(view_y, view_xz.x, 0.0, view_xz.y);
-		glTranslated(xpos, ypos, zpos + ((graph->prj[4] + graph->prj[5]) / 2));
-		//glFlush();	/* viewport needs to execute first */
-		/* draw actor */
-		glPushMatrix();
-			glScaled(0.1, 0.1, 0.1);
-			glTranslated(0.0, -20.0, -(1.0 / 0.1) * 7.0);
-			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
-		glPopMatrix();
+		/* perform camera transformation */
+		glRotated(camera_view_x, 0.0, 1.0, 0.0);
+		glRotated(camera_view_y, camera_view_xz.x, 0.0, camera_view_xz.y);
+		glTranslated(graph->camera->position[0], graph->camera->position[1], graph->camera->position[2]);
+		
+		/* bind environment arrays */
+		glVertexPointer(3, GL_DOUBLE, 0, graph->environment->vertex_array);
+		glNormalPointer(GL_DOUBLE, 0, graph->environment->normal_array);
+		glColorPointer(3, GL_DOUBLE, 0, graph->environment->color_array);
+		
 		/* draw wall */
 		glPushMatrix();
 			glTranslated(-2.0, 0.0, 0.0);
@@ -396,6 +390,19 @@ bool scene_test_render(void)
 			glTranslated(0.0, 0.0, 2.0);
 			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->environment->vao_indicies);
 		glPopMatrix();
+				
+		/* bind player arrays */
+		glVertexPointer(3, GL_DOUBLE, 0, graph->nodes[player_node]->vertex_array);
+		glNormalPointer(GL_DOUBLE, 0, graph->nodes[player_node]->normal_array);
+		glColorPointer(3, GL_DOUBLE, 0, graph->nodes[player_node]->color_array);
+		
+		/* draw actor */
+		glPushMatrix();
+			glTranslated(graph->nodes[player_node]->position[0], graph->nodes[player_node]->position[1], -graph->nodes[player_node]->position[2]);
+			glScaled(0.1, 0.1, 0.1);
+			glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, graph->nodes[player_node]->vao_indicies);
+		glPopMatrix();
+		
 	glPopMatrix();
 	
 	/* flush */
@@ -408,24 +415,22 @@ bool scene_test_render(void)
 }
 
 /*
- * scene_test_input - handle movement
+ * actor_test_input - handle movement
  */
-bool scene_test_input(void)
+bool actor_test_input(void)
 {	
 	/* movement */
-	/* w - up */	if (key & KEY_W) forward += 0.3;
-	/* s - down */	if (key & KEY_S) forward -= 0.3;
-	/* a - left */	if (key & KEY_A) right += 0.3;
-	/* d - right */ if (key & KEY_D) right -= 0.3;
+	/* w - forward */	if (key & KEY_W) player_move_forward += motion_constant;
+	/* s - back */		if (key & KEY_S) player_move_forward -= motion_constant;
+	/* a - left */		if (key & KEY_A) player_move_right -= motion_constant;
+	/* d - right */ 	if (key & KEY_D) player_move_right += motion_constant;
 	
-	/* mouse controls view angle */
-	if (mouse_moved_x) view_x += 2.0 * (mouse_x_positive ? 1.0 : -1.0);
-	if (mouse_moved_y) view_y += 2.0 * (mouse_y_positive ? 1.0 : -1.0);
+	/* e - jump */		if (key & KEY_E) { trigger_jump = true; }
 
 	#ifndef NDEBUG
 	/* hot mode switching for debugging */
-	if (KEY_ISNUM(key) && !(key & KEY_5)) {
-		scene_test_free();
+	if (KEY_ISNUM(key) && !(key & KEY_6)) {
+		actor_test_free();
 		switch (key) {
 			case KEY_1:
 				diamond_init();
@@ -443,9 +448,9 @@ bool scene_test_input(void)
 				stage_init();
 				game_mode = GM_STAGE;
 				break;
-			case KEY_6:
-				actor_test_init();
-				game_mode = GM_ACTOR_TEST;
+			case KEY_5:
+				scene_test_init();
+				game_mode = GM_SCENE_TEST;
 				break;
 			default:
 				quit = true;
@@ -460,48 +465,86 @@ bool scene_test_input(void)
 }
 
 /*
- * scene_test_routine -  process object routine 
+ * actor_test_routine -  process object routine 
  */
-bool scene_test_routine(void)
+bool actor_test_routine(void)
 {
+	double camera_dist_x, camera_dist_y, camera_dist_z, camera_dist_z_adj;
+	double camera_move_forward = 0.0;
+	
+	/* player */
+	/* motion */
+	if (player_move_forward) {
+			graph->nodes[player_node]->position[0] += player_move_forward * camera_view_xz.y;
+			graph->nodes[player_node]->position[2] += player_move_forward * camera_view_xz.x;
+		camera_move_forward = player_move_forward;
+		player_move_forward = 0.0;
+	}
+	if (player_move_right) {
+		if (graph->nodes[player_node]->position[2] > graph->camera->position[2]) {
+			veccomp2d_calc(player_move_right, camera_view_x, &camera_view_xz);
+			graph->nodes[player_node]->position[0] += camera_view_xz.x;
+			graph->nodes[player_node]->position[2] -= camera_view_xz.y;
+		} else {
+			veccomp2d_calc(-player_move_right, camera_view_x, &camera_view_xz);
+			graph->nodes[player_node]->position[0] -= camera_view_xz.x;
+			graph->nodes[player_node]->position[2] += camera_view_xz.y;
+		}
+		player_move_right = 0.0;
+	}
+	/* jump */
+	if (trigger_jump) {
+		player_vertical_vel = 0.5;
+		trigger_jump = false;
+	}
+	/* vertical accel and velocity */
+	player_vertical_vel += player_vertical_accel;
+	graph->nodes[player_node]->position[1] += player_vertical_vel;
+	/* collision */
+	scene_enforceboundingnode(graph, player_node);
+
+	/* camera */
+	/* move camera */
+	if (pointdistance(graph->camera->position, graph->nodes[player_node]->position) > 5.0 && camera_move_forward > 0) {
+		graph->camera->position[0] -= camera_move_forward * camera_view_xz.y;
+		graph->camera->position[2] += camera_move_forward * camera_view_xz.x;
+		camera_move_forward = 0.0;
+	}
+	
+	
+	/* position camera */
+	camera_dist_x = graph->nodes[player_node]->position[0] - graph->camera->position[0];
+	camera_dist_y = graph->nodes[player_node]->position[1] - graph->camera->position[1];
+	camera_dist_z = graph->nodes[player_node]->position[2] - graph->camera->position[2];
+	camera_view_x = vecang2d_calc(camera_dist_x, camera_dist_z);
+	camera_dist_z_adj = sqrt(camera_dist_x * camera_dist_x + camera_dist_z * camera_dist_z);
+	camera_view_y = -vecang2d_calc(camera_dist_y, camera_dist_z_adj);
+	
 	/* normalize angles */
-	view_x = fmod(view_x, 360);
-	view_y = fmod(view_y, 360);
+	camera_view_x = fmod(camera_view_x, 360);
+	camera_view_y = fmod(camera_view_y, 360);
 	
 	/* calculate y rotation vector */
-	veccomp2d_calc(1.0, view_x, &view_xz);
-	
-	/* calculation motion vector */
-	if (forward) {
-		veccomp2d_calc(forward, view_x, &forward_xz);
-		xpos -= forward_xz.y;
-		zpos += forward_xz.x;
-		forward = 0.0;
-	}
-	if (right) {
-		veccomp2d_calc(right, view_x, &right_xz);
-		xpos += right_xz.x;
-		zpos += right_xz.y;
-		right = 0.0;
-	}
-	
-	
-	
+	veccomp2d_calc(1.0, camera_view_x, &camera_view_xz);
 	return true;
 }
 
 /*
- * scene_test_free - OpenGL free
+ * actor_test_free - OpenGL free
  */
-bool scene_test_free(void)
+bool actor_test_free(void)
 {
+	int node_count;
 	#ifndef NDEBUG
-	printf("scene_test: free\n");
+	printf("actor_test: free\n");
 	#endif /* NDEBUG */
 
-	free(graph->root_node->actor_entry.actor_obj);
-	free(graph->root_node);
-	free(graph->environment);
+	for (node_count = 0; node_count < graph->node_count; node_count++) {
+		free(graph->nodes[node_count]->actor_entry.actor_obj);
+		free(graph->nodes[node_count]->children);
+		free(graph->nodes[node_count]);
+	}
+	free(graph->nodes);
 	free(graph);
 	
 	return true;

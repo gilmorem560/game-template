@@ -21,7 +21,7 @@ bool map_routine(void);		/* process mode behavior */
 bool map_free(void);		/* OpenGL free */
 
 /* OpenGL lists */
-GLint actor;
+GLint map_actor;
 
 /* properties */
 GLdouble actor_x;

@@ -67,15 +67,15 @@ bool stage_init(void)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, menu_texture->width, menu_texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, menu_texture->data);
-		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (unsigned int) menu_texture->width, (unsigned int) menu_texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, menu_texture->data);
+
 	glGenTextures(1, &stage_font_texture);
 	glBindTexture(GL_TEXTURE_2D, stage_font_texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, font->width, font->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, font->data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (unsigned int) font->width, (unsigned int) font->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, font->data);
 
 	/* setup projection */
 	glMatrixMode(GL_PROJECTION);
@@ -85,7 +85,7 @@ bool stage_init(void)
 	box_width_hot = 0.0;
 	box_height_hot = 0.0;
 	box_display = false;
-	letter_height = font->height;
+	letter_height = (double) font->height;
 	letter_width = font->width / 3.0;
 	print_message = false;
 	message_counter = 0.0;
@@ -99,7 +99,7 @@ bool stage_init(void)
 bool stage_render(void)
 {
 	/* clear the scene */
-    glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT |  GL_STENCIL_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT);
 	
 	/* begin rendering models */
 	glMatrixMode(GL_MODELVIEW);
@@ -170,11 +170,7 @@ bool stage_render(void)
 	glFlush();
 
 	/* display */
-	#ifdef WIN32
-		SwapBuffers(dc);
-	#else
-		glXSwapBuffers(dpy, window);
-	#endif /* WIN32 */
+	drawframe();
 	
 	return true;
 }
@@ -187,13 +183,8 @@ bool stage_input(void)
 	/* actions */
 	/* d - display box */	if (key & KEY_D) box_display = true;
 	/* w - wipe box */		if (key & KEY_W) box_display = false;
-	
+
 	#ifndef NDEBUG
-	/* r - windowed */		if (key & KEY_R) { setwindowed(640, 480); key &= ~KEY_R; }
-	/* f - fullscreen */	if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; }
-	/* q - quit */				if (key & KEY_Q) quit = true;
-	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
-	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
 	if (KEY_ISNUM(key) && !(key & KEY_4)) {
 		stage_free();
@@ -214,11 +205,17 @@ bool stage_input(void)
 				scene_test_init();
 				game_mode = GM_SCENE_TEST;
 				break;
+			case KEY_6:
+				actor_test_init();
+				game_mode = GM_ACTOR_TEST;
+				break;
 			default:
 				quit = true;
 				break;
 		}
 	}
+	
+	debug_pollkeys(key);
 	#endif /* NDEBUG */
 	
 	return true;
@@ -268,10 +265,12 @@ bool stage_free(void)
 	printf("stage: free\n");
 	#endif /* NDEBUG */
 	
-	glDeleteTextures(1, &stage_menu_texture);
-	texture_free(menu_texture);
 	glDeleteTextures(1, &stage_font_texture);
+	glDeleteTextures(1, &stage_menu_texture);
+	
 	texture_free(font);
+	texture_free(menu_texture);
+
 	
 	return true;
 }

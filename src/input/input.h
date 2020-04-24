@@ -44,7 +44,6 @@ extern "C" {
 
 /* key masks */
 unsigned long key;
-unsigned long key_held;
 
 /* mouse state */
 bool mouse_moved_x;

@@ -15,6 +15,8 @@ extern "C" {
 #include "../input/input.h"
 /* basic objects */
 #include "../graphics/primitives/prim.h"
+/* useful macros */
+#include "../util/macros.h"
 	
 /* game modes */
 int game_mode;
@@ -28,6 +30,8 @@ int game_mode;
 	#define GM_STAGE 		3
 #include "scene_test.h"
 	#define GM_SCENE_TEST	4
+#include "actor_test.h"
+	#define GM_ACTOR_TEST	5
 	
 #ifdef __cplusplus
 };

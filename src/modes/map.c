@@ -30,8 +30,8 @@ bool map_init(void)
 	glCullFace(GL_BACK);
 	
 	/* prepare display lists */
-	actor = glGenLists(1);
-	glNewList(actor, GL_COMPILE);
+	map_actor = glGenLists(1);
+	glNewList(map_actor, GL_COMPILE);
 	tetrahedron(1.0);
 	glEndList();
 	
@@ -70,18 +70,14 @@ bool map_render(void)
 		glEnd();
 		glTranslated(actor_x, actor_y, -actor_z);
 		glRotated(actor_angle, 0.0, 1.0, 0.0);
-		glCallList(actor);
+		glCallList(map_actor);
     glPopMatrix();
 	
 	/* flush */
 	glFlush();
 
 	/* display */
-	#ifdef WIN32
-		SwapBuffers(dc);
-	#else
-		glXSwapBuffers(dpy, window);
-	#endif /* WIN32 */
+	drawframe();
 
     return true;
 }
@@ -100,11 +96,6 @@ bool map_input(void)
     /* x - zoom out */	if (key & KEY_X) actor_z += 0.1;
 	
 	#ifndef NDEBUG
-	/* r - windowed */		if (key & KEY_R) { setwindowed(640, 480); key &= ~KEY_R; }
-	/* f - fullscreen */	if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; }
-	/* q - quit */				if (key & KEY_Q) quit = true;
-	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
-	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
 	if (KEY_ISNUM(key) && !(key & KEY_2)) {
 		map_free();
@@ -125,11 +116,17 @@ bool map_input(void)
 				scene_test_init();
 				game_mode = GM_SCENE_TEST;
 				break;
+			case KEY_6:
+				actor_test_init();
+				game_mode = GM_ACTOR_TEST;
+				break;
 			default:
 				quit = true;
 				break;
 		}
 	}
+	
+	debug_pollkeys(key);
 	#endif /* NDEBUG */
 
     return true;
@@ -168,7 +165,7 @@ bool map_free(void)
 	#endif /* NDEBUG */
 	
     /* free display lists */
-    glDeleteLists(actor, 1);
+    glDeleteLists(map_actor, 1);
 	
     return true;
 }

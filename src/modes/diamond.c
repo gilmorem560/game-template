@@ -104,11 +104,7 @@ bool diamond_render(void)
 	
 	glFlush();
 
-	#ifdef WIN32
-		SwapBuffers(dc);
-	#else
-		glXSwapBuffers(dpy, window);
-	#endif /* WIN32 */
+	drawframe();
 
     return true;
 }
@@ -122,15 +118,14 @@ bool diamond_input(void)
 	/* a - animate model */	if (key & KEY_A) diamond_angle++;
 	
 	#ifndef NDEBUG
-	/* r - windowed */		if (key & KEY_R) { setwindowed(640, 480); key &= ~KEY_R; }
-	/* f - fullscreen */	if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; }
-	/* q - quit */				if (key & KEY_Q) quit = true;
-	/* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; }
-	/* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; }
 	/* hot mode switching for debugging */
 	if (KEY_ISNUM(key) && !(key & KEY_1)) {
 		diamond_free();
 		switch (key) {
+			case KEY_1:
+				diamond_init();
+				game_mode = GM_DIAMONDS;
+				break;
 			case KEY_2:
 				map_init();
 				game_mode = GM_MAP;
@@ -147,11 +142,17 @@ bool diamond_input(void)
 				scene_test_init();
 				game_mode = GM_SCENE_TEST;
 				break;
+			case KEY_6:
+				actor_test_init();
+				game_mode = GM_ACTOR_TEST;
+				break;
 			default:
 				quit = true;
 				break;
 		}
 	}
+	
+	debug_pollkeys(key);
 	#endif /* NDEBUG */
 
     return true;

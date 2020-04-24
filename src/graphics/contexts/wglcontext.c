@@ -20,7 +20,6 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	MONITORINFO monitor_info;
 	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 	monitor_info.cbSize = sizeof (MONITORINFO);
-	isfullscreen = true;
 
 	/* save these properties for screen switching */
 	wgl_hInstance = hInstance;
@@ -64,6 +63,9 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	/* get resolution */
 	xres = (unsigned short) (monitor_info.rcMonitor.right - monitor_info.rcMonitor.left);
 	yres = (unsigned short) (monitor_info.rcMonitor.bottom - monitor_info.rcMonitor.top);
+	
+	/* set aspect ratio */
+	current_ratio = (double) xres / (double) yres;
 
 	/* set pixel format attributes */
 	PIXELFORMATDESCRIPTOR pfd = {
@@ -89,11 +91,11 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	wnd = CreateWindow(
 		L"MainWndClass"
 		,L"OpenGL"
-		,WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
+		,(isfullscreen ? WS_POPUP : WS_OVERLAPPEDWINDOW) | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
 		,0
 		,0
-		,xres
-		,yres
+		,isfullscreen ? xres : DEFAULT_WIDTH
+		,isfullscreen ? yres : DEFAULT_HEIGHT
 		,(HWND) NULL
 		,(HMENU) NULL
 		,hInstance
@@ -126,8 +128,7 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	/* create context */
 	context = wglCreateContext(dc);
 
-	/* hide cursor */
-	ShowCursor(FALSE);
+	if (isfullscreen)	ShowCursor(FALSE);	/* hide cursor on fullscreen */
 
 	/* associate context to window */
 	wglMakeCurrent(dc, context);
@@ -215,6 +216,9 @@ void wglfree(HINSTANCE hInstance)
 	return;
 }
 
+/*
+ * setwindowed - pop out to window of defined resolution
+ */
 void setwindowed(unsigned short w_xres, unsigned short w_yres)
 {
 	RECT client_rect;
@@ -264,6 +268,9 @@ void setwindowed(unsigned short w_xres, unsigned short w_yres)
 	return;
 }
 
+/*
+ * setfullscreen - set to fullscreen at current resolution
+ */
 void setfullscreen(void)
 {
 	if (!isfullscreen) {
@@ -306,5 +313,13 @@ void setfullscreen(void)
 		isfullscreen = true;
 	}
 
+	return;
+}
+
+/*
+ * render a frame
+ */
+void drawframe() {
+	SwapBuffers(dc);
 	return;
 }
