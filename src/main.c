@@ -35,13 +35,11 @@ int main(int argc, char *argv[])
     key = 0;    /* initialize key bitfield here for now */
     mouse_moved_x = false;
 	mouse_moved_y = false;
-	isfullscreen = false;
+	isfullscreen = true;
     quit = false;
-	#ifndef NDEBUG
-	/* debugging can uncapture pointer */
-	mouse_captured = true;
-	debug_cursor_changed = false;
-	#endif /* NDEBUG */
+
+	/* start in debug mode */
+	debug_init;
 
     /* initialize OpenGL for X11 */
     glxinit();
@@ -90,52 +88,52 @@ int main(int argc, char *argv[])
 
 		switch (game_mode) {
 		case GM_DIAMONDS:
+			/* run mode routine */
+			diamond_routine();
 			/* process next frame */
 			diamond_render();
 			/* process movement */
 			diamond_input();
-            /* run mode routine */
-            diamond_routine();
 			break;
 		case GM_MAP:
+			/* run mode routine */
+			map_routine();
 			/* process next frame */
 			map_render();
 			/* process movement */
 			map_input();
-            /* run mode routine */
-            map_routine();
 			break;
 		case GM_SANDBOX:
+			/* run mode routine */
+			sandbox_routine();
 			/* process next frame */
 			sandbox_render();
 			/* process movement */
 			sandbox_input();
-            /* run mode routine */
-            sandbox_routine();
 			break;
 		case GM_STAGE:
+			/* run mode routine */
+			stage_routine();
 			/* process next frame */
 			stage_render();
 			/* process movement */
 			stage_input();
-			/* run mode routine */
-			stage_routine();
 			break;
 		case GM_SCENE_TEST:
+			/* run mode routine */
+			scene_test_routine();
 			/* process next frame */
 			scene_test_render();
 			/* process movement */
 			scene_test_input();
-			/* run mode routine */
-			scene_test_routine();
 			break;
 		case GM_ACTOR_TEST:
+			/* run mode routine */
+			actor_test_routine();
 			/* process next frame */
 			actor_test_render();
 			/* process movement */
 			actor_test_input();
-			/* run mode routine */
-			actor_test_routine();
 			break;
 		default:
 			fprintf(stderr, "Unknown game mode: %d\n", game_mode);
@@ -197,12 +195,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	key = 0;    /* initialize key bitfield here for now */
 	mouse_moved_x = false;
 	mouse_moved_y = false;
+	isfullscreen = true;
 	quit = false;
-	#ifndef NDEBUG
-	/* debugging can uncapture pointer */
-	mouse_captured = true;
-	debug_cursor_changed = false;
-	#endif /* NDEBUG */
+
+	debug_init;
 
     /* initialize OpenGL for WinAPI */
     wglinit(hInstance, nShowCmd, wndproc);
@@ -223,6 +219,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		break;
 	case GM_SCENE_TEST:
 		scene_test_init();
+		break;
+	case GM_ACTOR_TEST:
+		actor_test_init();
 		break;
     default:
         break;
@@ -246,52 +245,60 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         /* begin processing events */
         wglevent(wnd);
 
-        switch (game_mode) {
-        case GM_DIAMONDS:
-            /* process next frame */
-            diamond_render();
-            /* process movement */
-            diamond_input();
-            /* run mode routine */
-            diamond_routine();
-            break;
-        case GM_MAP:
-            /* process next frame */
-            map_render();
-            /* process input */
-            map_input();
-            /* run mode routine */
-            map_routine();
-            break;
-        case GM_SANDBOX:
-            /* process next frame */
-            sandbox_render();
-            /* process input */
-            sandbox_input();
-            /* run mode routine */
-            sandbox_routine();
-            break;
-		case GM_STAGE:
+		switch (game_mode) {
+		case GM_DIAMONDS:
+			/* run mode routine */
+			diamond_routine();
 			/* process next frame */
-			stage_render();
-			/* process input */
-			stage_input();
+			diamond_render();
+			/* process movement */
+			diamond_input();
+			break;
+		case GM_MAP:
+			/* run mode routine */
+			map_routine();
+			/* process next frame */
+			map_render();
+			/* process movement */
+			map_input();
+			break;
+		case GM_SANDBOX:
+			/* run mode routine */
+			sandbox_routine();
+			/* process next frame */
+			sandbox_render();
+			/* process movement */
+			sandbox_input();
+			break;
+		case GM_STAGE:
 			/* run mode routine */
 			stage_routine();
+			/* process next frame */
+			stage_render();
+			/* process movement */
+			stage_input();
 			break;
 		case GM_SCENE_TEST:
-			/* process next frame */
-			scene_test_render();
-			/* process input */
-			scene_test_input();
 			/* run mode routine */
 			scene_test_routine();
+			/* process next frame */
+			scene_test_render();
+			/* process movement */
+			scene_test_input();
 			break;
-        default:
-            fprintf(stderr, "Unknown game mode: %d\n", game_mode);
-            quit = true;
-            break;
-        }
+		case GM_ACTOR_TEST:
+			/* run mode routine */
+			actor_test_routine();
+			/* process next frame */
+			actor_test_render();
+			/* process movement */
+			actor_test_input();
+			break;
+		default:
+			fprintf(stderr, "Unknown game mode: %d\n", game_mode);
+			quit = true;
+			break;
+		}
     }
 
     /* unload OpenGL assets */
@@ -310,6 +317,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		break;
 	case GM_SCENE_TEST:
 		scene_test_free();
+		break;
+	case GM_ACTOR_TEST:
+		actor_test_free();
 		break;
     default:
         break;

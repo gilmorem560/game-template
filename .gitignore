@@ -18,8 +18,8 @@
 /TODO
 
 # Visual Studio Files
-/OpenGL/x64/Debug
 /x64/Debug
+/x64/Release
 *.db
 *.suo
 *.opendb

@@ -59,6 +59,8 @@ static bool z_adjusted = false;
  */
 bool scene_test_init(void)
 {
+	node **root_node;
+
 	#ifndef NDEBUG
 	printf("scene_test: init\n");
 	#endif /* NDEBUG */
@@ -86,7 +88,8 @@ bool scene_test_init(void)
 		graph->root_node->actor_entry.actor_obj->router = NULL;
 		
 	/* register root node in node collection */
-	graph->nodes = realloc(graph->nodes, ++graph->node_count);
+	root_node = realloc(graph->nodes, ++graph->node_count * sizeof (node *));
+	graph->nodes = root_node;
 	graph->nodes[graph->node_count - 1] = graph->root_node;
 		
 	/* scene projection */

@@ -39,6 +39,8 @@ static GLubyte vao_indicies[24] = { 0, 1, 2, 3
 								  
 								  
 static GLfloat fog_color[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+
+#define pointdistance(x, y) sqrt((y[0] - x[0])*(y[0] - x[0]) + (y[1] - x[1])*(y[1] - x[1]) + (y[2] - x[2])*(y[2] - x[2]))
 				
 /* static nodes */
 static signed int environment_node;
@@ -55,9 +57,6 @@ static signed int player_node;
 	static GLdouble player_move_up;
 	static GLdouble player_vertical_vel;
 	static GLdouble player_vertical_accel;
-	static veccomp2d forward_xz;
-	static veccomp2d right_xz;
-	static veccomp2d up_xz;
 	static bool trigger_jump;
 	
 static double motion_constant = 0.1;
@@ -87,7 +86,7 @@ bool actor_test_init(void)
 	graph->bounding_box[1] = 2.9;
 	graph->bounding_box[2] = -2.9;
 	graph->bounding_box[3] = 2.9;
-	graph->bounding_box[4] = -6.0;
+	graph->bounding_box[4] = -11.0;
 	graph->bounding_box[5] = -1.1;
 	
 	/* create node collection */
@@ -423,11 +422,8 @@ bool actor_test_input(void)
 	/* movement */
 	/* w - forward */	if (key & KEY_W) player_move_forward += motion_constant;
 	/* s - back */		if (key & KEY_S) player_move_forward -= motion_constant;
-	/* a - left */		if (key & KEY_A) player_move_right += motion_constant;
-	/* d - right */ 	if (key & KEY_D) player_move_right -= motion_constant;
-	
-	/* r - up */		if (key & KEY_R) player_move_up -= motion_constant;
-	/* f - down */		if (key & KEY_F) player_move_up += motion_constant;
+	/* a - left */		if (key & KEY_A) player_move_right -= motion_constant;
+	/* d - right */ 	if (key & KEY_D) player_move_right += motion_constant;
 	
 	/* e - jump */		if (key & KEY_E) { trigger_jump = true; }
 
@@ -473,38 +469,56 @@ bool actor_test_input(void)
  */
 bool actor_test_routine(void)
 {
-	double camera_dist_x, camera_dist_y, camera_dist_z;
+	double camera_dist_x, camera_dist_y, camera_dist_z, camera_dist_z_adj;
+	double camera_move_forward = 0.0;
 	
 	/* player */
 	/* motion */
 	if (player_move_forward) {
-		graph->nodes[player_node]->position[2] += player_move_forward;
+			graph->nodes[player_node]->position[0] += player_move_forward * camera_view_xz.y;
+			graph->nodes[player_node]->position[2] += player_move_forward * camera_view_xz.x;
+		camera_move_forward = player_move_forward;
 		player_move_forward = 0.0;
 	}
 	if (player_move_right) {
-		graph->nodes[player_node]->position[0] += player_move_right;
+		if (graph->nodes[player_node]->position[2] > graph->camera->position[2]) {
+			veccomp2d_calc(player_move_right, camera_view_x, &camera_view_xz);
+			graph->nodes[player_node]->position[0] += camera_view_xz.x;
+			graph->nodes[player_node]->position[2] -= camera_view_xz.y;
+		} else {
+			veccomp2d_calc(-player_move_right, camera_view_x, &camera_view_xz);
+			graph->nodes[player_node]->position[0] -= camera_view_xz.x;
+			graph->nodes[player_node]->position[2] += camera_view_xz.y;
+		}
 		player_move_right = 0.0;
 	}
 	/* jump */
 	if (trigger_jump) {
-		player_vertical_vel = -0.5;
+		player_vertical_vel = 0.5;
 		trigger_jump = false;
 	}
 	/* vertical accel and velocity */
-	player_vertical_vel -= player_vertical_accel;
+	player_vertical_vel += player_vertical_accel;
 	graph->nodes[player_node]->position[1] += player_vertical_vel;
 	/* collision */
 	scene_enforceboundingnode(graph, player_node);
-	
+
 	/* camera */
 	/* move camera */
+	if (pointdistance(graph->camera->position, graph->nodes[player_node]->position) > 5.0 && camera_move_forward > 0) {
+		graph->camera->position[0] -= camera_move_forward * camera_view_xz.y;
+		graph->camera->position[2] += camera_move_forward * camera_view_xz.x;
+		camera_move_forward = 0.0;
+	}
+	
 	
 	/* position camera */
-	camera_dist_x = graph->camera->position[0] - graph->nodes[player_node]->position[0];
-	camera_dist_y = graph->camera->position[1] - graph->nodes[player_node]->position[1];
-	camera_dist_z = graph->camera->position[2] - graph->nodes[player_node]->position[2];
+	camera_dist_x = graph->nodes[player_node]->position[0] - graph->camera->position[0];
+	camera_dist_y = graph->nodes[player_node]->position[1] - graph->camera->position[1];
+	camera_dist_z = graph->nodes[player_node]->position[2] - graph->camera->position[2];
 	camera_view_x = vecang2d_calc(camera_dist_x, camera_dist_z);
-	camera_view_y = vecang2d_calc(camera_dist_y, camera_dist_z);
+	camera_dist_z_adj = sqrt(camera_dist_x * camera_dist_x + camera_dist_z * camera_dist_z);
+	camera_view_y = -vecang2d_calc(camera_dist_y, camera_dist_z_adj);
 	
 	/* normalize angles */
 	camera_view_x = fmod(camera_view_x, 360);
@@ -512,7 +526,6 @@ bool actor_test_routine(void)
 	
 	/* calculate y rotation vector */
 	veccomp2d_calc(1.0, camera_view_x, &camera_view_xz);
-	
 	return true;
 }
 

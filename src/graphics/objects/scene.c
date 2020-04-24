@@ -28,7 +28,8 @@ void scene_positionenv(scene *graph, double xpos, double ypos, double zpos)
 signed short scene_addnode(scene *graph, signed short type, bool type_router, signed char routine, void (*router)(void))
 {
 	signed short id;
-	graph->nodes = realloc(graph->nodes, ++graph->node_count);
+	node **new_node = realloc(graph->nodes, ++graph->node_count * sizeof (node *));
+		graph->nodes = new_node;
 	id = graph->node_count - 1;
 	graph->nodes[id] = malloc(sizeof (node));
 	graph->nodes[id]->actor_entry.id = id;
@@ -69,7 +70,8 @@ void scene_enforceboundingnode(scene *graph, signed short node_id)
 
 void scene_setchildnode(scene *graph, signed int parent, signed int child)
 {
-	graph->nodes[parent]->children = realloc(graph->nodes[parent]->children, ++graph->nodes[parent]->children_count);
+	node **children = realloc(graph->nodes[parent]->children, ++graph->nodes[parent]->children_count * sizeof (node *));
+	graph->nodes[parent]->children = children;
 	graph->nodes[parent]->children[graph->nodes[parent]->children_count - 1] = graph->nodes[child];
 	
 	return;

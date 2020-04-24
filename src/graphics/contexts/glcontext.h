@@ -23,6 +23,8 @@ extern "C" {
 #include "glxcontext.h"
 #endif /* _WIN32 */
 
+#define DEFAULT_WIDTH    640
+#define DEFAULT_HEIGHT   480
 unsigned short xres;
 unsigned short yres;
 double current_ratio;

@@ -55,6 +55,13 @@ extern "C" {
 /* b - break (gdb) */		if (key & KEY_B) GDB_INTERRUPT \
 						}
 
+#define debug_init \
+	mouse_captured = true;			/* debugging can uncapture pointer */ \
+	debug_cursor_changed = false;	/* so it needs state variables */ \
+	isfullscreen = false;			/* debug in a window */
+
+#else
+#define debug_init
 #endif /* NDEBUG */
 
 #ifdef __cplusplus

@@ -20,7 +20,6 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	MONITORINFO monitor_info;
 	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 	monitor_info.cbSize = sizeof (MONITORINFO);
-	isfullscreen = true;
 
 	/* save these properties for screen switching */
 	wgl_hInstance = hInstance;
@@ -92,11 +91,11 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	wnd = CreateWindow(
 		L"MainWndClass"
 		,L"OpenGL"
-		,WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
+		,(isfullscreen ? WS_POPUP : WS_OVERLAPPEDWINDOW) | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
 		,0
 		,0
-		,xres
-		,yres
+		,isfullscreen ? xres : DEFAULT_WIDTH
+		,isfullscreen ? yres : DEFAULT_HEIGHT
 		,(HWND) NULL
 		,(HMENU) NULL
 		,hInstance
@@ -129,8 +128,7 @@ void wglinit(HINSTANCE hInstance, int nShowCmd, WNDPROC wndproc)
 	/* create context */
 	context = wglCreateContext(dc);
 
-	/* hide cursor */
-	ShowCursor(FALSE);
+	if (isfullscreen)	ShowCursor(FALSE);	/* hide cursor on fullscreen */
 
 	/* associate context to window */
 	wglMakeCurrent(dc, context);

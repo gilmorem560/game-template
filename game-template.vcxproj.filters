@@ -123,6 +123,9 @@
     <ClCompile Include="src\util\veccomp.c">
       <Filter>Source Files\util</Filter>
     </ClCompile>
+    <ClCompile Include="src\modes\actor_test.c">
+      <Filter>Source Files\mode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\input\input.h">
@@ -187,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="src\graphics\primitives\collision.h">
       <Filter>Header Files\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\actor_test.h">
+      <Filter>Header Files\mode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
