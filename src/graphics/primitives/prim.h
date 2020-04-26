@@ -13,7 +13,7 @@ extern "C" {
 
 /* 2d primitives */
 typedef struct poly2d {
-    size_t point_count;
+    unsigned char point_count;
     point2d *points;
 } poly2d;
 typedef poly2d tri2d;
@@ -24,7 +24,7 @@ poly2d *new_poly2d(unsigned char point_count, ...);
 
 /* 3d primitives */
 typedef struct poly3d {
-    size_t point_count;
+    unsigned char point_count;
     point3d *points;
 } poly3d;
 typedef poly3d tri3d;

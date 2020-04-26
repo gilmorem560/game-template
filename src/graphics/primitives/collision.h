@@ -10,6 +10,9 @@ extern "C" {
 	
 #include <stdbool.h>
 
+/* shape primitives for complex collision */
+#include "prim.h"
+
 /* collision shape
  * 
  * shape types implemented by the engine

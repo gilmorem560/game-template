@@ -4,6 +4,7 @@ main_SOURCES = \
 	graphics/objects/actor.c \
 	graphics/objects/collision_index.c \
 	graphics/objects/hedrons.c \
+	graphics/objects/node.c \
 	graphics/objects/prisms.c \
 	graphics/objects/scene.c \
 	graphics/objects/texture.c \
@@ -17,11 +18,17 @@ main_SOURCES = \
 	graphics/primitives/poly3d.c \
 	input/glxevent.c \
 	modes/actor_test.c \
+	modes/actor_test/actors/cube.c \
+	modes/actor_test/actors/tetrahedron.c \
+	modes/actor_test/nodes/environment.c \
+	modes/actor_test/nodes/camera.c \
+	modes/actor_test/nodes/player.c \
+	util/veccomp.c \
+	main.c
+#old_SOURCES = \
 	modes/diamond.c \
 	modes/map.c \
 	modes/sandbox.c \
 	modes/scene_test.c \
-	modes/stage.c \
-	util/veccomp.c \
-	main.c
+	modes/stage.c
 main_LDFLAGS = -lX11

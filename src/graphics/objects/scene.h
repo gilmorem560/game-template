@@ -1,6 +1,24 @@
- /*
-  * scene - a primitive scene graph
-  */
+/*
+ * scene - a primitive scene graph
+ * 
+ * common variables:
+ * 
+ * graph -> the scene graph being manipulated
+ * signed short node_id = the ID of a node in the graph being manipulated
+ * 
+ * node state manipulation in the scene collection should always occur via
+ * methods here, these methods aim to standardize different handling
+ * of node status without introducing some complex system of flags
+ * and variables for the consuming code to set, in the collection,
+ * a status is just that, a state of the object
+ * 
+ * some node states can be changed on the lower level if desired
+ * or if debugging but this is discouraged, especially modifications
+ * that disrupt the index of any collections or delete memory
+ * 
+ * eventually an error handler will be written for any invalid memory
+ * access, hopefully to catch improperly handled nodes
+ */
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
@@ -8,10 +26,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* include GL for types */
-#include "../contexts/glcontext.h"
-/* actors */
-#include "actor.h"
+/* nodes */
+#include "node.h"
 /* collision detection */
 #include "collision_index.h"
 	
@@ -19,68 +35,68 @@ typedef enum {
 	PROJECTION_ORTHAGONAL
 	,PROJECTION_FRUSTUM
 } projection_type;
-
-typedef struct {
-	signed short id;
-	actor *actor_obj;
-} scene_actor;
-#define SCENE_ACTOR_NULL	-1
-
-/*
- * node in a scene graph
- * a node has geometry TODO: implement model abstraction
- * a node has children and a count on those children
- * environment is a special secondary node in the scene that also has children, the scene is the parent node of these two
- * 
- */
-typedef struct node {
-	scene_actor actor_entry;
-	double position[3];
-	GLdouble *vertex_array;
-	GLdouble *normal_array;
-	GLdouble *color_array;
-	GLubyte *vao_indicies;
-	struct node **children;
-	unsigned int children_count;
-	/* the node will be responsible for maintaining and cleaning its children records */
-	/*	note: a scene does not require a collision table
-	*  	this may be null if the scene does not implement
-	* 		any objects employing collision
-	* 		behavior of objects with collision in scenes
-	* 		with no index is undefined
-	*/
-} node;
 	
 /* scene graph
- *	 contains the collection of actors in the scene, as well as the nodes that connect them
- *   actors can become orphaned, garbage handling is necessary
+ *	the scene graph represents the scene as a whole and consists of:
  * 
- *  the collision table is populated with collision information about the scene
- *  actors are responsible for inserting and removing themselves from the index
- *   the index can provide optimization functionality, actors will just perform requests for new data
- *   and freeing of old data
+ *  the projection applied to display the scene
+ *  TODO: miscellaneous display settings
+ * 
+ *  the bounding box of the scene, a bounding box is optional and only necessary
+ *  if objects must interact with one
+ * 
+ *  a scene is ultimately a collection of nodes and those nodes' relationships
+ *  to one another
+ * 
+ *  a scene is designed in such a way that its nodes can be traversed,
+ *  routines performed, data routed, and rendering presented in a relatively
+ *  standard pipeline
+ * 
+ *  parent-child relationships between nodes are managed by the nodes themselves
+ *  the graph provides facilities for child node collection maintenance as
+ *  a subset of node collection maintenance, but all other behaviors must be
+ *  handled by nodes themselves when they register their children in the scene
+ * 
+ *  a scene has a few special, but optional, node pointers provided
+ *  utilizing these nodes allows for the use of baked in node collision and
+ *  node manipulation functionality but is not necessary to scene construction
  */
-typedef struct scene {
-	GLdouble prj[6];
+typedef struct {
+	double prj[6];
 	projection_type prj_type;
+	
 	double bounding_box[6];
 	collision_index *collision_table;
+	
 	node **nodes;
 	int node_count;
+	
 	node *root_node;
 	node *camera;
 	node *environment;
-	double environment_pos[3];
+	node *player;
 } scene;
 
+/* ==================== Scene Display Settings ==================== */
 void scene_projection_new(scene *graph, projection_type type, double x_axis, double y_axis, double near_plane, double far_plane);
-void scene_positionenv(scene *graph, double xpos, double ypos, double zpos);
 
-signed short scene_addnode(scene *graph, signed short type, bool type_router, signed char routine, void (*router)(void));
-void scene_enforceboundingnode(scene *graph, signed short node_id);
+/* ==================== Node Collection Management ==================== */
+
+/* primary collection management */
+signed short scene_addnode(scene *graph, signed short type, void (*render)(node *), void (*routine)(node *));
+void scene_switchactivenode(scene *graph, signed short node_id);
+void scene_revivenode(scene *graph, signed short node_id);
+
 void scene_setchildnode(scene *graph, signed int parent, signed int child);
-void scene_skinnode(scene *graph, signed int node_id, GLdouble *verticies, GLdouble *normals, GLdouble *colors, GLubyte *vaos);
-void scene_positionnode(scene *graph, signed short node_id, double xpos, double ypos, double zpos);
+
+/* ==================== Node Collision ==================== */
+
+bool scene_enforceboundingnode(scene *graph, signed short node_id);
+
+/* ==================== Node Manipulation ==================== */
+
+void scene_positionnode(scene *graph, signed short node_id, point3d position);
+void scene_rotatenode(scene *graph, signed short node_id, point3d angle);
 	
 #ifdef __cplusplus
 };

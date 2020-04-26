@@ -46,21 +46,6 @@ int main(int argc, char *argv[])
 
     /* prepare OpenGL assets */
     switch (game_mode) {
-    case GM_DIAMONDS:
-        diamond_init();
-        break;
-    case GM_MAP:
-	    map_init();
-	    break;
-	case GM_SANDBOX:
-		sandbox_init();
-		break;
-	case GM_STAGE:
-		stage_init();
-		break;
-	case GM_SCENE_TEST:
-		scene_test_init();
-		break;
 	case GM_ACTOR_TEST:
 		actor_test_init();
 		break;
@@ -87,46 +72,6 @@ int main(int argc, char *argv[])
 		glxevent(dpy);
 
 		switch (game_mode) {
-		case GM_DIAMONDS:
-			/* run mode routine */
-			diamond_routine();
-			/* process next frame */
-			diamond_render();
-			/* process movement */
-			diamond_input();
-			break;
-		case GM_MAP:
-			/* run mode routine */
-			map_routine();
-			/* process next frame */
-			map_render();
-			/* process movement */
-			map_input();
-			break;
-		case GM_SANDBOX:
-			/* run mode routine */
-			sandbox_routine();
-			/* process next frame */
-			sandbox_render();
-			/* process movement */
-			sandbox_input();
-			break;
-		case GM_STAGE:
-			/* run mode routine */
-			stage_routine();
-			/* process next frame */
-			stage_render();
-			/* process movement */
-			stage_input();
-			break;
-		case GM_SCENE_TEST:
-			/* run mode routine */
-			scene_test_routine();
-			/* process next frame */
-			scene_test_render();
-			/* process movement */
-			scene_test_input();
-			break;
 		case GM_ACTOR_TEST:
 			/* run mode routine */
 			actor_test_routine();
@@ -144,21 +89,6 @@ int main(int argc, char *argv[])
 
     /* unload OpenGL assets */
     switch (game_mode) {
-    case GM_DIAMONDS:
-        diamond_free();
-        break;
-    case GM_MAP:
-        map_free();
-		break;
-	case GM_SANDBOX:
-		sandbox_free();
-		break;
-	case GM_STAGE:
-		stage_free();
-		break;
-	case GM_SCENE_TEST:
-		scene_test_free();
-		break;
 	case GM_ACTOR_TEST:
 		actor_test_free();
 		break;
@@ -205,21 +135,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     /* prepare OpenGL assets */
     switch (game_mode) {
-    case GM_DIAMONDS:
-        diamond_init();
-        break;
-    case GM_MAP:
-        map_init();
-        break;
-    case GM_SANDBOX:
-        sandbox_init();
-        break;
-	case GM_STAGE:
-		stage_init();
-		break;
-	case GM_SCENE_TEST:
-		scene_test_init();
-		break;
 	case GM_ACTOR_TEST:
 		actor_test_init();
 		break;
@@ -246,46 +161,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         wglevent(wnd);
 
 		switch (game_mode) {
-		case GM_DIAMONDS:
-			/* run mode routine */
-			diamond_routine();
-			/* process next frame */
-			diamond_render();
-			/* process movement */
-			diamond_input();
-			break;
-		case GM_MAP:
-			/* run mode routine */
-			map_routine();
-			/* process next frame */
-			map_render();
-			/* process movement */
-			map_input();
-			break;
-		case GM_SANDBOX:
-			/* run mode routine */
-			sandbox_routine();
-			/* process next frame */
-			sandbox_render();
-			/* process movement */
-			sandbox_input();
-			break;
-		case GM_STAGE:
-			/* run mode routine */
-			stage_routine();
-			/* process next frame */
-			stage_render();
-			/* process movement */
-			stage_input();
-			break;
-		case GM_SCENE_TEST:
-			/* run mode routine */
-			scene_test_routine();
-			/* process next frame */
-			scene_test_render();
-			/* process movement */
-			scene_test_input();
-			break;
 		case GM_ACTOR_TEST:
 			/* run mode routine */
 			actor_test_routine();
@@ -303,21 +178,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     /* unload OpenGL assets */
     switch (game_mode) {
-    case GM_DIAMONDS:
-        diamond_free();
-        break;
-    case GM_MAP:
-        map_free();
-        break;
-    case GM_SANDBOX:
-        sandbox_free();
-        break;
-	case GM_STAGE:
-		stage_free();
-		break;
-	case GM_SCENE_TEST:
-		scene_test_free();
-		break;
 	case GM_ACTOR_TEST:
 		actor_test_free();
 		break;

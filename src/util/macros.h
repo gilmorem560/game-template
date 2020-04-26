@@ -8,15 +8,18 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef _WIN32
-#define _USE_MATH_DEFINES
-#endif /* _WIN32 */
-
 #include <math.h>
+	
+#ifndef M_PI
+#define M_PI	3.14159265358979323846264
+#endif /* M_PI */
 
-/* if there were macros you would see them here */
 #define	degtorad(x)	(x / 360.0) * 2.0 * M_PI
 #define radtodeg(x) (x * 180.0) / M_PI
+#define pointdistance(x, y) sqrt((y[0] - x[0])*(y[0] - x[0]) + (y[1] - x[1])*(y[1] - x[1]) + (y[2] - x[2])*(y[2] - x[2]))
+#define dotprod2d(x,y) x[0]*y[0] + x[1]*y[1]
+#define dotprod3d(x,y) x[0]*y[0] + x[1]*y[1] + x[2]*y[2];
+#define hypotenuse(x,y) sqrt(x*x + y*y)
 
 /* debugging functionality */
 

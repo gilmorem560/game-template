@@ -13,44 +13,52 @@ extern "C" {
 
 /*
  * an actor is a type object
- *  an actor distinguishes itself from an environment
- * types are defined by modes
  * an actor has a current:
- *  type_router - do we call a generic type router
- * 	model - model being displayed, TODO: need to implement model abstraction
- *  routine - current routine
+ *  type - the type of actor, this is a property used by modes
+ * 			actor itself does not define any types other than null
+ *  routine_index - the routine value being run currently
  *  collision_data - collision info structure
- *  properties - TODO: implement abstraction for actor properties
- * 		position
- * 		size
- * 	router - function that routes object routines
- * 		two routine values are defined
+ *  properties - properties of the object itself
+ * 	GL arrays - arrays of data used for rendering in GL
+ *  render - render function, performs based on other properties
+ * 	routine - function that routes object routines
+ * 		three routine values are defined
+ * 		-1 - null
  * 		0 - init
  * 		1 - free
  * 		all others are implementation defined
  * 
  *  implementation:
  * 		enumerate/define mode's actor types
- * 		create object related functionality
+ * 		create actor related functionality
  * 			ensure defined routines above are provided
- * 		provide an object routing method that calls routines
+ * 		provide an actor routing method that calls routines
  * 			using switch on routine values
- * 		a router pointer is provided but mode may define
- * 			type-wide routers too
- * 			combinations of custom and type routers are allowed
- * 			precedence is implementation dependent
- * 		router methods will act on properties and collision data
+ * 		provide a rendering method that render's the actor model
+ * 		routine methods will act on properties and collision data
  */
 typedef struct actor {
 	signed short type;
-	bool type_router;
-	// model
-	signed char routine;
+	signed char routine_index;
 	collision collision_data;
-	// properties
-	void (*router)(void);
+	void *properties;
+	double *vertex_array;
+	double *normal_array;
+	double *color_array;
+	unsigned char *vao_indicies;
+	void (*render)(struct actor *this);
+	void (*routine)(struct actor *this);
 } actor;
-#define ACTOR_ROUTINE_NULL	-1
+#define AT_NULL		-1
+
+#define	AR_NULL	-1
+#define	AR_INIT	0
+#define	AR_FREE	1
+
+actor *actor_new_actor(signed int type, void (*render)(actor *this), void (*routine)(actor *this));
+void actor_render(actor *this);
+void actor_routine(actor *this, signed char routine_index);
+void actor_free(actor *this);
 	
 #ifdef __cplusplus
 };
