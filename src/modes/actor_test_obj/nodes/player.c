@@ -3,18 +3,41 @@
  */
 #include "../nodes.h"
 
+static int orbit_node;
+static int orbit_child_index;
+
 void player_init(node *this)
 {
 	this->node_actor = at_tet_new();
 	actor_routine(this->node_actor, AR_INIT);
+	
+	player_has_orbit = false;
+	player_move_forward = 0.0;
+	player_move_right = 0.0;
+	player_move_up = 0.0;
+	player_vertical_vel = 0.0;
+	player_vertical_accel = -0.09;
+	trigger_jump = false;
+	orbit_node = 0;
+	orbit_child_index = 0;
 	
 	return;
 }
 
 void player_free(node *this)
 {
-	actor_routine(this->node_actor, AR_FREE);
+	node_free(this);
 	
+	return;
+}
+
+void player_addorbit(node *this)
+{
+	orbit_node = scene_addnode(graph, NT_ORBIT, orbit_render, orbit_routine);
+	scene_positionnode(graph, orbit_node, this->position);
+	scene_rotatenode(graph, orbit_node, this->rotation);
+	orbit_child_index = scene_setchildnode(graph, this->id, orbit_node);
+
 	return;
 }
 
@@ -58,10 +81,34 @@ void player_processinput(node *this)
 		trigger_jump = false;
 	}
 	
+	if (player_has_orbit && orbit_node == 0) {
+		player_addorbit(this);
+	}
+	
 }
 
 void player_applyconstraints(node *this)
 {
+	signed int child;
+	vect_component orbit_comps = { 0.0, 0.0 };
+	
+	/* handle children */
+	if (this->children_count > 0 && this->children != NULL) {
+		for (child = 0; child < this->children_count; child++) {
+			switch (this->children[child]->type) {
+			case NT_ORBIT:
+				veccomp2d_calc(0.2, -this->rotation.x, &orbit_comps);
+				this->children[child]->position.x = this->position.x - orbit_comps.y;
+				this->children[child]->position.y = this->position.y;
+				this->children[child]->position.z = this->position.z - orbit_comps.x;
+				node_routine(this->children[child], NR_ORBIT_CONSTRAINT);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
 	/* vertical accel and velocity */
 	player_vertical_vel += player_vertical_accel;
 	this->position.y += player_vertical_vel;

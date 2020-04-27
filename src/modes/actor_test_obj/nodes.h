@@ -42,7 +42,13 @@ static int player_node;
 	GLdouble player_move_up;
 	GLdouble player_vertical_vel;
 	GLdouble player_vertical_accel;
+	bool player_has_orbit;
 	bool trigger_jump;
+	
+#define NT_ORBIT		3
+void orbit_render(node *this);
+void orbit_routine(node *this);
+	#define NR_ORBIT_CONSTRAINT		2
 	
 #ifdef __cplusplus
 };

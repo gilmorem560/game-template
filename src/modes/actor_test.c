@@ -116,14 +116,6 @@ bool actor_test_init(void)
 		break;
 	}
 	
-	/* set player properties */
-	player_move_forward = 0.0;
-	player_move_right = 0.0;
-	player_move_up = 0.0;
-	player_vertical_vel = 0.0;
-	player_vertical_accel = gravity_constant;
-	trigger_jump = false;
-	
 	return true;
 }
 
@@ -209,6 +201,9 @@ bool actor_test_input(void)
 	/* d - right */ 	if (key & KEY_D) player_move_right += motion_constant;
 	
 	/* e - jump */		if (key & KEY_E) { trigger_jump = true; }
+	
+	/* c - call orbit */	if (key & KEY_C) { player_has_orbit = true; }
+	/* v - uncall orbit */	if (key & KEY_V) { player_has_orbit = false; }
 
 	#ifndef NDEBUG	
 	debug_pollkeys(key);

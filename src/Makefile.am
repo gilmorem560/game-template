@@ -14,6 +14,7 @@ main_SOURCES = \
 	modes/actor_test_obj/actors/tetrahedron.c \
 	modes/actor_test_obj/nodes/environment.c \
 	modes/actor_test_obj/nodes/camera.c \
+	modes/actor_test_obj/nodes/orbit.c \
 	modes/actor_test_obj/nodes/player.c \
 	scene/actor.c \
 	scene/collision/collision_box.c \

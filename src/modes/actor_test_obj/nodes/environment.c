@@ -13,7 +13,7 @@ void environment_init(node *this)
 
 void environment_free(node *this)
 {
-	actor_routine(this->node_actor, AR_FREE);
+	node_free(this);
 	
 	return;
 }

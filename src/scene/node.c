@@ -126,7 +126,7 @@ void node_prunechildnode(node *this, unsigned int index)
 	int newpos = 0;
 	node **pruned_children = malloc((this->children_count - 1) * sizeof (node *));
 	
-	for (child = 0; child = this->children_count; child++) {
+	for (child = 0; child < this->children_count; child++) {
 		if (child == index)
 			continue;
 		pruned_children[newpos++] = this->children[child];

@@ -117,8 +117,9 @@ void scene_revivenode(scene *graph, signed short node_id)
 /*
  * setchildnode - sets a child node in the scene
  */
-void scene_setchildnode(scene *graph, signed int parent, signed int child)
+int scene_setchildnode(scene *graph, signed int parent, signed int child)
 {
+	int retval = -1;
 	if (parent > graph->node_count)
 		fprintf(stderr, "parent node %d not in node collection\n", parent);
 	else if (child > graph->node_count)
@@ -128,9 +129,9 @@ void scene_setchildnode(scene *graph, signed int parent, signed int child)
 	else if (graph->nodes[child] == NULL)
 		fprintf(stderr, "child node %d not defined\n", child);
 	else
-		node_addchildnode(graph->nodes[parent], graph->nodes[child]);
+		retval = node_addchildnode(graph->nodes[parent], graph->nodes[child]);
 	
-	return;
+	return retval;
 }
 
 /* ==================== Node Collision ==================== */
