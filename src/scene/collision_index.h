@@ -8,7 +8,7 @@
 extern "C" {
 #endif /* __cplusplus */
 	
-#include "../primitives/collision.h"
+#include "collision.h"
 	
 /* collision planning
  * ------------------

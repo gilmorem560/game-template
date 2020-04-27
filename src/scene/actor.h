@@ -9,24 +9,24 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* collision objects */
-#include "../primitives/collision.h"
+#include "collision.h"
 
 /*
  * an actor is a type object
- * an actor has a current:
+ * an actor has:
  *  type - the type of actor, this is a property used by modes
  * 			actor itself does not define any types other than null
- *  routine_index - the routine value being run currently
  *  collision_data - collision info structure
- *  properties - properties of the object itself
- * 	GL arrays - arrays of data used for rendering in GL
+ *  properties - properties of the object itself, implementation defined
  *  render - render function, performs based on other properties
+ * 	geometry arrays - arrays of data used for rendering
  * 	routine - function that routes object routines
  * 		three routine values are defined
  * 		-1 - null
  * 		0 - init
  * 		1 - free
  * 		all others are implementation defined
+ *  routine_index - the routine value being run currently
  * 
  *  implementation:
  * 		enumerate/define mode's actor types
@@ -39,15 +39,15 @@ extern "C" {
  */
 typedef struct actor {
 	signed short type;
-	signed char routine_index;
 	collision collision_data;
 	void *properties;
+	void (*render)(struct actor *this);
 	double *vertex_array;
 	double *normal_array;
 	double *color_array;
 	unsigned char *vao_indicies;
-	void (*render)(struct actor *this);
 	void (*routine)(struct actor *this);
+	signed char routine_index;
 } actor;
 #define AT_NULL		-1
 

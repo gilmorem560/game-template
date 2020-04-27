@@ -1,14 +1,15 @@
 /*
  * veccomp - vector components
  */
-#include "macros.h"
-#include "veccomp.h"
+#include "../../util/macros.h"
+#include "vect.h"
 
 /*
  * veccomp2d_calc - calculate the components of a 2D vector with given magnitude and angle
  */
-void veccomp2d_calc(double magnitude, double angle, veccomp2d *new)
+void veccomp2d_calc(double magnitude, double angle, vect_component *new)
 {	
+	
 	new->x = magnitude * cos(degtorad(angle));
 	new->y = magnitude * sin(degtorad(angle));
 		

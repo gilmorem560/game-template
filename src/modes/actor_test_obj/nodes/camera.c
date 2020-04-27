@@ -8,7 +8,7 @@
  */
 void camera_refresh(node *this)
 {
-	veccomp2d xrot = { 0.0, 0.0 };
+	vect_component xrot = { 0.0, 0.0 };
 	veccomp2d_calc(1.0, this->rotation.x, &xrot);
 	
 	glRotated(this->rotation.x, 0.0, 1.0, 0.0);
@@ -21,7 +21,7 @@ void camera_routine(node *this, node *player)
 	double camera_dist_x, camera_dist_y, camera_dist_z, camera_dist_z_adj;
 	double camera_dist;
 	double camera_dist_planar;
-	veccomp2d camera_xz = { 0.0, 0.0 };
+	vect_component camera_xz = { 0.0, 0.0 };
 	
 	/* camera is *always* one unit above player */
 	this->position.y = player->position.y + 1.2;

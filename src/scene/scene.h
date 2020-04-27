@@ -87,6 +87,7 @@ signed short scene_addnode(scene *graph, signed short type, void (*render)(node 
 void scene_switchactivenode(scene *graph, signed short node_id);
 void scene_revivenode(scene *graph, signed short node_id);
 
+/* child collection management */
 void scene_setchildnode(scene *graph, signed int parent, signed int child);
 
 /* ==================== Node Collision ==================== */

@@ -112,6 +112,8 @@ void scene_revivenode(scene *graph, signed short node_id)
  * 
  */
 
+/* child collection management */
+
 /*
  * setchildnode - sets a child node in the scene
  */

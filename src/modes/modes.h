@@ -15,6 +15,10 @@ extern "C" {
 #include "../input/input.h"
 /* basic objects */
 #include "../graphics/primitives/prim.h"
+/* vector calculations */
+#include "../graphics/primitives/vect.h"
+/* scene graphing */
+#include "../scene/scene.h"
 /* useful macros */
 #include "../util/macros.h"
 	

@@ -11,7 +11,7 @@ extern "C" {
 #include <stdbool.h>
 
 /* shape primitives for complex collision */
-#include "prim.h"
+#include "../graphics/primitives/prim.h"
 
 /* collision shape
  * 

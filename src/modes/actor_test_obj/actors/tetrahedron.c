@@ -1,9 +1,9 @@
 /*
- * cube - a normaler than average cube
+ * tetrahedron - a normaler than average tetrahedron
  */ 
 #include "../actors.h"
 
-/* at_cube - a normaler than average cube */
+/* at_tet - a normaler than average tetrahedron */
 static GLdouble at_tet_vertex[12] = { 
 	0.0, -1.0, -1.0
 	,1.0, -1.0, 1.0

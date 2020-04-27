@@ -20,7 +20,7 @@ void player_free(node *this)
 
 void player_processinput(node *this)
 {
-	veccomp2d camera_xz = { 0.0, 0.0 };
+	vect_component camera_xz = { 0.0, 0.0 };
 		
 	/* determine current x normal */ 
 	veccomp2d_calc(1.0, graph->camera->rotation.x, &camera_xz);

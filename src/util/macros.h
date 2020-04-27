@@ -14,12 +14,12 @@ extern "C" {
 #define M_PI	3.14159265358979323846264
 #endif /* M_PI */
 
-#define	degtorad(x)	(x / 360.0) * 2.0 * M_PI
-#define radtodeg(x) (x * 180.0) / M_PI
-#define pointdistance(x, y) sqrt((y[0] - x[0])*(y[0] - x[0]) + (y[1] - x[1])*(y[1] - x[1]) + (y[2] - x[2])*(y[2] - x[2]))
-#define dotprod2d(x,y) x[0]*y[0] + x[1]*y[1]
-#define dotprod3d(x,y) x[0]*y[0] + x[1]*y[1] + x[2]*y[2];
-#define hypotenuse(x,y) sqrt(x*x + y*y)
+#define	degtorad(deg)		(deg / 360.0) * 2.0 * M_PI
+#define radtodeg(rad)		(rad * 180.0) / M_PI
+#define pointdistance(a, b)	sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y) + (b.z - a.z)*(b.z - a.z))
+#define dotprod2d(a,b)		a.x*b.x + a.y*b.y
+#define dotprod3d(a,b)		a.x*b.x + a.y*b.y + a.z*b.z
+#define hypotenuse(a,b)		sqrt(a*a + b*b)
 
 /* debugging functionality */
 
@@ -55,7 +55,7 @@ extern "C" {
 /* f - fullscreen */		if (key & KEY_F) { setfullscreen(); key &= ~KEY_F; } \
 /* v - uncapture mouse */	if (key & KEY_V) { mouse_captured = false; debug_cursor_changed = true; } \
 /* c - uncapture mouse */	if (key & KEY_C) { mouse_captured = true;  debug_cursor_changed = true; } \
-/* b - break (gdb) */		if (key & KEY_B) GDB_INTERRUPT \
+/* b - break (gdb) */		if (key & KEY_B) GDB_INTERRUPT	/* useful to then plant a breakpoint somewhere */ \
 						}
 
 #define debug_init \
@@ -64,7 +64,7 @@ extern "C" {
 	isfullscreen = false;			/* debug in a window */
 
 #else
-#define debug_init
+#define debug_init	/* this is lazy... */
 #endif /* NDEBUG */
 
 #ifdef __cplusplus

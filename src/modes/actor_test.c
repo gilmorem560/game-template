@@ -2,7 +2,7 @@
  * actor_test - a test of scene graphs
  */
 #include "actor_test.h"
-#include "actor_test/nodes.h"								  
+#include "actor_test_obj/nodes.h"								  
 								  
 static GLfloat fog_color[] = { 0.3f, 0.3f, 0.3f, 1.0f };
 
