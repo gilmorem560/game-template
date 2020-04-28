@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Source Files\gfx">
       <UniqueIdentifier>{b0795ff9-af0d-4689-9aa5-d3344e51b162}</UniqueIdentifier>
     </Filter>
@@ -27,12 +23,6 @@
     </Filter>
     <Filter Include="Header Files\wgl">
       <UniqueIdentifier>{9ff79dd5-c712-47a5-b272-c8eea7d6a5bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\data">
-      <UniqueIdentifier>{983f9f7b-a250-4813-a8fe-cbc2d23edb26}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\data\textures">
-      <UniqueIdentifier>{a58543b1-e451-49f9-8eeb-58b7a45fa8d0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\mode\actor_test_obj">
       <UniqueIdentifier>{c5de7ca3-2fae-4437-b3a9-95b2c2a90387}</UniqueIdentifier>
@@ -182,13 +172,5 @@
     <ClInclude Include="src\graphics\primitives\vect.h">
       <Filter>Header Files\prim</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\textures\rgba_font.bin">
-      <Filter>Resource Files\data\textures</Filter>
-    </None>
-    <None Include="data\textures\rgba_menu.bin">
-      <Filter>Resource Files\data\textures</Filter>
-    </None>
   </ItemGroup>
 </Project>

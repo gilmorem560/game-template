@@ -199,6 +199,7 @@ bool actor_test_input(void)
 	/* s - back */		if (key & KEY_S) player_move_forward -= motion_constant;
 	/* a - left */		if (key & KEY_A) player_move_right -= motion_constant;
 	/* d - right */ 	if (key & KEY_D) player_move_right += motion_constant;
+	/* q - quit */	    if (key & KEY_Q) quit = true;
 	
 	/* e - jump */		if (key & KEY_E) { trigger_jump = true; }
 	
