@@ -28,10 +28,12 @@ texture_rgba *texture_rgba_new(FILE *rgba_data, size_t width, size_t height, siz
 	return new_texture;
 }
 
-void texture_free(texture *texture_0)
+void texture_free(texture *this)
 {
-	free(texture_0->data);
-	free(texture_0);
+	free(this->data);
+	free(this);
+	
+	return;
 }
 
 

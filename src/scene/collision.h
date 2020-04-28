@@ -10,6 +10,9 @@ extern "C" {
 	
 #include <stdbool.h>
 
+/* shape primitives for complex collision */
+#include "../graphics/primitives/prim.h"
+
 /* collision shape
  * 
  * shape types implemented by the engine
@@ -26,7 +29,7 @@ typedef enum {
  * 
  *  collision is either a shape or implementation-defined mesh collision
  */
-typedef struct {
+typedef struct collision {
 	bool mesh;
 	e_collision_shape shape;
 	double *dims;

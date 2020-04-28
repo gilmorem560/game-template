@@ -48,6 +48,10 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case 'b':
             key |= KEY_B;
             break;
+		case 'C':
+		case 'c':
+			key |= KEY_C;
+			break;
 	    case 'D':
         case 'd':
             key |= KEY_D;
@@ -75,6 +79,10 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case 'T':
 		case 't':
 			key |= KEY_T;
+			break;
+		case 'V':
+		case 'v':
+			key |= KEY_V;
 			break;
 	    case 'W':
         case 'w':
@@ -135,6 +143,10 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case 'b':
             key &= ~KEY_B;
             break;
+		case 'C':
+		case 'c':
+			key &= ~KEY_C;
+			break;
 	    case 'D':
         case 'd':
             key &= ~KEY_D;
@@ -162,6 +174,10 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case 'T':
 		case 't':
 			key &= ~KEY_T;
+			break;
+		case 'V':
+		case 'v':
+			key &= ~KEY_V;
 			break;
 	    case 'W':
         case 'w':

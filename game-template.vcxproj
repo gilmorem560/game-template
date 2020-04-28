@@ -37,6 +37,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>Spectre</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -50,6 +51,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>Spectre</SpectreMitigation>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -85,28 +87,50 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ExceptionHandling>false</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <TurnOffAssemblyGeneration>
+      </TurnOffAssemblyGeneration>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <OptimizeReferences>false</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ExceptionHandling>false</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <TurnOffAssemblyGeneration>
+      </TurnOffAssemblyGeneration>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <OptimizeReferences>false</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,14 +139,32 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat />
+      <SupportJustMyCode />
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers />
+      <ExceptionHandling>false</ExceptionHandling>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>
+      </GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <TurnOffAssemblyGeneration>
+      </TurnOffAssemblyGeneration>
+      <ImageHasSafeExceptionHandlers />
+      <ProgramDatabaseFile />
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,45 +173,43 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat />
+      <SupportJustMyCode />
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <ExceptionHandling>false</ExceptionHandling>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>
+      </GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <TurnOffAssemblyGeneration>
+      </TurnOffAssemblyGeneration>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
+      <ProgramDatabaseFile />
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\graphics\objects\actor.c" />
-    <ClCompile Include="src\graphics\objects\collision_index.c" />
-    <ClCompile Include="src\graphics\objects\hedrons.c" />
-    <ClCompile Include="src\graphics\objects\prisms.c" />
-    <ClCompile Include="src\graphics\objects\scene.c" />
-    <ClCompile Include="src\graphics\objects\texture.c" />
-    <ClCompile Include="src\graphics\primitives\collision\collision_box.c" />
-    <ClCompile Include="src\graphics\primitives\collision\collision_router.c" />
-    <ClCompile Include="src\graphics\primitives\grid2d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\grid3d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\grid2d.c" />
+    <ClCompile Include="src\graphics\primitives\grid3d.c" />
+    <ClCompile Include="src\graphics\primitives\point2d.c" />
+    <ClCompile Include="src\graphics\primitives\point3d.c" />
+    <ClCompile Include="src\graphics\primitives\poly2d.c" />
+    <ClCompile Include="src\graphics\primitives\poly3d.c" />
+    <ClCompile Include="src\graphics\primitives\vect.c" />
     <ClCompile Include="src\main.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\point2d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\point3d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\poly3d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\poly2d.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
     </ClCompile>
     <ClCompile Include="src\graphics\contexts\wglcontext.c">
@@ -179,40 +219,37 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
     </ClCompile>
     <ClCompile Include="src\modes\actor_test.c" />
-    <ClCompile Include="src\modes\diamond.c" />
-    <ClCompile Include="src\modes\map.c" />
-    <ClCompile Include="src\modes\sandbox.c" />
-    <ClCompile Include="src\modes\scene_test.c" />
-    <ClCompile Include="src\modes\stage.c" />
-    <ClCompile Include="src\util\veccomp.c" />
+    <ClCompile Include="src\modes\actor_test_obj\actors\cube.c" />
+    <ClCompile Include="src\modes\actor_test_obj\actors\tetrahedron.c" />
+    <ClCompile Include="src\modes\actor_test_obj\nodes\camera.c" />
+    <ClCompile Include="src\modes\actor_test_obj\nodes\environment.c" />
+    <ClCompile Include="src\modes\actor_test_obj\nodes\orbit.c" />
+    <ClCompile Include="src\modes\actor_test_obj\nodes\player.c" />
+    <ClCompile Include="src\scene\actor.c" />
+    <ClCompile Include="src\scene\collision\collision_box.c" />
+    <ClCompile Include="src\scene\collision\collision_router.c" />
+    <ClCompile Include="src\scene\collision_index.c" />
+    <ClCompile Include="src\scene\node.c" />
+    <ClCompile Include="src\scene\scene.c" />
+    <ClCompile Include="src\scene\texture.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assets\assets.h" />
     <ClInclude Include="src\graphics\contexts\glcontext.h" />
-    <ClInclude Include="src\graphics\objects\actor.h" />
-    <ClInclude Include="src\graphics\objects\collision_index.h" />
-    <ClInclude Include="src\graphics\objects\hedrons.h" />
-    <ClInclude Include="src\graphics\objects\prisms.h" />
-    <ClInclude Include="src\graphics\objects\scene.h" />
-    <ClInclude Include="src\graphics\objects\texture.h" />
-    <ClInclude Include="src\graphics\primitives\collision.h" />
+    <ClInclude Include="src\graphics\contexts\wglcontext.h" />
     <ClInclude Include="src\graphics\primitives\coord.h" />
     <ClInclude Include="src\graphics\primitives\prim.h" />
-    <ClInclude Include="src\graphics\contexts\wglcontext.h" />
+    <ClInclude Include="src\graphics\primitives\vect.h" />
     <ClInclude Include="src\input\input.h" />
     <ClInclude Include="src\modes\actor_test.h" />
-    <ClInclude Include="src\modes\diamond.h" />
-    <ClInclude Include="src\modes\map.h" />
     <ClInclude Include="src\modes\modes.h" />
-    <ClInclude Include="src\modes\sandbox.h" />
-    <ClInclude Include="src\modes\scene_test.h" />
-    <ClInclude Include="src\modes\stage.h" />
+    <ClInclude Include="src\scene\actor.h" />
+    <ClInclude Include="src\scene\collision.h" />
+    <ClInclude Include="src\scene\collision_index.h" />
+    <ClInclude Include="src\scene\node.h" />
+    <ClInclude Include="src\scene\scene.h" />
+    <ClInclude Include="src\scene\texture.h" />
     <ClInclude Include="src\util\macros.h" />
-    <ClInclude Include="src\util\veccomp.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\textures\rgba_font.bin" />
-    <None Include="data\textures\rgba_menu.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,6 +6,7 @@
 **/Makefile.in
 **/*.o
 **/*.a
+/archived
 /autom4te.cache
 /aclocal.m4
 /config.h
@@ -18,6 +19,8 @@
 /TODO
 
 # Visual Studio Files
+/Debug
+/Release
 /x64/Debug
 /x64/Release
 *.db
