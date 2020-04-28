@@ -19,7 +19,6 @@ void camera_refresh(node *this)
 void camera_routine(node *this, node *player)
 {
 	double camera_dist_x, camera_dist_y, camera_dist_z, camera_dist_z_adj;
-	double camera_dist;
 	double camera_dist_planar;
 	vect_component camera_xz = { 0.0, 0.0 };
 	

@@ -143,33 +143,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\graphics\objects\actor.c" />
-    <ClCompile Include="src\graphics\objects\collision_index.c" />
-    <ClCompile Include="src\graphics\objects\hedrons.c" />
-    <ClCompile Include="src\graphics\objects\prisms.c" />
-    <ClCompile Include="src\graphics\objects\scene.c" />
-    <ClCompile Include="src\graphics\objects\texture.c" />
-    <ClCompile Include="src\graphics\primitives\collision\collision_box.c" />
-    <ClCompile Include="src\graphics\primitives\collision\collision_router.c" />
-    <ClCompile Include="src\graphics\primitives\grid2d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\grid3d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\grid2d.c" />
+    <ClCompile Include="src\graphics\primitives\grid3d.c" />
+    <ClCompile Include="src\graphics\primitives\point2d.c" />
+    <ClCompile Include="src\graphics\primitives\point3d.c" />
+    <ClCompile Include="src\graphics\primitives\poly2d.c" />
+    <ClCompile Include="src\graphics\primitives\poly3d.c" />
+    <ClCompile Include="src\graphics\primitives\vect.c" />
     <ClCompile Include="src\main.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\point2d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\point3d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\poly3d.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\poly2d.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
     </ClCompile>
     <ClCompile Include="src\graphics\contexts\wglcontext.c">
@@ -179,36 +160,37 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
     </ClCompile>
     <ClCompile Include="src\modes\actor_test.c" />
-    <ClCompile Include="src\modes\diamond.c" />
-    <ClCompile Include="src\modes\map.c" />
-    <ClCompile Include="src\modes\sandbox.c" />
-    <ClCompile Include="src\modes\scene_test.c" />
-    <ClCompile Include="src\modes\stage.c" />
-    <ClCompile Include="src\util\veccomp.c" />
+    <ClCompile Include="src\modes\actor_test_obj\actors\cube.c" />
+    <ClCompile Include="src\modes\actor_test_obj\actors\tetrahedron.c" />
+    <ClCompile Include="src\modes\actor_test_obj\nodes\camera.c" />
+    <ClCompile Include="src\modes\actor_test_obj\nodes\environment.c" />
+    <ClCompile Include="src\modes\actor_test_obj\nodes\orbit.c" />
+    <ClCompile Include="src\modes\actor_test_obj\nodes\player.c" />
+    <ClCompile Include="src\scene\actor.c" />
+    <ClCompile Include="src\scene\collision\collision_box.c" />
+    <ClCompile Include="src\scene\collision\collision_router.c" />
+    <ClCompile Include="src\scene\collision_index.c" />
+    <ClCompile Include="src\scene\node.c" />
+    <ClCompile Include="src\scene\scene.c" />
+    <ClCompile Include="src\scene\texture.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assets\assets.h" />
     <ClInclude Include="src\graphics\contexts\glcontext.h" />
-    <ClInclude Include="src\graphics\objects\actor.h" />
-    <ClInclude Include="src\graphics\objects\collision_index.h" />
-    <ClInclude Include="src\graphics\objects\hedrons.h" />
-    <ClInclude Include="src\graphics\objects\prisms.h" />
-    <ClInclude Include="src\graphics\objects\scene.h" />
-    <ClInclude Include="src\graphics\objects\texture.h" />
-    <ClInclude Include="src\graphics\primitives\collision.h" />
+    <ClInclude Include="src\graphics\contexts\wglcontext.h" />
     <ClInclude Include="src\graphics\primitives\coord.h" />
     <ClInclude Include="src\graphics\primitives\prim.h" />
-    <ClInclude Include="src\graphics\contexts\wglcontext.h" />
+    <ClInclude Include="src\graphics\primitives\vect.h" />
     <ClInclude Include="src\input\input.h" />
     <ClInclude Include="src\modes\actor_test.h" />
-    <ClInclude Include="src\modes\diamond.h" />
-    <ClInclude Include="src\modes\map.h" />
     <ClInclude Include="src\modes\modes.h" />
-    <ClInclude Include="src\modes\sandbox.h" />
-    <ClInclude Include="src\modes\scene_test.h" />
-    <ClInclude Include="src\modes\stage.h" />
+    <ClInclude Include="src\scene\actor.h" />
+    <ClInclude Include="src\scene\collision.h" />
+    <ClInclude Include="src\scene\collision_index.h" />
+    <ClInclude Include="src\scene\node.h" />
+    <ClInclude Include="src\scene\scene.h" />
+    <ClInclude Include="src\scene\texture.h" />
     <ClInclude Include="src\util\macros.h" />
-    <ClInclude Include="src\util\veccomp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\textures\rgba_font.bin" />

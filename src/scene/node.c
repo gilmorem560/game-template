@@ -122,7 +122,7 @@ unsigned short node_addchildnode(node *this, node *child)
  */
 void node_prunechildnode(node *this, unsigned int index)
 {
-	int child;
+	unsigned int child;
 	int newpos = 0;
 	node **pruned_children = malloc((this->children_count - 1) * sizeof (node *));
 	

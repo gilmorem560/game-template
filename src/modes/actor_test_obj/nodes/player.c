@@ -89,7 +89,7 @@ void player_processinput(node *this)
 
 void player_applyconstraints(node *this)
 {
-	signed int child;
+	unsigned int child;
 	vect_component orbit_comps = { 0.0, 0.0 };
 	
 	/* handle children */

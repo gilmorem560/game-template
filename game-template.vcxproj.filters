@@ -16,9 +16,6 @@
     <Filter Include="Source Files\gfx">
       <UniqueIdentifier>{b0795ff9-af0d-4689-9aa5-d3344e51b162}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\obj">
-      <UniqueIdentifier>{98c0bd7d-c96b-4822-a775-67d2a6255efb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\input">
       <UniqueIdentifier>{8d5fb6b5-b880-4ad1-a235-830a9e9eb1ba}</UniqueIdentifier>
     </Filter>
@@ -28,17 +25,8 @@
     <Filter Include="Header Files\mode">
       <UniqueIdentifier>{bef8505e-d489-4ce8-8f56-318ffa5a09b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\obj">
-      <UniqueIdentifier>{bf5f4da7-e8fd-4856-a854-59b58ac82404}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\wgl">
       <UniqueIdentifier>{9ff79dd5-c712-47a5-b272-c8eea7d6a5bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\obj\coord">
-      <UniqueIdentifier>{d19d9a26-e91c-47cd-a591-a75c4e785305}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\obj\prim">
-      <UniqueIdentifier>{993e7676-aac2-45e4-8bd2-c5dc89c4c403}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files\data">
       <UniqueIdentifier>{983f9f7b-a250-4813-a8fe-cbc2d23edb26}</UniqueIdentifier>
@@ -46,37 +34,34 @@
     <Filter Include="Resource Files\data\textures">
       <UniqueIdentifier>{a58543b1-e451-49f9-8eeb-58b7a45fa8d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\util">
-      <UniqueIdentifier>{1e656dd0-50ee-4d6a-aecb-1fb3b9f7a250}</UniqueIdentifier>
+    <Filter Include="Source Files\mode\actor_test_obj">
+      <UniqueIdentifier>{c5de7ca3-2fae-4437-b3a9-95b2c2a90387}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\util">
-      <UniqueIdentifier>{854bd0cd-243c-4e01-b9c2-5102dc972d40}</UniqueIdentifier>
+    <Filter Include="Source Files\scene">
+      <UniqueIdentifier>{f5765169-8d76-447f-9733-f31c97c7fadc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\scene\collision">
+      <UniqueIdentifier>{bc82a5c1-9c44-4c17-8e69-b74e0f979468}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mode\actor_test_obj\actors">
+      <UniqueIdentifier>{4fad2d23-c30d-4e89-9afb-1a8a43810ec5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mode\actor_test_obj\nodes">
+      <UniqueIdentifier>{6a02e8e3-837a-4f14-8ce2-c11cd4041b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\prim">
+      <UniqueIdentifier>{6cb6ac43-a6bd-44c4-b402-4b418f265068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\scene">
+      <UniqueIdentifier>{2085b9d9-b813-4825-81dd-31731410bf44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\prim">
+      <UniqueIdentifier>{46e68572-043e-4f2b-9c94-e37514456c5b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\objects\hedrons.c">
-      <Filter>Source Files\obj</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\grid2d.c">
-      <Filter>Source Files\obj\coord</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\grid3d.c">
-      <Filter>Source Files\obj\coord</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\point2d.c">
-      <Filter>Source Files\obj\coord</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\point3d.c">
-      <Filter>Source Files\obj\coord</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\poly2d.c">
-      <Filter>Source Files\obj\prim</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\poly3d.c">
-      <Filter>Source Files\obj\prim</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\contexts\wglcontext.c">
       <Filter>Source Files\gfx</Filter>
@@ -84,47 +69,68 @@
     <ClCompile Include="src\input\wglevent.c">
       <Filter>Source Files\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\modes\diamond.c">
-      <Filter>Source Files\mode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\modes\map.c">
-      <Filter>Source Files\mode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\modes\sandbox.c">
-      <Filter>Source Files\mode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\modes\stage.c">
-      <Filter>Source Files\mode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\modes\scene_test.c">
-      <Filter>Source Files\mode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\objects\scene.c">
-      <Filter>Source Files\obj</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\objects\texture.c">
-      <Filter>Source Files\obj</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\collision\collision_box.c">
-      <Filter>Source Files\obj\prim</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\primitives\collision\collision_router.c">
-      <Filter>Source Files\obj\prim</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\objects\actor.c">
-      <Filter>Source Files\obj</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\objects\collision_index.c">
-      <Filter>Source Files\obj</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\objects\prisms.c">
-      <Filter>Source Files\obj</Filter>
-    </ClCompile>
-    <ClCompile Include="src\util\veccomp.c">
-      <Filter>Source Files\util</Filter>
-    </ClCompile>
     <ClCompile Include="src\modes\actor_test.c">
       <Filter>Source Files\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\actor.c">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\collision_index.c">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\node.c">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\scene.c">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\texture.c">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\collision\collision_box.c">
+      <Filter>Source Files\scene\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\collision\collision_router.c">
+      <Filter>Source Files\scene\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\actors\cube.c">
+      <Filter>Source Files\mode\actor_test_obj\actors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\actors\tetrahedron.c">
+      <Filter>Source Files\mode\actor_test_obj\actors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\nodes\camera.c">
+      <Filter>Source Files\mode\actor_test_obj\nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\nodes\environment.c">
+      <Filter>Source Files\mode\actor_test_obj\nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\nodes\orbit.c">
+      <Filter>Source Files\mode\actor_test_obj\nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\nodes\player.c">
+      <Filter>Source Files\mode\actor_test_obj\nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\grid2d.c">
+      <Filter>Source Files\prim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\grid3d.c">
+      <Filter>Source Files\prim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\point2d.c">
+      <Filter>Source Files\prim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\point3d.c">
+      <Filter>Source Files\prim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\poly2d.c">
+      <Filter>Source Files\prim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\poly3d.c">
+      <Filter>Source Files\prim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\primitives\vect.c">
+      <Filter>Source Files\prim</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -134,23 +140,8 @@
     <ClInclude Include="src\util\macros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\modes\diamond.h">
-      <Filter>Header Files\mode</Filter>
-    </ClInclude>
-    <ClInclude Include="src\modes\map.h">
-      <Filter>Header Files\mode</Filter>
-    </ClInclude>
-    <ClInclude Include="src\modes\sandbox.h">
-      <Filter>Header Files\mode</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\objects\hedrons.h">
-      <Filter>Header Files\obj</Filter>
-    </ClInclude>
     <ClInclude Include="src\modes\modes.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\modes\stage.h">
-      <Filter>Header Files\mode</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\contexts\glcontext.h">
       <Filter>Header Files</Filter>
@@ -158,41 +149,38 @@
     <ClInclude Include="src\graphics\contexts\wglcontext.h">
       <Filter>Header Files\wgl</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\primitives\coord.h">
-      <Filter>Header Files\obj</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\primitives\prim.h">
-      <Filter>Header Files\obj</Filter>
-    </ClInclude>
     <ClInclude Include="src\assets\assets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\modes\scene_test.h">
-      <Filter>Header Files\mode</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\objects\scene.h">
-      <Filter>Header Files\obj</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\objects\texture.h">
-      <Filter>Header Files\obj</Filter>
-    </ClInclude>
-    <ClInclude Include="src\util\veccomp.h">
-      <Filter>Header Files\util</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\objects\actor.h">
-      <Filter>Header Files\obj</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\objects\collision_index.h">
-      <Filter>Header Files\obj</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\objects\prisms.h">
-      <Filter>Header Files\obj</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\primitives\collision.h">
-      <Filter>Header Files\obj</Filter>
-    </ClInclude>
     <ClInclude Include="src\modes\actor_test.h">
       <Filter>Header Files\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\actor.h">
+      <Filter>Header Files\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\collision.h">
+      <Filter>Header Files\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\collision_index.h">
+      <Filter>Header Files\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\node.h">
+      <Filter>Header Files\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\scene.h">
+      <Filter>Header Files\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\texture.h">
+      <Filter>Header Files\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\primitives\coord.h">
+      <Filter>Header Files\prim</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\primitives\prim.h">
+      <Filter>Header Files\prim</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\primitives\vect.h">
+      <Filter>Header Files\prim</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
