@@ -29,7 +29,7 @@ typedef enum {
  * 
  *  collision is either a shape or implementation-defined mesh collision
  */
-typedef struct {
+typedef struct collision {
 	bool mesh;
 	e_collision_shape shape;
 	double *dims;

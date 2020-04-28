@@ -61,7 +61,7 @@ extern "C" {
  * 		mesh data must be formatted or a wrapper providing 
  * 		necessary meta-data implemented
  */
-typedef struct {
+typedef struct collision_index {
 	int object_id;
 	int object_type;
 	collision *collision_data;

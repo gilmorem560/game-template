@@ -9,13 +9,13 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* a vector */
-typedef struct {
+typedef struct vect {
 	double mag;
 	double ang;
 } vect;
 
 /* vector components */
-typedef struct {
+typedef struct vect_component {
 	double x;
 	double y;
 } vect_component;

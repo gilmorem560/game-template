@@ -61,7 +61,7 @@ typedef enum {
  *  utilizing these nodes allows for the use of baked in node collision and
  *  node manipulation functionality but is not necessary to scene construction
  */
-typedef struct {
+typedef struct scene {
 	double prj[6];
 	projection_type prj_type;
 	
