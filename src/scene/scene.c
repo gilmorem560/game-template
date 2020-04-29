@@ -6,6 +6,41 @@
 #include <stdlib.h>
 #include "scene.h"
 
+#define sabs(a) (unsigned short) fabs((double) a)
+
+/* ==================== Scene Creation and Destruction ==================== */
+
+/*
+ * new - make a new scene with an uninitialized node collection
+ */
+scene *scene_new(void)
+{
+	scene *this = malloc(sizeof (scene));
+	this->nodes = NULL;
+	this->node_count = 0;
+	
+	this->root_node = NULL;
+	this->environment = NULL;
+	this->camera = NULL;
+	this->player = NULL;
+
+	return this;
+}
+
+
+void scene_free(scene *this)
+{
+	unsigned short node_index;
+	
+	for (node_index = 0; node_index < this->node_count; node_index++) {
+		node_routine(this->nodes[node_index], NR_FREE);
+	}
+	free(this->nodes);
+	free(this);
+	
+	return;
+}
+
 /* ==================== Scene Display Settings ==================== */
 
 /*
@@ -16,15 +51,15 @@
  * 	PROJECTION_ORTHAGONAL
  *	PROJECTION_FRUSTUM
  */
-void scene_projection_new(scene *graph, projection_type type, double x_axis, double y_axis, double near_plane, double far_plane)
+void scene_projection_new(scene *this, projection_type type, double x_axis, double y_axis, double near_plane, double far_plane)
 {	
-	graph->prj[0] = -x_axis;
-	graph->prj[1] = x_axis;
-	graph->prj[2] = -y_axis;
-	graph->prj[3] = y_axis;
-	graph->prj[4] = near_plane;
-	graph->prj[5] = far_plane;
-	graph->prj_type = type;
+	this->prj[0] = -x_axis;
+	this->prj[1] = x_axis;
+	this->prj[2] = -y_axis;
+	this->prj[3] = y_axis;
+	this->prj[4] = near_plane;
+	this->prj[5] = far_plane;
+	this->prj_type = type;
 	
 	return;
 }
@@ -36,24 +71,22 @@ void scene_projection_new(scene *graph, projection_type type, double x_axis, dou
 /* primary collection management */
 
 /*
- * addnode - adds a new node to the scene graph with a given type and core
+ * addnode - adds a new node to the scene with a given type and core
  * 
  * a node has a core made up of render and routine functions
  * these are implemented by a "mode-node" if you will, each game mode
  * implements its own distinct set of node objects, each "inheriting" these
  * basic constructs
  */
-signed short scene_addnode(scene *graph, signed short type, void (*render)(node *), void (*routine)(node *))
+unsigned short scene_addnode(scene *this, signed short type, void (*render)(node *), void (*routine)(node *))
 {
-	signed short id;
-	/* request a new slot in the node list, increment ID */
-	node **new_node = realloc(graph->nodes, ++graph->node_count * sizeof (node *));
-		graph->nodes = new_node;
-	id = graph->node_count - 1;
+	unsigned short id;
+	node **new_node = realloc(this->nodes, ++this->node_count * sizeof (node *));
+		this->nodes = new_node;
+	id = this->node_count - 1;
 	
-	/* create our node and initialize it */
-	graph->nodes[id] = node_new(id, type, render, routine);
-	node_routine(graph->nodes[id], NR_INIT);
+	this->nodes[id] = node_new(id, type, render, routine);
+	node_routine(this->nodes[id], NR_INIT);
 
 	return id;
 }
@@ -63,26 +96,10 @@ signed short scene_addnode(scene *graph, signed short type, void (*render)(node 
  * 
  * a deactivated node's functions will cease to perform
  */
-void scene_switchactivenode(scene *graph, signed short node_id)
+void scene_switchactivenode(scene *this, signed short node_id)
 {
-	graph->nodes[node_id]->id *= -1;
-	
-	return;
-}
-
-/*
- * revivenode - return a node to normal operation
- * 
- * revived nodes are simply activated in their respective slots in the
- * scene, currently no memory is ever cleared for dissociated nodes
- * but this could be implemented as buffering active records then realigning
- * the memory
- * 
- * pass a negative node_id to restore an object in an inactive state
- */
-void scene_revivenode(scene *graph, signed short node_id)
-{
-	graph->nodes[node_id]->id = node_id;
+	unsigned short node_index = sabs(node_id);
+		this->nodes[node_index]->id *= -1;
 	
 	return;
 }
@@ -117,50 +134,62 @@ void scene_revivenode(scene *graph, signed short node_id)
 /*
  * setchildnode - sets a child node in the scene
  */
-int scene_setchildnode(scene *graph, signed int parent, signed int child)
+int scene_setchildnode(scene *this, signed short parent_node, signed short child_node)
 {
 	int retval = -1;
-	if (parent > graph->node_count)
-		fprintf(stderr, "parent node %d not in node collection\n", parent);
-	else if (child > graph->node_count)
-		fprintf(stderr, "child node %d not in node collection\n", child);
-	else if (graph->nodes[parent] == NULL)
-		fprintf(stderr, "parent node %d not defined\n", parent);
-	else if (graph->nodes[child] == NULL)
-		fprintf(stderr, "child node %d not defined\n", child);
+	
+	if (parent_node > this->node_count)
+		fprintf(stderr, "parent node %d not present in node collection\n", parent_node);
+	else if (child_node > this->node_count)
+		fprintf(stderr, "child node %d not present in node collection\n", child_node);
+	else if (parent_node < 0)
+		fprintf(stderr, "parent node %d is inactive\n", parent_node);
+	else if (child_node < 0)
+		fprintf(stderr, "child node %d is inactive\n", child_node);
+	else if (this->nodes[parent_node] == NULL)
+		fprintf(stderr, "parent node %d not defined\n", parent_node);
+	else if (this->nodes[child_node] == NULL)
+		fprintf(stderr, "child node %d not defined\n", child_node);
 	else
-		retval = node_addchildnode(graph->nodes[parent], graph->nodes[child]);
+		retval = node_addchildnode(this->nodes[parent_node], this->nodes[child_node]);
 	
 	return retval;
 }
 
-/* ==================== Node Collision ==================== */
+/* ==================== Bounding Box ==================== */
  
-/* enforceboundingnode - enforce the scene's exterior bounding box on a given node
+/* enforceboundingnode - enforce the scene's exterior bounding box
  * 
- * it is the node's decision whether it will rely on the scene to bind it
- * so the node must call scene bounding in it's collision routine, ideally last,
- * even if this causes it to clip into another object, frequent scene bounding
- * correction is encouraged in complex activities near scene bounds
+ *  the mode should call this between movement and the render cycle if world bounding
+ *  is desired
+ *  will not process for null, inactive, or unbound objects
  */
-bool scene_enforceboundingnode(scene *graph, signed short node_id)
+void scene_enforcebounding(scene *this)
 {
-	if (graph->nodes[node_id]->position.x < graph->bounding_box[0])
-		graph->nodes[node_id]->position.x = graph->bounding_box[0];
-	else if (graph->nodes[node_id]->position.x > graph->bounding_box[1])
-		graph->nodes[node_id]->position.x = graph->bounding_box[1];
+	unsigned short node_index;
+	
+	for (node_index = 0; node_index < this->node_count; node_index++) {
+		if (this->nodes[node_index] == NULL						/* deleted */
+			|| this->nodes[node_index]->id < 0					/* inactive */
+			|| !this->nodes[node_index]->world_bind) continue;	/* and unbound dni */
+		
+		if (this->nodes[node_index]->position.x < this->bounding_box[0])
+			this->nodes[node_index]->position.x = this->bounding_box[0];
+		else if (this->nodes[node_index]->position.x > this->bounding_box[1])
+			this->nodes[node_index]->position.x = this->bounding_box[1];
 
-	if (graph->nodes[node_id]->position.y < graph->bounding_box[2])
-		graph->nodes[node_id]->position.y = graph->bounding_box[2];
-	else if (graph->nodes[node_id]->position.y > graph->bounding_box[3])
-		graph->nodes[node_id]->position.y = graph->bounding_box[3];
+		if (this->nodes[node_index]->position.y < this->bounding_box[2])
+			this->nodes[node_index]->position.y = this->bounding_box[2];
+		else if (this->nodes[node_index]->position.y > this->bounding_box[3])
+			this->nodes[node_index]->position.y = this->bounding_box[3];
 	
-	if (graph->nodes[node_id]->position.z < graph->bounding_box[4])
-		graph->nodes[node_id]->position.z = graph->bounding_box[4];
-	else if (graph->nodes[node_id]->position.z > graph->bounding_box[5])
-		graph->nodes[node_id]->position.z = graph->bounding_box[5];
+		if (this->nodes[node_index]->position.z < this->bounding_box[4])
+			this->nodes[node_index]->position.z = this->bounding_box[4];
+		else if (this->nodes[node_index]->position.z > this->bounding_box[5])
+			this->nodes[node_index]->position.z = this->bounding_box[5];
+	}
 	
-	return true;
+	return;
 }
 
 /* ==================== Node Manipulation ==================== */
@@ -168,9 +197,10 @@ bool scene_enforceboundingnode(scene *graph, signed short node_id)
 /*
  * positionnode - positions a node relative to world normal
  */
-void scene_positionnode(scene *graph, signed short node_id, point3d position)
+void scene_positionnode(scene *this, signed short node_id, point3d position)
 {
-	graph->nodes[node_id]->position = position;
+	if (node_id >= 0)
+		this->nodes[node_id]->position = position;
 	
 	return;
 }
@@ -178,9 +208,10 @@ void scene_positionnode(scene *graph, signed short node_id, point3d position)
 /*
  * rotatenode - rotates a node relative to node normal
  */
-void scene_rotatenode(scene *graph, signed short node_id, point3d angle)
+void scene_rotatenode(scene *this, signed short node_id, point3d angle)
 {
-	graph->nodes[node_id]->rotation = angle;
+	if (node_id >= 0)
+		this->nodes[node_id]->rotation = angle;
 	
 	return;
 }

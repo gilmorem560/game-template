@@ -19,17 +19,8 @@ main_SOURCES = \
 	scene/actor.c \
 	scene/collision/collision_box.c \
 	scene/collision/collision_router.c \
-	scene/collision_index.c \
 	scene/node.c \
 	scene/scene.c \
 	scene/texture.c \
 	main.c
-#old_SOURCES = \
-	graphics/objects/hedrons.c \
-	graphics/objects/prisms.c \
-	modes/diamond.c \
-	modes/map.c \
-	modes/sandbox.c \
-	modes/scene_test.c \
-	modes/stage.c
 main_LDFLAGS = -lX11

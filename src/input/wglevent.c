@@ -42,89 +42,89 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         switch (wParam) {
 	    case 'A':
         case 'a':
-            key |= KEY_A;
+            key_pressed |= KEY_A;
             break;
 	    case 'B':
         case 'b':
-            key |= KEY_B;
+            key_pressed |= KEY_B;
             break;
 		case 'C':
 		case 'c':
-			key |= KEY_C;
+			key_pressed |= KEY_C;
 			break;
 	    case 'D':
         case 'd':
-            key |= KEY_D;
+            key_pressed |= KEY_D;
             break;
 		case 'E':
 		case 'e':
-			key |= KEY_E;
+			key_pressed |= KEY_E;
 			break;
 		case 'F':
 		case 'f':
-			key |= KEY_F;
+			key_pressed |= KEY_F;
 			break;
         case 'Q':
         case 'q':
-            key |= KEY_Q;
+            key_pressed |= KEY_Q;
             break;
         case 'R':
         case 'r':
-            key |= KEY_R;
+            key_pressed |= KEY_R;
             break;
 	    case 'S':
         case 's':
-            key |= KEY_S;
+            key_pressed |= KEY_S;
             break;
 		case 'T':
 		case 't':
-			key |= KEY_T;
+			key_pressed |= KEY_T;
 			break;
 		case 'V':
 		case 'v':
-			key |= KEY_V;
+			key_pressed |= KEY_V;
 			break;
 	    case 'W':
         case 'w':
-            key |= KEY_W;
+            key_pressed |= KEY_W;
             break;
 	    case 'X':
         case 'x':
-            key |= KEY_X;
+            key_pressed |= KEY_X;
             break;
 	    case 'Z':
         case 'z':
-            key |= KEY_Z;
+            key_pressed |= KEY_Z;
             break;
 		case '0':
-			key |= KEY_0;
+			key_pressed |= KEY_0;
 			break;
 		case '1':
-			key |= KEY_1;
+			key_pressed |= KEY_1;
 			break;
 		case '2':
-			key |= KEY_2;
+			key_pressed |= KEY_2;
 			break;
 		case '3':
-			key |= KEY_3;
+			key_pressed |= KEY_3;
 			break;
 		case '4':
-			key |= KEY_4;
+			key_pressed |= KEY_4;
 			break;
 		case '5':
-			key |= KEY_5;
+			key_pressed |= KEY_5;
 			break;
 		case '6':
-			key |= KEY_6;
+			key_pressed |= KEY_6;
 			break;
 		case '7':
-			key |= KEY_7;
+			key_pressed |= KEY_7;
 			break;
 		case '8':
-			key |= KEY_8;
+			key_pressed |= KEY_8;
 			break;
 		case '9':
-			key |= KEY_9;
+			key_pressed |= KEY_9;
 			break;
         default:
             break;
@@ -137,89 +137,89 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         switch (wParam) {
 	    case 'A':
         case 'a':
-            key &= ~KEY_A;
+            key_pressed &= ~KEY_A;
             break;
 	    case 'B':
         case 'b':
-            key &= ~KEY_B;
+            key_pressed &= ~KEY_B;
             break;
 		case 'C':
 		case 'c':
-			key &= ~KEY_C;
+			key_pressed &= ~KEY_C;
 			break;
 	    case 'D':
         case 'd':
-            key &= ~KEY_D;
+            key_pressed &= ~KEY_D;
             break;
 		case 'E':
 		case 'e':
-			key &= ~KEY_E;
+			key_pressed &= ~KEY_E;
 			break;
 		case 'F':
 		case 'f':
-			key &= ~KEY_F;
+			key_pressed &= ~KEY_F;
 			break;
 		case 'Q':
 		case 'q':
-			key &= ~KEY_Q;
+			key_pressed &= ~KEY_Q;
 			break;
         case 'R':
         case 'r':
-            key &= ~KEY_R;
+            key_pressed &= ~KEY_R;
             break;
 	    case 'S':
         case 's':
-            key &= ~KEY_S;
+            key_pressed &= ~KEY_S;
             break;
 		case 'T':
 		case 't':
-			key &= ~KEY_T;
+			key_pressed &= ~KEY_T;
 			break;
 		case 'V':
 		case 'v':
-			key &= ~KEY_V;
+			key_pressed &= ~KEY_V;
 			break;
 	    case 'W':
         case 'w':
-            key &= ~KEY_W;
+            key_pressed &= ~KEY_W;
             break;
 	    case 'X':
         case 'x':
-            key &= ~KEY_X;
+            key_pressed &= ~KEY_X;
             break;
 	    case 'Z':
         case 'z':
-            key &= ~KEY_Z;
+            key_pressed &= ~KEY_Z;
             break;
 		case '0':
-			key &= ~KEY_0;
+			key_pressed &= ~KEY_0;
 			break;
 		case '1':
-			key &= ~KEY_1;
+			key_pressed &= ~KEY_1;
 			break;
 		case '2':
-			key &= ~KEY_2;
+			key_pressed &= ~KEY_2;
 			break;
 		case '3':
-			key &= ~KEY_3;
+			key_pressed &= ~KEY_3;
 			break;
 		case '4':
-			key &= ~KEY_4;
+			key_pressed &= ~KEY_4;
 			break;
 		case '5':
-			key &= ~KEY_5;
+			key_pressed &= ~KEY_5;
 			break;
 		case '6':
-			key &= ~KEY_6;
+			key_pressed &= ~KEY_6;
 			break;
 		case '7':
-			key &= ~KEY_7;
+			key_pressed &= ~KEY_7;
 			break;
 		case '8':
-			key &= ~KEY_8;
+			key_pressed &= ~KEY_8;
 			break;
 		case '9':
-			key &= ~KEY_9;
+			key_pressed &= ~KEY_9;
 			break;
         default:
             break;

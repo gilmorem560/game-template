@@ -18,11 +18,15 @@ void orbit_free(node *this)
 	return;
 }
 
+void orbit_collision(node *this)
+{
+	/* do nothing */
+	
+	return;
+}
+
 void orbit_applyconstraints(node *this)
 {	
-	/* collision */
-	scene_enforceboundingnode(graph, this->id);
-	
 	/* normalize angles */
 	this->rotation.x = fmod(this->rotation.x, 360);
 	this->rotation.y = fmod(this->rotation.y, 360);
@@ -33,7 +37,6 @@ void orbit_render(node *this)
 	/* draw node */
 	glPushMatrix();
 		glTranslated(this->position.x, this->position.y, -this->position.z);
-		glRotated(this->rotation.x, 0.0, 1.0, 0.0);
 		glScaled(0.05, 0.05, 0.05);
 		actor_render(this->node_actor);
 	glPopMatrix();
@@ -49,6 +52,9 @@ void orbit_routine(node *this)
 			break;
 		case NR_FREE:
 			orbit_free(this);
+			break;
+		case NR_COLLIDE:
+			orbit_collision(this);
 			break;
 		case NR_ORBIT_CONSTRAINT:
 			orbit_applyconstraints(this);

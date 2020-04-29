@@ -6,6 +6,8 @@
 static int orbit_node;
 static int orbit_child_index;
 
+static bool standing_on_surface;
+
 void player_init(node *this)
 {
 	this->node_actor = at_tet_new();
@@ -16,8 +18,7 @@ void player_init(node *this)
 	player_move_right = 0.0;
 	player_move_up = 0.0;
 	player_vertical_vel = 0.0;
-	player_vertical_accel = -0.09;
-	trigger_jump = false;
+	player_vertical_accel = -0.03;
 	orbit_node = 0;
 	orbit_child_index = 0;
 	
@@ -27,6 +28,40 @@ void player_init(node *this)
 void player_free(node *this)
 {
 	node_free(this);
+	
+	return;
+}
+
+void player_collision(node *this)
+{
+	unsigned short index;
+	unsigned short node;
+	
+	/* act on previous collisions by object type */
+	for (index = 0; index < this->collisions_count; index++) {
+		node = this->collisions[index].id;
+		switch (graph->nodes[node]->type) {
+		case NT_ENVIRONMENT:
+			if (this->collisions[index].x)
+				this->position.x = this->collisions[index].x * 2.9;
+			if (this->collisions[index].y)
+				this->position.y = this->collisions[index].y * 2.9;
+			if (this->collisions[index].z < 0)
+				this->position.z = -11.0;
+			else if (this->collisions[index].z > 0)
+				this->position.z = -1.1;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	node_clearcollisions(this);
+	
+	/* calculate collisions with children and notify them */
+	
+	/* act on collisions */
+	/* environment does not react, only informs */
 	
 	return;
 }
@@ -43,11 +78,33 @@ void player_addorbit(node *this)
 
 void player_processinput(node *this)
 {
+	/* motion */
+	if (input_mask & IM_UP) player_move_forward += motion_constant;
+	if (input_mask & IM_DOWN) player_move_forward -= motion_constant;
+	if (input_mask & IM_LEFT) player_move_right -= motion_constant;
+	if (input_mask & IM_RIGHT) player_move_right += motion_constant;
+	if (input_mask & IM_ACTION1) player_vertical_vel = 0.35;
+	if (input_mask & IM_ACTION2) player_has_orbit = true;
+	
+	if (player_has_orbit && orbit_node == 0) {
+		player_addorbit(this);
+	}
+	
+	input_mask = 0;
+	
+	return;
+}
+
+void player_applyconstraints(node *this)
+{
+	unsigned int child;
+	vect_component orbit_comps = { 0.0, 0.0 };
 	vect_component camera_xz = { 0.0, 0.0 };
-		
+	
 	/* determine current x normal */ 
 	veccomp2d_calc(1.0, graph->camera->rotation.x, &camera_xz);
 	
+	/* move based on velocity */
 	/* motion relative to camera angle */
 	if (player_move_forward) {
 		this->position.x += player_move_forward * camera_xz.y;
@@ -75,23 +132,6 @@ void player_processinput(node *this)
 		player_move_right = 0.0;
 	}
 	
-	/* jump */
-	if (trigger_jump) {
-		player_vertical_vel = 0.5;
-		trigger_jump = false;
-	}
-	
-	if (player_has_orbit && orbit_node == 0) {
-		player_addorbit(this);
-	}
-	
-}
-
-void player_applyconstraints(node *this)
-{
-	unsigned int child;
-	vect_component orbit_comps = { 0.0, 0.0 };
-	
 	/* handle children */
 	if (this->children_count > 0 && this->children != NULL) {
 		for (child = 0; child < this->children_count; child++) {
@@ -113,12 +153,11 @@ void player_applyconstraints(node *this)
 	player_vertical_vel += player_vertical_accel;
 	this->position.y += player_vertical_vel;
 	
-	/* collision */
-	scene_enforceboundingnode(graph, this->id);
-	
 	/* normalize angles */
 	this->rotation.x = fmod(this->rotation.x, 360);
 	this->rotation.y = fmod(this->rotation.y, 360);
+	
+	fprintf(stderr, "player v=%f a=%f\n", player_vertical_vel, player_vertical_accel);
 }
 
 void player_render(node *this)
@@ -142,6 +181,9 @@ void player_routine(node *this)
 			break;
 		case NR_FREE:
 			player_free(this);
+			break;
+		case NR_COLLIDE:
+			player_collision(this);
 			break;
 		case NR_PLAYER_INPUT:
 			player_processinput(this);

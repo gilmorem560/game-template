@@ -39,15 +39,18 @@ extern "C" {
  */
 typedef struct actor {
 	signed short type;
+	
 	collision collision_data;
-	void *properties;
+	
 	void (*render)(struct actor *this);
 	double *vertex_array;
 	double *normal_array;
 	double *color_array;
 	unsigned char *vao_indicies;
+	
 	void (*routine)(struct actor *this);
 	signed char routine_index;
+	void *properties;
 } actor;
 #define AT_NULL		-1
 

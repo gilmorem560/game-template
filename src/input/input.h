@@ -43,7 +43,8 @@ extern "C" {
 #define KEY_ISNUM(x)	x >> 0x13
 
 /* key masks */
-unsigned long key;
+unsigned long key_pressed;
+unsigned long key_held;
 
 /* mouse state */
 bool mouse_moved_x;

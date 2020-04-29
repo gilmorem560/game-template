@@ -4,13 +4,10 @@
 #include "actor_test.h"
 #include "actor_test_obj/nodes.h"								  
 								  
+static double bounding_box[] = {-2.9, 2.9, -2.9, 2.9, -11.0, -1.1};
 static GLfloat fog_color[] = { 0.3f, 0.3f, 0.3f, 1.0f };
-
-static point3d node_positions[] = {{0.0, 0.0, 0.0},{0.0, 0.0, -5.0},{0.0, 0.0, -2.0}};
+static point3d node_positions[] = {{0.0,0.0,0.0},{0.0,0.0,-5.0},{0.0,0.0,-2.0}};
 static point3d node_angles[] = {{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0}};
-
-static double motion_constant = 0.1;
-static double gravity_constant = -0.09;
 
 /*
  * actor_test_init - OpenGL init
@@ -23,21 +20,24 @@ bool actor_test_init(void)
 	
 	/* --- scene init --- */
 	
+	input_mask = 0;
+	motion_constant = 0.1;		/* constants for our world */
+	gravity_constant = -0.09;	/* TODO: make meta-data of the environment node */
+	scale_constant = 0.1;
+	
 	/* create graph */
-	graph = malloc(sizeof (scene));
-	graph->nodes = NULL;
-	graph->node_count = 0;
+	graph = scene_new();
 	
 	/* scene projection */
-	scene_projection_new(graph, PROJECTION_FRUSTUM, current_ratio, 1.0, 0.6, 30.0);
+	scene_projection_new(graph, PROJECTION_FRUSTUM, scale_constant * current_ratio, scale_constant, scale_constant, 50.0);
 
 	/* setup collision bounding box */
-	graph->bounding_box[0] = -2.9;
-	graph->bounding_box[1] = 2.9;
-	graph->bounding_box[2] = -2.9;
-	graph->bounding_box[3] = 2.9;
-	graph->bounding_box[4] = -11.0;
-	graph->bounding_box[5] = -1.1;
+	graph->bounding_box[0] = bounding_box[0];
+	graph->bounding_box[1] = bounding_box[1];
+	graph->bounding_box[2] = bounding_box[2];
+	graph->bounding_box[3] = bounding_box[3];
+	graph->bounding_box[4] = bounding_box[4];
+	graph->bounding_box[5] = bounding_box[5];
 	
 	/* create node collection */
 	
@@ -124,17 +124,17 @@ bool actor_test_init(void)
  */
 bool actor_test_render(void)
 {
-	int node_id = 0;
+	unsigned int node_index;
 	
 	/* clear the scene */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	/* update projection if viewport changes shape */
-	if (graph->prj[1] != current_ratio) {
+	if (graph->prj[1] != (current_ratio * scale_constant)) {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		graph->prj[0] = -current_ratio;
-		graph->prj[1] = current_ratio;
+		graph->prj[0] = -(current_ratio * scale_constant);
+		graph->prj[1] = (current_ratio * scale_constant);
 		glFrustum(graph->prj[0], graph->prj[1], graph->prj[2], graph->prj[3], graph->prj[4], graph->prj[5]);
 	}
 
@@ -142,9 +142,8 @@ bool actor_test_render(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	/* main matrix */
+	/* projection matrix */
 	glPushMatrix();
-	
 		/* begin rendering in world space */
 		glPushMatrix();
 		
@@ -153,8 +152,8 @@ bool actor_test_render(void)
 		
 			/* step through nodes render functions */
 			/* todo: create a "render space" flag for nodes */
-			for (node_id = 0; node_id < graph->node_count; node_id++) {
-				node_render(graph->nodes[node_id]);
+			for (node_index = 0; node_index < graph->node_count; node_index++) {
+				node_render(graph->nodes[node_index]);
 			}
 		
 		/* end rendering in world space */
@@ -165,7 +164,14 @@ bool actor_test_render(void)
 		
 		/* end rendering in projection space */
 		glPopMatrix();
-		
+	glPopMatrix();
+	
+	/* push to a frame */
+	glFlush();
+	
+	/* orthagonal planes */
+	glOrtho(-current_ratio, current_ratio, -1.0, 1.0, -1.0, 1.0);
+	glPushMatrix();
 		/* begin rendering behind world space */
 		glPushMatrix();
 		
@@ -177,7 +183,6 @@ bool actor_test_render(void)
 		
 		/* end rendering on top of projection space */
 		glPopMatrix();
-		
 	glPopMatrix();
 	
 	/* flush */
@@ -195,20 +200,23 @@ bool actor_test_render(void)
 bool actor_test_input(void)
 {	
 	/* movement */
-	/* w - forward */	if (key & KEY_W) player_move_forward += motion_constant;
-	/* s - back */		if (key & KEY_S) player_move_forward -= motion_constant;
-	/* a - left */		if (key & KEY_A) player_move_right -= motion_constant;
-	/* d - right */ 	if (key & KEY_D) player_move_right += motion_constant;
-	/* q - quit */	    if (key & KEY_Q) quit = true;
+	/* w - up */	if (key_pressed & KEY_W || key_held & KEY_W) input_mask |= IM_UP;
+	/* s - down */	if (key_pressed & KEY_S || key_held & KEY_S) input_mask |= IM_DOWN;
+	/* a - left */	if (key_pressed & KEY_A || key_held & KEY_A) input_mask |= IM_LEFT;
+	/* d - right */ if (key_pressed & KEY_D || key_held & KEY_D) input_mask |= IM_RIGHT;
 	
-	/* e - jump */		if (key & KEY_E) { trigger_jump = true; }
+	/* actions */
+	/* e - tap action 1 */	if (key_pressed & KEY_E) input_mask |= IM_ACTION1;
+	/* c - any action 2 */	if (key_held & KEY_C) input_mask |= IM_ACTION2;
 	
-	/* c - call orbit */	if (key & KEY_C) { player_has_orbit = true; }
-	/* v - uncall orbit */	if (key & KEY_V) { player_has_orbit = false; }
+	/* system */
+	/* q - quit */	if (key_held & KEY_Q) quit = true;
 
 	#ifndef NDEBUG	
-	debug_pollkeys(key);
+	debug_pollkeys(key_held);
 	#endif /* NDEBUG */
+	
+	key_pressed = 0;
 	
 	return true;
 }
@@ -220,6 +228,9 @@ bool actor_test_routine(void)
 {
 	node_routine(graph->player, NR_PLAYER_INPUT);
 	node_routine(graph->player, NR_PLAYER_CONSTRAINT);
+	
+	node_routine(graph->root_node, NR_COLLIDE);
+	node_routine(graph->player, NR_COLLIDE);
 
 	/* enforce camera that follows the player */
 	/* camera is always after the player */
@@ -238,11 +249,7 @@ bool actor_test_free(void)
 	printf("actor_test: free\n");
 	#endif /* NDEBUG */
 
-	for (node_count = 0; node_count < graph->node_count; node_count++) {
-		node_routine(graph->nodes[node_count], NR_FREE);
-	}
-	free(graph->nodes);
-	free(graph);
+	scene_free(graph);
 	
 	return true;
 }

@@ -22,6 +22,20 @@ bool actor_test_free(void);		/* free resources */
 /* scene */
 scene *graph;
 
+/* some global constants */
+double motion_constant;
+double gravity_constant;
+double scale_constant;
+
+/* wrapper input to mode input */
+int input_mask;
+#define IM_UP		1
+#define IM_DOWN		2
+#define IM_LEFT		4
+#define IM_RIGHT	8
+#define IM_ACTION1	16
+#define IM_ACTION2	32
+
 #ifdef __cplusplus
 };
 #endif /* __cplusplus */
