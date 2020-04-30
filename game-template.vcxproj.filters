@@ -48,6 +48,9 @@
     <Filter Include="Header Files\prim">
       <UniqueIdentifier>{46e68572-043e-4f2b-9c94-e37514456c5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\mode\actor_test_obj">
+      <UniqueIdentifier>{faa0175a-2a0f-4e84-b9f1-be268609fed9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
@@ -63,9 +66,6 @@
       <Filter>Source Files\mode</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\actor.c">
-      <Filter>Source Files\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\scene\collision_index.c">
       <Filter>Source Files\scene</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\node.c">
@@ -122,6 +122,15 @@
     <ClCompile Include="src\graphics\primitives\vect.c">
       <Filter>Source Files\prim</Filter>
     </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\actors\triangle.c">
+      <Filter>Source Files\mode\actor_test_obj\actors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\nodes\box.c">
+      <Filter>Source Files\mode\actor_test_obj\nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\nodes\collectible.c">
+      <Filter>Source Files\mode\actor_test_obj\nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\input\input.h">
@@ -151,9 +160,6 @@
     <ClInclude Include="src\scene\collision.h">
       <Filter>Header Files\scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\collision_index.h">
-      <Filter>Header Files\scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\scene\node.h">
       <Filter>Header Files\scene</Filter>
     </ClInclude>
@@ -171,6 +177,12 @@
     </ClInclude>
     <ClInclude Include="src\graphics\primitives\vect.h">
       <Filter>Header Files\prim</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\actor_test_obj\actors.h">
+      <Filter>Header Files\mode\actor_test_obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\actor_test_obj\nodes.h">
+      <Filter>Header Files\mode\actor_test_obj</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

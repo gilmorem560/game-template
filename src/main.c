@@ -123,7 +123,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	game_mode = INITIAL_GM;
 	#endif /* NDEBUG */
 
-	key = 0;    /* initialize key bitfield here for now */
+	key_pressed = 0;    /* initialize key bitfield here for now */
+	key_held = 0;
 	mouse_moved_x = false;
 	mouse_moved_y = false;
 	isfullscreen = true;

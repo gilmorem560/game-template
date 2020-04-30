@@ -262,7 +262,6 @@ bool actor_test_routine(void)
  */
 bool actor_test_free(void)
 {
-	int node_count;
 	#ifndef NDEBUG
 	printf("actor_test: free\n");
 	#endif /* NDEBUG */
