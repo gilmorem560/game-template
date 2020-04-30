@@ -12,8 +12,11 @@ main_SOURCES = \
 	modes/actor_test.c \
 	modes/actor_test_obj/actors/cube.c \
 	modes/actor_test_obj/actors/tetrahedron.c \
-	modes/actor_test_obj/nodes/environment.c \
+	modes/actor_test_obj/actors/triangle.c \
+	modes/actor_test_obj/nodes/box.c \
 	modes/actor_test_obj/nodes/camera.c \
+	modes/actor_test_obj/nodes/collectible.c \
+	modes/actor_test_obj/nodes/environment.c \
 	modes/actor_test_obj/nodes/orbit.c \
 	modes/actor_test_obj/nodes/player.c \
 	scene/actor.c \

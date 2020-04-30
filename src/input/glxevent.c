@@ -287,6 +287,13 @@ void glxevent(Display *dpy)
 							key_pressed |= KEY_9;
 						key_held |= KEY_9;
 						break;
+					case XK_space:
+						if (key_held & KEY_SPACE)
+							key_pressed &= ~KEY_SPACE;
+						else
+							key_pressed |= KEY_SPACE;
+						key_held |= KEY_SPACE;
+						break;
 					default:
 						break;
 				}
@@ -420,6 +427,10 @@ void glxevent(Display *dpy)
 					case XK_9:
 						key_pressed &= ~KEY_9;
 						key_held &= ~KEY_9;
+						break;
+					case XK_space:
+						key_pressed &= ~KEY_SPACE;
+						key_held &= ~KEY_SPACE;
 						break;
 					default:
 						break;

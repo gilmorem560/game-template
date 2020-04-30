@@ -34,8 +34,18 @@ void player_free(node *this)
 
 void player_collision(node *this)
 {
+	collided has_collided = {0, 0, 0};
 	unsigned short index;
 	unsigned short node;
+	bool box_inside_x = false;
+	bool box_inside_y = false;
+	bool box_inside_z = false;
+	bool box_collided = false;
+	bool got_triangle = false;
+	bool x_last = false;
+	bool y_last = false;
+	bool z_last = false;
+	double dist_x, dist_y, dist_z;
 	
 	/* act on previous collisions by object type */
 	for (index = 0; index < this->collisions_count; index++) {
@@ -58,7 +68,82 @@ void player_collision(node *this)
 	
 	node_clearcollisions(this);
 	
-	/* calculate collisions with children and notify them */
+	/* calculate collisions with stuff and notify them */
+	for (index = sabs(this->id); index < graph->node_count; index++) {
+		switch (graph->nodes[index]->type) {
+		case NT_BOX:
+				/* detect incursion */
+				if (this->position.x > graph->nodes[index]->position.x - 0.6
+					&& this->position.x < graph->nodes[index]->position.x + 0.6) {
+					box_inside_x = true;
+				} else
+					box_inside_x = false;
+				
+				if (this->position.y > graph->nodes[index]->position.y - 0.6
+					&& this->position.y < graph->nodes[index]->position.y + 0.6) {
+					box_inside_y = true;
+				} else
+					box_inside_y = false;
+				
+				if (this->position.z > graph->nodes[index]->position.z - 0.6
+					&& this->position.z < graph->nodes[index]->position.z + 0.6) {
+					box_inside_z = true;
+				} else
+					box_inside_z = false;
+				
+				if (box_inside_x && box_inside_y && box_inside_z)
+					box_collided = true;
+				
+				/* act */
+				if (box_collided) {
+					dist_x = this->position.x - graph->nodes[index]->position.x;
+					dist_y = this->position.y - graph->nodes[index]->position.y;
+					dist_z = this->position.z - graph->nodes[index]->position.z;
+					if (fabs(dist_x) > fabs(dist_y) && fabs(dist_x) > fabs(dist_y)) {
+						if (dist_x > 0.0)
+							this->position.x = graph->nodes[index]->position.x + 0.6;
+						else
+							this->position.x = graph->nodes[index]->position.x - 0.6;
+					}
+					else if (fabs(dist_y) > fabs(dist_x) && fabs(dist_y) > fabs(dist_z)) {
+						if (dist_y > 0.0)
+							this->position.y = graph->nodes[index]->position.y + 0.6;
+						else
+							this->position.y = graph->nodes[index]->position.y - 0.6;
+						player_vertical_vel = 0.0;
+					}
+					else {
+						if (dist_z > 0.0)
+							this->position.z = graph->nodes[index]->position.z + 0.6;
+						else
+							this->position.z = graph->nodes[index]->position.z - 0.6;
+					}
+					box_collided = false;
+				}
+				break;
+		case NT_COLLECTIBLE:
+			/* detect incursion */
+			if ((this->position.x < graph->nodes[index]->position.x + 0.3 && this->position.x > graph->nodes[index]->position.x - 0.3)
+				&& (this->position.y < graph->nodes[index]->position.y + 0.3 && this->position.y > graph->nodes[index]->position.y - 0.3)
+				&& (this->position.z < graph->nodes[index]->position.z + 0.3 && this->position.z > graph->nodes[index]->position.z - 0.3)) {
+				
+				has_collided.x = 1;
+				got_triangle = true;
+			}
+			
+			/* act */
+			if (got_triangle) {
+				node_addcollision(graph->nodes[index], this, has_collided);
+				show_triangle = true;
+			}
+			break;
+		default:
+			break;
+		}
+		has_collided.x = 0;
+		has_collided.y = 0;
+		has_collided.z = 0;
+	}
 	
 	/* act on collisions */
 	/* environment does not react, only informs */

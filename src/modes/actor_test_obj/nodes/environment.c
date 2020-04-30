@@ -35,24 +35,24 @@ void environment_collision(node *this)
 	}
 	node_clearcollisions(this);
 	
-	/* calculate collisions with children and notify them */
-	for (index = 0; index < this->children_count; index++) {
-		if (this->children[index]->position.x < -2.9)
+	/* calculate collisions with objects and notify them */
+	for (index = 0; index < graph->node_count; index++) {
+		if (graph->nodes[index]->position.x < -2.9)
 			has_collided.x = -1;
-		else if (this->children[index]->position.x > 2.9)
+		else if (graph->nodes[index]->position.x > 2.9)
 			has_collided.x = 1;
 
-		if (this->children[index]->position.y < -2.9)
+		if (graph->nodes[index]->position.y < -2.9)
 			has_collided.y = -1;
-		else if (this->children[index]->position.y > 2.9)
+		else if (graph->nodes[index]->position.y > 2.9)
 			has_collided.y = 1;
 	
-		if (this->children[index]->position.z < -11.0)
+		if (graph->nodes[index]->position.z < -11.0)
 			has_collided.z = -1;
-		else if (this->children[index]->position.z > -1.1)
+		else if (graph->nodes[index]->position.z > -1.1)
 			has_collided.z = 1;
 		
-		node_addcollision(this->children[index], this, has_collided);
+		node_addcollision(graph->nodes[index], this, has_collided);
 		
 		has_collided.x = 0;
 		has_collided.y = 0;
@@ -61,6 +61,9 @@ void environment_collision(node *this)
 	
 	/* act on collisions */
 	/* environment does not react, only informs */
+	for (index = 0; index < this->children_count; index++) {
+		node_routine(this->children[index], NR_COLLIDE);
+	}
 	
 	return;
 }

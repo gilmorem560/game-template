@@ -23,6 +23,7 @@ extern "C" {
 void environment_render(node *this);
 void environment_routine(node *this);
 static int environment_node;
+	bool show_triangle;
 
 
 #define NT_CAMERA		1
@@ -50,6 +51,14 @@ static int player_node;
 void orbit_render(node *this);
 void orbit_routine(node *this);
 	#define NR_ORBIT_CONSTRAINT		3
+
+#define NT_BOX		4
+void box_render(node *this);
+void box_routine(node *this);
+
+#define NT_COLLECTIBLE 5
+void collectible_render(node *this);
+void collectible_routine(node *this);
 	
 #ifdef __cplusplus
 };
