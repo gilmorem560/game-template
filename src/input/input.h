@@ -28,22 +28,24 @@ extern "C" {
 #define KEY_DOWN    ((unsigned long) 1 << 0x10)
 #define KEY_LEFT    ((unsigned long) 1 << 0x11)
 #define KEY_RIGHT   ((unsigned long) 1 << 0x12)
-#define KEY_0       ((unsigned long) 1 << 0x13)
-#define KEY_1       ((unsigned long) 1 << 0x14)
-#define KEY_2       ((unsigned long) 1 << 0x15)
-#define KEY_3       ((unsigned long) 1 << 0x16)
-#define KEY_4       ((unsigned long) 1 << 0x17)
-#define KEY_5       ((unsigned long) 1 << 0x18)
-#define KEY_6       ((unsigned long) 1 << 0x19)
-#define KEY_7       ((unsigned long) 1 << 0x1A)
-#define KEY_8       ((unsigned long) 1 << 0x1B)
-#define KEY_9       ((unsigned long) 1 << 0x1C)
+#define KEY_SPACE	((unsigned long) 1 << 0x13)
+#define KEY_0       ((unsigned long) 1 << 0x14)
+#define KEY_1       ((unsigned long) 1 << 0x15)
+#define KEY_2       ((unsigned long) 1 << 0x16)
+#define KEY_3       ((unsigned long) 1 << 0x17)
+#define KEY_4       ((unsigned long) 1 << 0x18)
+#define KEY_5       ((unsigned long) 1 << 0x19)
+#define KEY_6       ((unsigned long) 1 << 0x1A)
+#define KEY_7       ((unsigned long) 1 << 0x1B)
+#define KEY_8       ((unsigned long) 1 << 0x1C)
+#define KEY_9       ((unsigned long) 1 << 0x1D)
 
 /* this is hacky... */
 #define KEY_ISNUM(x)	x >> 0x13
 
 /* key masks */
-unsigned long key;
+unsigned long key_pressed;
+unsigned long key_held;
 
 /* mouse state */
 bool mouse_moved_x;

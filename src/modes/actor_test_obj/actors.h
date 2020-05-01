@@ -23,6 +23,11 @@ void at_cube_routine(actor *this);
 actor *at_tet_new(void);
 void at_tet_render(actor *this);
 void at_tet_routine(actor *this);
+
+#define AT_TRIANGLE 2
+actor *at_triangle_new(void);
+void at_triangle_render(actor *this);
+void at_triangle_routine(actor *this);
 	
 #ifdef __cplusplus
 };

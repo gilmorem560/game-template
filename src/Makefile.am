@@ -12,24 +12,18 @@ main_SOURCES = \
 	modes/actor_test.c \
 	modes/actor_test_obj/actors/cube.c \
 	modes/actor_test_obj/actors/tetrahedron.c \
-	modes/actor_test_obj/nodes/environment.c \
+	modes/actor_test_obj/actors/triangle.c \
+	modes/actor_test_obj/nodes/box.c \
 	modes/actor_test_obj/nodes/camera.c \
+	modes/actor_test_obj/nodes/collectible.c \
+	modes/actor_test_obj/nodes/environment.c \
 	modes/actor_test_obj/nodes/orbit.c \
 	modes/actor_test_obj/nodes/player.c \
 	scene/actor.c \
 	scene/collision/collision_box.c \
 	scene/collision/collision_router.c \
-	scene/collision_index.c \
 	scene/node.c \
 	scene/scene.c \
 	scene/texture.c \
 	main.c
-#old_SOURCES = \
-	graphics/objects/hedrons.c \
-	graphics/objects/prisms.c \
-	modes/diamond.c \
-	modes/map.c \
-	modes/sandbox.c \
-	modes/scene_test.c \
-	modes/stage.c
 main_LDFLAGS = -lX11

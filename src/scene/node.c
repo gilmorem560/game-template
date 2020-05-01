@@ -16,10 +16,49 @@ node *node_new(signed short id, signed int type, void (*render)(node *this), voi
 		new_node->node_actor = NULL;
 		new_node->children = NULL;
 		new_node->children_count = 0;
+		new_node->collisions = NULL;
+		new_node->collisions_count = 0;
 		new_node->render = render;
 		new_node->routine = routine;
+		new_node->world_bind = true;
 	
 	return new_node;
+}
+
+/*
+ * addcollision - add a record of a collision with *collided
+ * 
+ *  the node maintains an active, dynamic collection of collisions as they are happening
+ *  the collision indicates which node in the graph collided 
+ *  a collision is only added if it actually exists, a zero collision is discarded
+ */
+void node_addcollision(node *this, node *colliding_node, collided has_collided)
+{
+	if (has_collided.x != 0 || has_collided.y != 0 || has_collided.z != 0) {
+		collided *new_collisions = realloc(this->collisions, ++this->collisions_count * sizeof (collided));
+		this->collisions = new_collisions;
+		this->collisions[this->collisions_count - 1].id = colliding_node->id;
+		this->collisions[this->collisions_count - 1].x = has_collided.x;
+		this->collisions[this->collisions_count - 1].y = has_collided.y;
+		this->collisions[this->collisions_count - 1].z = has_collided.z;
+	}
+	
+	return;
+}
+
+/*
+ * clearcollisions - clear all collisions
+ * 
+ *  ideal to call after fully processing collisions but before processing ones
+ *  own collisions, as the collision collection may be used to process objects further down the tree as well
+ */
+void node_clearcollisions(node *this)
+{
+	free(this->collisions);
+	this->collisions = NULL;
+	this->collisions_count = 0;
+	
+	return;
 }
 
 /*
@@ -120,10 +159,10 @@ unsigned short node_addchildnode(node *this, node *child)
  * carefully removes a child node from the collection at
  * the given index
  */
-void node_prunechildnode(node *this, unsigned int index)
+void node_prunechildnode(node *this, unsigned short index)
 {
-	unsigned int child;
-	int newpos = 0;
+	unsigned short child;
+	short newpos = 0;
 	node **pruned_children = malloc((this->children_count - 1) * sizeof (node *));
 	
 	for (child = 0; child < this->children_count; child++) {

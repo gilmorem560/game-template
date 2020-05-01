@@ -43,9 +43,6 @@ void camera_routine(node *this, node *player)
 		this->position.z += camera_xz.x;
 	}
 	
-	/* camera shall remain inside of the room */
-	scene_enforceboundingnode(graph, this->id);
-	
 	/* normalize angles */
 	this->rotation.x = fmod(this->rotation.x, 360);
 	this->rotation.y = fmod(this->rotation.y, 360);

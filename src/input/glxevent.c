@@ -89,103 +89,210 @@ void glxevent(Display *dpy)
 				switch (XLookupKeysym(&event_return.xkey, 0)) {
 					case XK_A:
 					case XK_a:
-						key |= KEY_A;
+						if (key_held & KEY_A)
+							key_pressed &= ~KEY_A;
+						else
+							key_pressed |= KEY_A;
+						key_held |= KEY_A;
 						break;
 					case XK_B:
 					case XK_b:
-						key |= KEY_B;
+						if (key_held & KEY_B)
+							key_pressed &= ~KEY_B;
+						else
+							key_pressed |= KEY_B;
+						key_held |= KEY_B;
 						break;
 					case XK_C:
 					case XK_c:
-						key |= KEY_C;
+						if (key_held & KEY_C)
+							key_pressed &= ~KEY_C;
+						else
+							key_pressed |= KEY_C;
+						key_held |= KEY_C;
 						break;
 					case XK_D:
 					case XK_d:
-						key |= KEY_D;
+						if (key_held & KEY_D)
+							key_pressed &= ~KEY_D;
+						else
+							key_pressed |= KEY_D;
+						key_held |= KEY_D;
 						break;
 					case XK_E:
 					case XK_e:
-						key |= KEY_E;
+						if (key_held & KEY_E)
+							key_pressed &= ~KEY_E;
+						else
+							key_pressed |= KEY_E;
+						key_held |= KEY_E;
 						break;
 					case XK_F:
 					case XK_f:
-						key |= KEY_F;
+						if (key_held & KEY_F)
+							key_pressed &= ~KEY_F;
+						else
+							key_pressed |= KEY_F;
+						key_held |= KEY_F;
 						break;
 					case XK_G:
 					case XK_g:
-						key |= KEY_G;
+						if (key_held & KEY_G)
+							key_pressed &= ~KEY_G;
+						else
+							key_pressed |= KEY_G;
+						key_held |= KEY_G;
 						break;
 					case XK_Q:
 					case XK_q:
-						key |= KEY_Q;
+						if (key_held & KEY_Q)
+							key_pressed &= ~KEY_Q;
+						else
+							key_pressed |= KEY_Q;
+						key_held |= KEY_Q;
 						break;
 					case XK_R:
 					case XK_r:
-						key |= KEY_R;
+						if (key_held & KEY_R)
+							key_pressed &= ~KEY_R;
+						else
+							key_pressed |= KEY_R;
+						key_held |= KEY_R;
 						break;
 					case XK_S:
 					case XK_s:
-						key |= KEY_S;
+						if (key_held & KEY_S)
+							key_pressed &= ~KEY_S;
+						else
+							key_pressed |= KEY_S;
+						key_held |= KEY_S;
 						break;
 					case XK_T:
 					case XK_t:
-						key |= KEY_T;
+						if (key_held & KEY_T)
+							key_pressed &= ~KEY_T;
+						else
+							key_pressed |= KEY_T;
+						key_held |= KEY_T;
 						break;
 					case XK_V:
 					case XK_v:
-						key |= KEY_V;
+						if (key_held & KEY_V)
+							key_pressed &= ~KEY_V;
+						else
+							key_pressed |= KEY_V;
+						key_held |= KEY_V;
 						break;
 					case XK_W:
 					case XK_w:
-						key |= KEY_W;
+						if (key_held & KEY_W)
+							key_pressed &= ~KEY_W;
+						else
+							key_pressed |= KEY_W;
+						key_held |= KEY_W;
 						break;
 					case XK_X:
 					case XK_x:
-						key |= KEY_X;
+						if (key_held & KEY_X)
+							key_pressed &= ~KEY_X;
+						else
+							key_pressed |= KEY_X;
+						key_held |= KEY_X;
 						break;
 					case XK_Z:
 					case XK_z:
-						key |= KEY_Z;
+						if (key_held & KEY_Z)
+							key_pressed &= ~KEY_Z;
+						else
+							key_pressed |= KEY_Z;
+						key_held |= KEY_Z;
 						break;
 					case XK_KP_0:
 					case XK_0:
-						key |= KEY_0;
+						if (key_held & KEY_0)
+							key_pressed &= ~KEY_0;
+						else
+							key_pressed |= KEY_0;
+						key_held |= KEY_0;
 						break;
 					case XK_KP_1:
 					case XK_1:
-						key |= KEY_1;
+						if (key_held & KEY_1)
+							key_pressed &= ~KEY_1;
+						else
+							key_pressed |= KEY_1;
+						key_held |= KEY_1;
 						break;
 					case XK_KP_2:
 					case XK_2:
-						key |= KEY_2;
+						if (key_held & KEY_2)
+							key_pressed &= ~KEY_2;
+						else
+							key_pressed |= KEY_2;
+						key_held |= KEY_2;
 						break;
 					case XK_KP_3:
 					case XK_3:
-						key |= KEY_3;
+						if (key_held & KEY_3)
+							key_pressed &= ~KEY_3;
+						else
+							key_pressed |= KEY_3;
+						key_held |= KEY_3;
 						break;
 					case XK_KP_4:
 					case XK_4:
-						key |= KEY_4;
+						if (key_held & KEY_4)
+							key_pressed &= ~KEY_4;
+						else
+							key_pressed |= KEY_4;
+						key_held |= KEY_4;
 						break;
 					case XK_KP_5:
 					case XK_5:
-						key |= KEY_5;
+						if (key_held & KEY_5)
+							key_pressed &= ~KEY_5;
+						else
+							key_pressed |= KEY_5;
+						key_held |= KEY_5;
 						break;
 					case XK_KP_6:
 					case XK_6:
-						key |= KEY_6;
+						if (key_held & KEY_6)
+							key_pressed &= ~KEY_6;
+						else
+							key_pressed |= KEY_6;
+						key_held |= KEY_6;
 						break;
 					case XK_KP_7:
 					case XK_7:
-						key |= KEY_7;
+						if (key_held & KEY_7)
+							key_pressed &= ~KEY_7;
+						else
+							key_pressed |= KEY_7;
+						key_held |= KEY_7;
 						break;
 					case XK_KP_8:
 					case XK_8:
-						key |= KEY_8;
+						if (key_held & KEY_8)
+							key_pressed &= ~KEY_8;
+						else
+							key_pressed |= KEY_8;
+						key_held |= KEY_8;
 						break;
 					case XK_KP_9:
 					case XK_9:
-						key |= KEY_9;
+						if (key_held & KEY_9)
+							key_pressed &= ~KEY_9;
+						else
+							key_pressed |= KEY_9;
+						key_held |= KEY_9;
+						break;
+					case XK_space:
+						if (key_held & KEY_SPACE)
+							key_pressed &= ~KEY_SPACE;
+						else
+							key_pressed |= KEY_SPACE;
+						key_held |= KEY_SPACE;
 						break;
 					default:
 						break;
@@ -198,103 +305,132 @@ void glxevent(Display *dpy)
 				switch (XLookupKeysym(&event_return.xkey, 0)) {
 					case XK_A:
 					case XK_a:
-						key &= ~KEY_A;
+						key_pressed &= ~KEY_A;
+						key_held &= ~KEY_A;
 						break;
 					case XK_B:
 					case XK_b:
-						key &= ~KEY_B;
+						key_pressed &= ~KEY_B;
+						key_held &= ~KEY_B;
 						break;
 					case XK_C:
 					case XK_c:
-						key &= ~KEY_C;
+						key_pressed &= ~KEY_C;
+						key_held &= ~KEY_C;
 						break;
 					case XK_D:
 					case XK_d:
-						key &= ~KEY_D;
+						key_pressed &= ~KEY_D;
+						key_held &= ~KEY_D;
 						break;
 					case XK_E:
 					case XK_e:
-						key &= ~KEY_E;
+						key_pressed &= ~KEY_E;
+						key_held &= ~KEY_E;
 						break;
 					case XK_F:
 					case XK_f:
-						key &= ~KEY_F;
+						key_pressed &= ~KEY_F;
+						key_held &= ~KEY_F;
 						break;
 					case XK_G:
 					case XK_g:
-						key &= ~KEY_G;
+						key_pressed &= ~KEY_G;
+						key_held &= ~KEY_G;
 						break;
 					case XK_Q:
 					case XK_q:
-						key &= ~KEY_Q;
+						key_pressed &= ~KEY_Q;
+						key_held &= ~KEY_Q;
 						break;
 					case XK_R:
 					case XK_r:
-						key &= ~KEY_R;
+						key_pressed &= ~KEY_R;
+						key_held &= ~KEY_R;
 						break;
 					case XK_S:
 					case XK_s:
-						key &= ~KEY_S;
+						key_pressed &= ~KEY_S;
+						key_held &= ~KEY_S;
 						break;
 					case XK_T:
 					case XK_t:
-						key &= ~KEY_T;
+						key_pressed &= ~KEY_T;
+						key_held &= ~KEY_T;
 						break;
 					case XK_V:
 					case XK_v:
-						key &= ~KEY_V;
+						key_pressed &= ~KEY_V;
+						key_held &= ~KEY_V;
 						break;
 					case XK_W:
 					case XK_w:
-						key &= ~KEY_W;
+						key_pressed &= ~KEY_W;
+						key_held &= ~KEY_W;
 						break;
 					case XK_X:
 					case XK_x:
-						key &= ~KEY_X;
+						key_pressed &= ~KEY_X;
+						key_held &= ~KEY_X;
 						break;
 					case XK_Z:
 					case XK_z:
-						key &= ~KEY_Z;
+						key_pressed &= ~KEY_Z;
+						key_held &= ~KEY_Z;
 						break;
 					case XK_KP_0:
 					case XK_0:
-						key &= ~KEY_0;
+						key_pressed &= ~KEY_0;
+						key_held &= ~KEY_0;
 						break;
 					case XK_KP_1:
 					case XK_1:
-						key &= ~KEY_1;
+						key_pressed &= ~KEY_1;
+						key_held &= ~KEY_1;
 						break;
 					case XK_KP_2:
 					case XK_2:
-						key &= ~KEY_2;
+						key_pressed &= ~KEY_2;
+						key_held &= ~KEY_2;
 						break;
 					case XK_KP_3:
 					case XK_3:
-						key &= ~KEY_3;
+						key_pressed &= ~KEY_3;
+						key_held &= ~KEY_3;
 						break;
 					case XK_KP_4:
 					case XK_4:
-						key &= ~KEY_4;
+						key_pressed &= ~KEY_4;
+						key_held &= ~KEY_4;
 						break;
 					case XK_KP_5:
 					case XK_5:
-						key &= ~KEY_5;
+						key_pressed &= ~KEY_5;
+						key_held &= ~KEY_5;
 						break;
 					case XK_KP_6:
 					case XK_6:
-						key &= ~KEY_6;
+						key_pressed &= ~KEY_6;
+						key_held &= ~KEY_6;
 						break;
 					case XK_KP_7:
 					case XK_7:
-						key &= ~KEY_7;
+						key_pressed &= ~KEY_7;
+						key_held &= ~KEY_7;
 						break;
 					case XK_KP_8:
 					case XK_8:
-						key &= ~KEY_8;
+						key_pressed &= ~KEY_8;
+						key_held &= ~KEY_8;
 						break;
 					case XK_KP_9:
 					case XK_9:
-						key &= ~KEY_9;
+						key_pressed &= ~KEY_9;
+						key_held &= ~KEY_9;
+						break;
+					case XK_space:
+						key_pressed &= ~KEY_SPACE;
+						key_held &= ~KEY_SPACE;
 						break;
 					default:
 						break;

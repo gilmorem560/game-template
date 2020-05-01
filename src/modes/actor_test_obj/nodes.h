@@ -23,6 +23,8 @@ extern "C" {
 void environment_render(node *this);
 void environment_routine(node *this);
 static int environment_node;
+	bool show_triangle;
+
 
 #define NT_CAMERA		1
 void camera_refresh(node *this);
@@ -34,8 +36,8 @@ static int camera_node;
 #define NT_PLAYER		2
 void player_render(node *this);
 void player_routine(node *this);
-	#define	NR_PLAYER_INPUT			2
-	#define	NR_PLAYER_CONSTRAINT	3
+	#define	NR_PLAYER_INPUT			3
+	#define	NR_PLAYER_CONSTRAINT	4
 static int player_node;
 	GLdouble player_move_forward;
 	GLdouble player_move_right;
@@ -48,7 +50,15 @@ static int player_node;
 #define NT_ORBIT		3
 void orbit_render(node *this);
 void orbit_routine(node *this);
-	#define NR_ORBIT_CONSTRAINT		2
+	#define NR_ORBIT_CONSTRAINT		3
+
+#define NT_BOX		4
+void box_render(node *this);
+void box_routine(node *this);
+
+#define NT_COLLECTIBLE 5
+void collectible_render(node *this);
+void collectible_routine(node *this);
 	
 #ifdef __cplusplus
 };

@@ -32,7 +32,8 @@ int main(int argc, char *argv[])
 	game_mode = INITIAL_GM;
 	#endif /* NDEBUG */
 
-    key = 0;    /* initialize key bitfield here for now */
+    key_pressed = 0;    /* initialize key bitfield here for now */
+    key_held = 0;
     mouse_moved_x = false;
 	mouse_moved_y = false;
 	isfullscreen = true;
@@ -73,12 +74,12 @@ int main(int argc, char *argv[])
 
 		switch (game_mode) {
 		case GM_ACTOR_TEST:
+			/* process movement */
+			actor_test_input();
 			/* run mode routine */
 			actor_test_routine();
 			/* process next frame */
 			actor_test_render();
-			/* process movement */
-			actor_test_input();
 			break;
 		default:
 			fprintf(stderr, "Unknown game mode: %d\n", game_mode);
@@ -122,7 +123,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	game_mode = INITIAL_GM;
 	#endif /* NDEBUG */
 
-	key = 0;    /* initialize key bitfield here for now */
+	key_pressed = 0;    /* initialize key bitfield here for now */
+	key_held = 0;
 	mouse_moved_x = false;
 	mouse_moved_y = false;
 	isfullscreen = true;
