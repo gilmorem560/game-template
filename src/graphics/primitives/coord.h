@@ -18,6 +18,8 @@ typedef struct grid2d {
     double y;
 } grid2d;
 
+#define pointdistance2d(a, b)	sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y))
+
 /* 3d space */
 typedef struct point3d {
     double x;
@@ -29,6 +31,8 @@ typedef struct grid3d {
     double y;
     double z;
 } grid3d;
+
+#define pointdistance3d(a, b)	sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y) + (b.z - a.z)*(b.z - a.z))
 
 #ifdef __cplusplus
 };

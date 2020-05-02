@@ -9,6 +9,9 @@ main_SOURCES = \
 	graphics/primitives/poly3d.c \
 	graphics/primitives/vect.c \
 	input/glxevent.c \
+	modes/logos.c \
+	modes/logos_obj/nodes/plane.c \
+	modes/titlescreen.c \
 	modes/actor_test.c \
 	modes/actor_test_obj/actors/cube.c \
 	modes/actor_test_obj/actors/tetrahedron.c \

@@ -42,6 +42,7 @@ typedef struct node {
 	void (*render)(struct node *this);
 	actor *node_actor;
 	point3d position;
+	point3d position_prev;
 	point3d rotation;
 
 	void (*routine)(struct node *this);

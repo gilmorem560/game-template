@@ -17,6 +17,19 @@ void glxevent(Display *dpy)
 	x_height = current_attribs.height;
 	mouse_moved_x = false;
 	mouse_moved_y = false;
+	
+	#ifndef NDEBUG
+	/* can uncapture mouse when debugging, need to display cursor too */
+	if (debug_cursor_changed) {
+		if (!mouse_captured)
+			/* return visible cursor */
+			XUndefineCursor(dpy, win);
+		else
+			/* associate it */
+			XDefineCursor(dpy, win, cursor);
+		debug_cursor_changed = false;
+	}
+	#endif /* NDEBUG */
 
 	while (XEventsQueued(dpy, QueuedAlready) != 0) {
 		/* immediately process any resize */

@@ -16,7 +16,6 @@ extern "C" {
 
 #define	degtorad(deg)		(deg / 360.0) * 2.0 * M_PI
 #define radtodeg(rad)		(rad * 180.0) / M_PI
-#define pointdistance(a, b)	sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y) + (b.z - a.z)*(b.z - a.z))
 #define dotprod2d(a,b)		a.x*b.x + a.y*b.y
 #define dotprod3d(a,b)		a.x*b.x + a.y*b.y + a.z*b.z
 #define hypotenuse(a,b)		sqrt(a*a + b*b)

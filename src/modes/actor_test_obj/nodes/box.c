@@ -41,11 +41,17 @@ void box_render(node *this)
 		actor_render(this->node_actor);
 	glPopMatrix();
 	
+	/* retain previous position for vector calcs */
+	this->position_prev.x = this->position.x;
+	this->position_prev.y = this->position.y;
+	this->position_prev.z = this->position.z;
+	
 	return;
 }
 
 void box_routine(node *this)
 {
+
 	switch (this->routine_index) {
 		case NR_INIT:
 			box_init(this);

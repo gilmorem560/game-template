@@ -9,6 +9,19 @@
 void wglevent(HWND hWnd)
 {
     MSG msg;
+	
+	#ifndef NDEBUG
+	/* TODO: can uncapture mouse when debugging, need to display cursor too */
+	if (debug_cursor_changed) {
+		if (!mouse_captured)
+			/* return visible cursor */
+			ShowCursor(FALSE);
+		else
+			/* associate it */
+			ShowCursor(TRUE);
+		debug_cursor_changed = false;
+	}
+	#endif /* NDEBUG */
     
     if(PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);

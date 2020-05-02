@@ -1,5 +1,5 @@
 /*
- * modes - expanding list of game modes
+ * modes - configurable list of game modes
  */
 
 #ifndef __MODES_H__
@@ -19,28 +19,23 @@ extern "C" {
 #include "../graphics/primitives/vect.h"
 /* scene graphing */
 #include "../scene/scene.h"
+/* game mode primitive */
+#include "../scene/mode.h"
 /* useful macros */
 #include "../util/macros.h"
-	
-/* game modes */
-int game_mode;
-#include "actor_test.h"
-	#define	GM_ACTOR_TEST	0
 
-#ifdef INCLUDE_ARCHIVED_MODES
-#include "archived/diamond.h"
-	#define GM_DIAMONDS		-1
-#include "archived/map.h"
-	#define GM_MAP			-2
-#include "archived/sandbox.h"
-	#define GM_SANDBOX		-3
-#include "archived/stage.h"
-	#define GM_STAGE 		-4
-#include "archived/scene_test.h"
-	#define GM_SCENE_TEST	-5
-#include "archived/actor_test.h"
-	#define GM_ACTOR_TEST	-6
-#endif	/* INCLUDE_ARCHIVED_MODES */
+/* defined game modes */
+#include "logos.h"
+#include "titlescreen.h"
+#include "actor_test.h"
+#define GM_LOGOS		0
+#define	GM_TITLESCREEN	1
+#define	GM_ACTOR_TEST	2
+#define	MODE_COUNT		3
+
+mode *current_mode;
+unsigned int mode_index;
+unsigned int mode_index_prev;
 	
 #ifdef __cplusplus
 };

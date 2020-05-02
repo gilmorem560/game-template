@@ -21,6 +21,12 @@ node *node_new(signed short id, signed int type, void (*render)(node *this), voi
 		new_node->render = render;
 		new_node->routine = routine;
 		new_node->world_bind = true;
+		new_node->position.x = 0.0;
+		new_node->position.y = 0.0;
+		new_node->position.z = 0.0;
+		new_node->rotation.x = 0.0;
+		new_node->rotation.y = 0.0;
+		new_node->rotation.z = 0.0;
 	
 	return new_node;
 }

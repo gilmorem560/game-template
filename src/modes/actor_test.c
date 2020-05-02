@@ -228,10 +228,6 @@ bool actor_test_input(void)
 	
 	/* system */
 	/* q - quit */	if (key_held & KEY_Q) quit = true;
-
-	#ifndef NDEBUG	
-	debug_pollkeys(key_held);
-	#endif /* NDEBUG */
 	
 	key_pressed = 0;
 	

@@ -32,20 +32,94 @@ void player_free(node *this)
 	return;
 }
 
+/* 
+ * TODO: tidy into a generic bounding box collision handler
+ */
+void player_to_box(node *player, node *box)
+{
+	double dist_x, dist_y, dist_z;
+	double ang_x, ang_y, ang_z;
+	bool box_inside_x = false;
+	bool box_inside_y = false;
+	bool box_inside_z = false;
+	bool box_collided = false;
+	bool touched_x = false;
+	bool touched_y = false;
+	bool touched_z = false;
+	
+	/* detect incursion */
+	if (player->position.x > box->position.x - 0.6
+		&& player->position.x < box->position.x + 0.6) {
+		box_inside_x = true;
+	} else
+		box_inside_x = false;
+
+	if (player->position.y > box->position.y - 0.6
+		&& player->position.y < box->position.y + 0.6) {
+		box_inside_y = true;
+	} else
+		box_inside_y = false;
+
+	if (player->position.z > box->position.z - 0.6
+		&& player->position.z < box->position.z + 0.6) {
+		box_inside_z = true;
+	} else
+		box_inside_z = false;
+
+	if (box_inside_x && box_inside_y && box_inside_z)
+		box_collided = true;
+	
+	/* determine face of collision */
+	if (box_collided) {
+		dist_x = player->position_prev.x - box->position.x;
+		dist_y = player->position_prev.y - box->position.y;
+		dist_z = player->position_prev.z - box->position.z;
+		ang_x = vecang2d_calc(dist_z, dist_y);
+		if ((ang_x > 45.0 && ang_x < 135.0) 
+			|| (ang_x > -135.0 && ang_x < -45.0))
+		{
+			if (fabs(dist_x) > fabs(dist_z))
+				touched_x = true;
+			else
+				touched_z = true;
+		} else {
+			if (fabs(dist_x) > fabs(dist_y))
+				touched_x = true;
+			else
+				touched_y = true;
+		}
+		box_collided = false;
+	}
+	
+	/* place at point of collision */
+	if (touched_x) {
+		if (dist_x < 0)
+			player->position.x = box->position.x - 0.6;
+		else
+			player->position.x = box->position.x + 0.6;
+	} else if (touched_y) {
+		if (dist_y < 0)
+			player->position.y = box->position.y - 0.6;
+		else {
+			player->position.y = box->position.y + 0.6;
+			standing_on_surface = true;
+		}
+	} else if (touched_z) {
+		if (dist_z < 0)
+			player->position.z = box->position.z - 0.6;
+		else
+			player->position.z = box->position.z + 0.6;
+	}
+
+	return;
+}
+
 void player_collision(node *this)
 {
 	collided has_collided = {0, 0, 0};
 	unsigned short index;
 	unsigned short node;
-	bool box_inside_x = false;
-	bool box_inside_y = false;
-	bool box_inside_z = false;
-	bool box_collided = false;
 	bool got_triangle = false;
-	bool x_last = false;
-	bool y_last = false;
-	bool z_last = false;
-	double dist_x, dist_y, dist_z;
 	
 	/* act on previous collisions by object type */
 	for (index = 0; index < this->collisions_count; index++) {
@@ -54,8 +128,10 @@ void player_collision(node *this)
 		case NT_ENVIRONMENT:
 			if (this->collisions[index].x)
 				this->position.x = this->collisions[index].x * 2.9;
-			if (this->collisions[index].y)
-				this->position.y = this->collisions[index].y * 2.9;
+			if (this->collisions[index].y) {
+				this->position.y = this->collisions[index].y * 2.9;			
+				standing_on_surface = true;
+			}
 			if (this->collisions[index].z < 0)
 				this->position.z = -11.0;
 			else if (this->collisions[index].z > 0)
@@ -66,60 +142,20 @@ void player_collision(node *this)
 		}
 	}
 	
+	/* retain previous position for vector calcs */
+	this->position_prev.x = this->position.x;
+	this->position_prev.y = this->position.y;
+	this->position_prev.z = this->position.z;
+	
 	node_clearcollisions(this);
 	
 	/* calculate collisions with stuff and notify them */
 	for (index = sabs(this->id); index < graph->node_count; index++) {
 		switch (graph->nodes[index]->type) {
 		case NT_BOX:
-				/* detect incursion */
-				if (this->position.x > graph->nodes[index]->position.x - 0.6
-					&& this->position.x < graph->nodes[index]->position.x + 0.6) {
-					box_inside_x = true;
-				} else
-					box_inside_x = false;
-				
-				if (this->position.y > graph->nodes[index]->position.y - 0.6
-					&& this->position.y < graph->nodes[index]->position.y + 0.6) {
-					box_inside_y = true;
-				} else
-					box_inside_y = false;
-				
-				if (this->position.z > graph->nodes[index]->position.z - 0.6
-					&& this->position.z < graph->nodes[index]->position.z + 0.6) {
-					box_inside_z = true;
-				} else
-					box_inside_z = false;
-				
-				if (box_inside_x && box_inside_y && box_inside_z)
-					box_collided = true;
-				
-				/* act */
-				if (box_collided) {
-					dist_x = this->position.x - graph->nodes[index]->position.x;
-					dist_y = this->position.y - graph->nodes[index]->position.y;
-					dist_z = this->position.z - graph->nodes[index]->position.z;
-					if (fabs(dist_x) > fabs(dist_y) && fabs(dist_x) > fabs(dist_y)) {
-						if (dist_x > 0.0)
-							this->position.x = graph->nodes[index]->position.x + 0.6;
-						else
-							this->position.x = graph->nodes[index]->position.x - 0.6;
-					}
-					else if (fabs(dist_y) > fabs(dist_x) && fabs(dist_y) > fabs(dist_z)) {
-						if (dist_y > 0.0)
-							this->position.y = graph->nodes[index]->position.y + 0.6;
-						else
-							this->position.y = graph->nodes[index]->position.y - 0.6;
-						player_vertical_vel = 0.0;
-					}
-					else {
-						if (dist_z > 0.0)
-							this->position.z = graph->nodes[index]->position.z + 0.6;
-						else
-							this->position.z = graph->nodes[index]->position.z - 0.6;
-					}
-					box_collided = false;
-				}
+				if (fabs(pointdistance3d(this->position,graph->nodes[index]->position)) > 1.0)
+					break;	/* don't waste cycles calculating a box we're far away from */
+				player_to_box(this, graph->nodes[index]);
 				break;
 		case NT_COLLECTIBLE:
 			/* detect incursion */
@@ -128,13 +164,8 @@ void player_collision(node *this)
 				&& (this->position.z < graph->nodes[index]->position.z + 0.3 && this->position.z > graph->nodes[index]->position.z - 0.3)) {
 				
 				has_collided.x = 1;
-				got_triangle = true;
-			}
-			
-			/* act */
-			if (got_triangle) {
 				node_addcollision(graph->nodes[index], this, has_collided);
-				show_triangle = true;
+				got_triangle = true;
 			}
 			break;
 		default:
@@ -145,8 +176,10 @@ void player_collision(node *this)
 		has_collided.z = 0;
 	}
 	
-	/* act on collisions */
-	/* environment does not react, only informs */
+	/* act */
+	if (got_triangle)
+		show_triangle = true;
+	/* TODO: Above should notify of collision with boxes, but action should defer until all are calculated */
 	
 	return;
 }
@@ -168,7 +201,7 @@ void player_processinput(node *this)
 	if (input_mask & IM_DOWN) player_move_forward -= motion_constant;
 	if (input_mask & IM_LEFT) player_move_right -= motion_constant;
 	if (input_mask & IM_RIGHT) player_move_right += motion_constant;
-	if (input_mask & IM_ACTION1) player_vertical_vel = 0.35;
+	if (input_mask & IM_ACTION1 && standing_on_surface) {player_vertical_vel = 0.35; standing_on_surface = false;}
 	if (input_mask & IM_ACTION2) player_has_orbit = true;
 	
 	if (player_has_orbit && orbit_node == 0) {
@@ -238,11 +271,17 @@ void player_applyconstraints(node *this)
 	player_vertical_vel += player_vertical_accel;
 	this->position.y += player_vertical_vel;
 	
-	/* normalize angles */
-	this->rotation.x = fmod(this->rotation.x, 360);
-	this->rotation.y = fmod(this->rotation.y, 360);
+	if (standing_on_surface)
+		player_vertical_vel = 0.0;
 	
-	fprintf(stderr, "player v=%f a=%f\n", player_vertical_vel, player_vertical_accel);
+	/* normalize angles */
+	this->rotation.x = fmod(this->rotation.x, 360.0);
+	this->rotation.y = fmod(this->rotation.y, 360.0);
+	
+	/* clear standing flag until detected again */
+	standing_on_surface = false;
+	
+	return;
 }
 
 void player_render(node *this)
@@ -254,6 +293,11 @@ void player_render(node *this)
 		glScaled(0.1, 0.1, 0.1);
 		actor_render(this->node_actor);
 	glPopMatrix();
+	
+	/* retain previous position for vector calcs */
+	this->position_prev.x = this->position.x;
+	this->position_prev.y = this->position.y;
+	this->position_prev.z = this->position.z;
 	
 	return;
 }
