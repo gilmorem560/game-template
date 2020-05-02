@@ -55,89 +55,192 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         switch (wParam) {
 	    case 'A':
         case 'a':
-            key_pressed |= KEY_A;
-            break;
+			if (key_held & KEY_A)
+				key_pressed &= ~KEY_A;
+			else
+				key_pressed |= KEY_A;
+			key_held |= KEY_A;
+			break;
 	    case 'B':
         case 'b':
-            key_pressed |= KEY_B;
-            break;
+			if (key_held & KEY_B)
+				key_pressed &= ~KEY_B;
+			else
+				key_pressed |= KEY_B;
+			key_held |= KEY_B;
+			break;
 		case 'C':
 		case 'c':
-			key_pressed |= KEY_C;
+			if (key_held & KEY_C)
+				key_pressed &= ~KEY_C;
+			else
+				key_pressed |= KEY_C;
+			key_held |= KEY_C;
 			break;
 	    case 'D':
         case 'd':
-            key_pressed |= KEY_D;
-            break;
+			if (key_held & KEY_D)
+				key_pressed &= ~KEY_D;
+			else
+				key_pressed |= KEY_D;
+			key_held |= KEY_D;
+			break;
 		case 'E':
 		case 'e':
-			key_pressed |= KEY_E;
+			if (key_held & KEY_E)
+				key_pressed &= ~KEY_E;
+			else
+				key_pressed |= KEY_E;
+			key_held |= KEY_E;
 			break;
 		case 'F':
 		case 'f':
-			key_pressed |= KEY_F;
+			if (key_held & KEY_F)
+				key_pressed &= ~KEY_F;
+			else
+				key_pressed |= KEY_F;
+			key_held |= KEY_F;
 			break;
         case 'Q':
         case 'q':
-            key_pressed |= KEY_Q;
-            break;
+			if (key_held & KEY_Q)
+				key_pressed &= ~KEY_Q;
+			else
+				key_pressed |= KEY_Q;
+			key_held |= KEY_Q;
+			break;
         case 'R':
         case 'r':
-            key_pressed |= KEY_R;
-            break;
+			if (key_held & KEY_R)
+				key_pressed &= ~KEY_R;
+			else
+				key_pressed |= KEY_R;
+			key_held |= KEY_R;
+			break;
 	    case 'S':
         case 's':
-            key_pressed |= KEY_S;
-            break;
+			if (key_held & KEY_S)
+				key_pressed &= ~KEY_S;
+			else
+				key_pressed |= KEY_S;
+			key_held |= KEY_S;
+			break;
 		case 'T':
 		case 't':
-			key_pressed |= KEY_T;
+			if (key_held & KEY_T)
+				key_pressed &= ~KEY_T;
+			else
+				key_pressed |= KEY_T;
+			key_held |= KEY_T;
 			break;
 		case 'V':
 		case 'v':
-			key_pressed |= KEY_V;
+			if (key_held & KEY_V)
+				key_pressed &= ~KEY_V;
+			else
+				key_pressed |= KEY_V;
+			key_held |= KEY_V;
 			break;
 	    case 'W':
         case 'w':
-            key_pressed |= KEY_W;
-            break;
+			if (key_held & KEY_W)
+				key_pressed &= ~KEY_W;
+			else
+				key_pressed |= KEY_W;
+			key_held |= KEY_W;
+			break;
 	    case 'X':
         case 'x':
-            key_pressed |= KEY_X;
-            break;
+			if (key_held & KEY_X)
+				key_pressed &= ~KEY_X;
+			else
+				key_pressed |= KEY_X;
+			key_held |= KEY_X;
+			break;
 	    case 'Z':
         case 'z':
-            key_pressed |= KEY_Z;
-            break;
+			if (key_held & KEY_Z)
+				key_pressed &= ~KEY_Z;
+			else
+				key_pressed |= KEY_Z;
+			key_held |= KEY_Z;
+			break;
 		case '0':
-			key_pressed |= KEY_0;
+			if (key_held & KEY_0)
+				key_pressed &= ~KEY_0;
+			else
+				key_pressed |= KEY_0;
+			key_held |= KEY_0;
 			break;
 		case '1':
-			key_pressed |= KEY_1;
+			if (key_held & KEY_1)
+				key_pressed &= ~KEY_1;
+			else
+				key_pressed |= KEY_1;
+			key_held |= KEY_1;
 			break;
 		case '2':
-			key_pressed |= KEY_2;
+			if (key_held & KEY_2)
+				key_pressed &= ~KEY_2;
+			else
+				key_pressed |= KEY_2;
+			key_held |= KEY_2;
 			break;
 		case '3':
-			key_pressed |= KEY_3;
+			if (key_held & KEY_3)
+				key_pressed &= ~KEY_3;
+			else
+				key_pressed |= KEY_3;
+			key_held |= KEY_3;
 			break;
 		case '4':
-			key_pressed |= KEY_4;
+			if (key_held & KEY_4)
+				key_pressed &= ~KEY_4;
+			else
+				key_pressed |= KEY_4;
+			key_held |= KEY_4;
 			break;
 		case '5':
-			key_pressed |= KEY_5;
+			if (key_held & KEY_5)
+				key_pressed &= ~KEY_5;
+			else
+				key_pressed |= KEY_5;
+			key_held |= KEY_5;
 			break;
 		case '6':
-			key_pressed |= KEY_6;
+			if (key_held & KEY_6)
+				key_pressed &= ~KEY_6;
+			else
+				key_pressed |= KEY_6;
+			key_held |= KEY_6;
 			break;
 		case '7':
-			key_pressed |= KEY_7;
+			if (key_held & KEY_7)
+				key_pressed &= ~KEY_7;
+			else
+				key_pressed |= KEY_7;
+			key_held |= KEY_7;
 			break;
 		case '8':
-			key_pressed |= KEY_8;
+			if (key_held & KEY_8)
+				key_pressed &= ~KEY_8;
+			else
+				key_pressed |= KEY_8;
+			key_held |= KEY_8;
 			break;
 		case '9':
-			key_pressed |= KEY_9;
+			if (key_held & KEY_9)
+				key_pressed &= ~KEY_9;
+			else
+				key_pressed |= KEY_9;
+			key_held |= KEY_9;
+			break;
+		case ' ':
+			if (key_held & KEY_SPACE)
+				key_pressed &= ~KEY_SPACE;
+			else
+				key_pressed |= KEY_SPACE;
+			key_held |= KEY_SPACE;
 			break;
         default:
             break;
@@ -151,88 +254,116 @@ LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	    case 'A':
         case 'a':
             key_pressed &= ~KEY_A;
+			key_held &= ~KEY_A;
             break;
 	    case 'B':
         case 'b':
             key_pressed &= ~KEY_B;
+			key_held &= ~KEY_B;
             break;
 		case 'C':
 		case 'c':
 			key_pressed &= ~KEY_C;
+			key_held &= ~KEY_C;
 			break;
 	    case 'D':
         case 'd':
             key_pressed &= ~KEY_D;
+			key_held &= ~KEY_D;
             break;
 		case 'E':
 		case 'e':
 			key_pressed &= ~KEY_E;
+			key_held &= ~KEY_E;
 			break;
 		case 'F':
 		case 'f':
 			key_pressed &= ~KEY_F;
+			key_held &= ~KEY_F;
 			break;
 		case 'Q':
 		case 'q':
 			key_pressed &= ~KEY_Q;
+			key_held &= ~KEY_Q;
 			break;
         case 'R':
         case 'r':
             key_pressed &= ~KEY_R;
+			key_held &= ~KEY_R;
             break;
 	    case 'S':
         case 's':
             key_pressed &= ~KEY_S;
+			key_held &= ~KEY_S;
             break;
 		case 'T':
 		case 't':
 			key_pressed &= ~KEY_T;
+			key_held &= ~KEY_T;
 			break;
 		case 'V':
 		case 'v':
 			key_pressed &= ~KEY_V;
+			key_held &= ~KEY_V;
 			break;
 	    case 'W':
         case 'w':
             key_pressed &= ~KEY_W;
+			key_held &= ~KEY_W;
             break;
 	    case 'X':
         case 'x':
             key_pressed &= ~KEY_X;
+			key_held &= ~KEY_X;
             break;
 	    case 'Z':
         case 'z':
             key_pressed &= ~KEY_Z;
+			key_held &= ~KEY_Z;
             break;
 		case '0':
 			key_pressed &= ~KEY_0;
+			key_held &= ~KEY_0;
 			break;
 		case '1':
 			key_pressed &= ~KEY_1;
+			key_held &= ~KEY_1;
 			break;
 		case '2':
 			key_pressed &= ~KEY_2;
+			key_held &= ~KEY_2;
 			break;
 		case '3':
 			key_pressed &= ~KEY_3;
+			key_held &= ~KEY_3;
 			break;
 		case '4':
 			key_pressed &= ~KEY_4;
+			key_held &= ~KEY_4;
 			break;
 		case '5':
 			key_pressed &= ~KEY_5;
+			key_held &= ~KEY_5;
 			break;
 		case '6':
 			key_pressed &= ~KEY_6;
+			key_held &= ~KEY_6;
 			break;
 		case '7':
 			key_pressed &= ~KEY_7;
+			key_held &= ~KEY_7;
 			break;
 		case '8':
 			key_pressed &= ~KEY_8;
+			key_held &= ~KEY_8;
 			break;
 		case '9':
 			key_pressed &= ~KEY_9;
+			key_held &= ~KEY_9;
+			break;
+		case ' ':
+			key_pressed &= ~KEY_SPACE;
+			key_held &= ~KEY_SPACE;
 			break;
         default:
             break;
