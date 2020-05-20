@@ -33,8 +33,7 @@ void glxevent(Display *dpy)
 
 	while (XEventsQueued(dpy, QueuedAlready) != 0) {
 		/* immediately process any resize */
-		if (XCheckWindowEvent(dpy, win, StructureNotifyMask, &event_return)) ;
-		else
+		if (!XCheckWindowEvent(dpy, win, StructureNotifyMask, &event_return))
 			XNextEvent(dpy, &event_return);
 
 		#ifndef NDEBUG
@@ -61,7 +60,7 @@ void glxevent(Display *dpy)
 				/* debuggers can uncapture the cursor */
 				if (mouse_captured) {
 				#endif /* NDEBUG */
-					/* keep undelrying cursor in center of the screen */
+					/* keep underlying cursor in center of the screen */
 					new_attribs.event_mask = current_attribs.your_event_mask &= ~PointerMotionMask;
 					XChangeWindowAttributes(dpy, win, CWEventMask, &new_attribs);
 					XWarpPointer(dpy, None, win, x_width / 2, x_height / 2, 0, 0, x_width / 2, x_height / 2);

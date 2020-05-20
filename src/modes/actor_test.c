@@ -231,10 +231,10 @@ bool actor_test_render(void)
 bool actor_test_input(void)
 {	
 	/* movement */
-	/* w - up */	if (key_pressed & KEY_W || key_held & KEY_W) input_mask |= IM_UP;
-	/* s - down */	if (key_pressed & KEY_S || key_held & KEY_S) input_mask |= IM_DOWN;
-	/* a - left */	if (key_pressed & KEY_A || key_held & KEY_A) input_mask |= IM_LEFT;
-	/* d - right */ if (key_pressed & KEY_D || key_held & KEY_D) input_mask |= IM_RIGHT;
+	/* w - up */	if ((key_pressed & KEY_W) | (key_held & KEY_W)) input_mask |= IM_UP;
+	/* s - down */	if ((key_pressed & KEY_S) | (key_held & KEY_S)) input_mask |= IM_DOWN;
+	/* a - left */	if ((key_pressed & KEY_A) | (key_held & KEY_A)) input_mask |= IM_LEFT;
+	/* d - right */ if ((key_pressed & KEY_D) | (key_held & KEY_D)) input_mask |= IM_RIGHT;
 	
 	/* actions */
 	/* e - tap action 1 */	if (key_pressed & KEY_SPACE) input_mask |= IM_ACTION1;

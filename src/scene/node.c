@@ -77,16 +77,10 @@ void node_render(node *this)
 {
 	if (this == NULL)
 		fputs("render: undefined node passed\n", stderr);
-	else if (this->render == NULL)
-		#ifdef DEBUG_VERBOSE
-		fprintf(stderr, "node %d is undefined or not rendering\n", this->id);
-		#else
-		;
-		#endif /* DEBUG_VERBOSE */
-	else if (this->id < 0)
-		;	/* do nothing, node is inactive */
-	else
+	else if (this->render != NULL && this->id >= 0)
 		this->render(this);
+	else
+		fprintf(stderr, "node %d is inactive or not rendering\n", this->id);
 	
 	return;
 }
@@ -101,20 +95,14 @@ void node_routine(node *this, signed char routine_index)
 {
 	if (this == NULL)
 		fputs("routine: undefined node passed\n", stderr);
-	else if (this->routine == NULL)
-		#ifdef DEBUG_VERBOSE
-		fprintf(stderr, "node %d is undefined or has no routine\n", this->id);
-		#else
-		;
-		#endif /* DEBUG_VERBOSE */
-	else if (this->id < 0)
-		;	/* do nothing, node is inactive */
-	else if (routine_index == NR_NULL)
-		;	/* do nothing, null routine */
-	else {
+	else if (this->routine != NULL
+			&& this->id >= 0
+			&& routine_index != NR_NULL) {
 		this->routine_index = routine_index;
 		this->routine(this);
 	}
+	else
+		fprintf(stderr, "node %d is inactive or has no routine\n", this->id);
 	
 	return;
 }

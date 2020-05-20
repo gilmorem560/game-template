@@ -23,25 +23,32 @@ void camera_refresh(node *this)
 
 void camera_routine(node *this, node *player)
 {
-	double camera_dist_x, camera_dist_y, camera_dist_z, camera_dist_z_adj;
+	vect_comp3d camera_dist_c;
+	double camera_dist_z_adj;
 	double camera_dist;
 	double camera_dist_planar;
 	vect_component camera_xz = { 0.0, 0.0 };
 	
 	/* determine distance */
-	camera_dist_x = player->position.x - this->position.x;
-	camera_dist_y = player->position.y - this->position.y;
-	camera_dist_z = player->position.z - this->position.z;
-	this->rotation.x = vecang2d_calc(camera_dist_x, camera_dist_z);
-	camera_dist_z_adj = sqrt((camera_dist_x * camera_dist_x) + (camera_dist_z * camera_dist_z));
-	this->rotation.y = -vecang2d_calc(camera_dist_y, camera_dist_z_adj);
+	camera_dist_c.x = player->position.x - this->position.x;
+	camera_dist_c.y = player->position.y - this->position.y;
+	camera_dist_c.z = player->position.z - this->position.z;
+	camera_dist_z_adj = sqrt((camera_dist_c.x * camera_dist_c.x) + (camera_dist_c.z * camera_dist_c.z));
+
+	/* rotate camera */
+	this->rotation.x = vecang2d_calc(camera_dist_c.x, camera_dist_c.z);
+	this->rotation.y = -vecang2d_calc(camera_dist_c.y, camera_dist_z_adj);
 	
 	/* move camera */
-	camera_dist = pointdistance3d(this->position,player->position);
+	camera_dist = pointdistance3d(this->position, player->position);
 	if (camera_dist > CAMERA_DIST_MAX) {
-		this->position.x += (camera_dist - CAMERA_DIST_MAX) * (camera_dist_x / camera_dist);
-		this->position.y += (camera_dist - CAMERA_DIST_MAX) * (camera_dist_y / camera_dist);
-		this->position.z += (camera_dist - CAMERA_DIST_MAX) * (camera_dist_z / camera_dist);
+		this->position.x += (camera_dist - CAMERA_DIST_MAX) * (camera_dist_c.x / camera_dist);
+		this->position.y += (camera_dist - CAMERA_DIST_MAX) * (camera_dist_c.y / camera_dist);
+		this->position.z += (camera_dist - CAMERA_DIST_MAX) * (camera_dist_c.z / camera_dist);
+	} else if (camera_dist < CAMERA_DIST_MIN) {
+		this->position.x -= (CAMERA_DIST_MIN - camera_dist) * (camera_dist_c.x / camera_dist);
+		this->position.y -= (CAMERA_DIST_MIN - camera_dist) * (camera_dist_c.y / camera_dist);
+		this->position.z -= (CAMERA_DIST_MIN - camera_dist) * (camera_dist_c.z / camera_dist);
 	}
 	
 	/* normalize angles */

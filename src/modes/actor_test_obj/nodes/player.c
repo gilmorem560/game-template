@@ -209,7 +209,7 @@ void player_processinput(node *this)
 	if (input_mask & IM_DOWN) player_move_forward -= motion_constant;
 	if (input_mask & IM_LEFT) player_move_right -= motion_constant;
 	if (input_mask & IM_RIGHT) player_move_right += motion_constant;
-	if (input_mask & IM_ACTION1 && standing_on_surface) {player_vertical_vel = 0.35; standing_on_surface = false;}
+	if ((input_mask & IM_ACTION1) && standing_on_surface) {player_vertical_vel = 0.35; standing_on_surface = false;}
 	if (input_mask & IM_ACTION2) player_has_orbit = true;
 	
 	if (player_has_orbit && orbit_node == 0) {

@@ -30,6 +30,7 @@ extern void camera_routine(node *this, node *player);
 static int camera_node;
 	static bool z_adjusted = false;
 	#define CAMERA_DIST_MAX	2.0
+	#define CAMERA_DIST_MIN 1.0
 	
 #define NT_PLAYER		2
 extern void player_render(node *this);
