@@ -23,7 +23,7 @@ void camera_refresh(node *this)
 
 void camera_routine(node *this, node *player)
 {
-	vect_comp3d camera_dist_c;
+	vect_component camera_dist_c;
 	double camera_dist_z_adj;
 	double camera_dist;
 	double camera_dist_planar;
