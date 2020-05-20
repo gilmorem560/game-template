@@ -33,9 +33,9 @@ extern "C" {
 #define	GM_ACTOR_TEST	2
 #define	MODE_COUNT		3
 
-mode *current_mode;
-unsigned int mode_index;
-unsigned int mode_index_prev;
+extern mode *current_mode;
+extern unsigned int mode_index;
+extern unsigned int mode_index_prev;
 	
 #ifdef __cplusplus
 };

@@ -3,6 +3,8 @@
  */
 #include "titlescreen.h"
 
+scene *titlescreen_graph;
+
 /* 
  * init - scene and system init 
  */

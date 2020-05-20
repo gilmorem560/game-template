@@ -4,6 +4,8 @@
 #include "logos.h"
 #include "logos_obj/nodes.h"
 
+scene *logos_graph;
+
 static point3d node_positions[] = {{0.0, 0.0, 0.0}};
 static point3d node_angles[] = {{0.0, 0.0, 0.0}};
 static short plane_node;

@@ -3,6 +3,20 @@
   */
 #include "glcontext.h"
 
+Display *dpy;
+XVisualInfo *vis;
+Window win;
+Cursor cursor;
+Window root;
+    unsigned long rootSizeX;
+    unsigned long rootSizeY;
+int screen_number;
+
+/* GLX variables */
+GLXFBConfig *config;
+GLXContext context;
+GLXWindow window;
+
 /*
  * glxinit - initialize OpenGL for X11
  */

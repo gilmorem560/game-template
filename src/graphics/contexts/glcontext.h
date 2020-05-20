@@ -25,14 +25,14 @@ extern "C" {
 
 #define DEFAULT_WIDTH    640
 #define DEFAULT_HEIGHT   480
-unsigned short xres;
-unsigned short yres;
-double current_ratio;
-bool isfullscreen;
+extern unsigned short xres;
+extern unsigned short yres;
+extern double current_ratio;
+extern bool isfullscreen;
 
-void drawframe();
-void setwindowed(unsigned short w_xres, unsigned short w_yres);
-void setfullscreen(void);
+extern void drawframe();
+extern void setwindowed(unsigned short w_xres, unsigned short w_yres);
+extern void setfullscreen(void);
 
 #ifndef NDEBUG
 static GLenum gl_errno;

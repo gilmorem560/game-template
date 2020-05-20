@@ -1,6 +1,7 @@
 bin_PROGRAMS = main
 main_SOURCES = \
 	graphics/contexts/glxcontext.c \
+	graphics/contexts/glcontext.c \
 	graphics/primitives/grid2d.c \
 	graphics/primitives/grid3d.c \
 	graphics/primitives/point2d.c \
@@ -9,6 +10,8 @@ main_SOURCES = \
 	graphics/primitives/poly3d.c \
 	graphics/primitives/vect.c \
 	input/glxevent.c \
+	input/input.c \
+	modes/modes.c \
 	modes/logos.c \
 	modes/logos_obj/nodes/plane.c \
 	modes/titlescreen.c \

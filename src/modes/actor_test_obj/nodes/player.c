@@ -3,6 +3,14 @@
  */
 #include "../nodes.h"
 
+GLdouble player_move_forward;
+GLdouble player_move_right;
+GLdouble player_move_up;
+GLdouble player_vertical_vel;
+GLdouble player_vertical_accel;
+bool player_has_orbit;
+bool trigger_jump;
+
 static int orbit_node;
 static int orbit_child_index;
 

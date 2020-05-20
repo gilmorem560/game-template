@@ -44,31 +44,31 @@ extern "C" {
 #define KEY_ISNUM(x)	x >> 0x13
 
 /* key masks */
-unsigned long key_pressed;
-unsigned long key_held;
+extern unsigned long key_pressed;
+extern unsigned long key_held;
 
 /* mouse state */
-bool mouse_moved_x;
-bool mouse_moved_y;
-bool mouse_x_positive;
-bool mouse_y_positive;
+extern bool mouse_moved_x;
+extern bool mouse_moved_y;
+extern bool mouse_x_positive;
+extern bool mouse_y_positive;
 
 /* quit state */
-bool quit;
+extern bool quit;
 
 #ifdef  _WIN32
 /* wglevent - process WinAPI input */
-void wglevent(HWND hWnd);
+extern void wglevent(HWND hWnd);
 /* wndproc - main windows message processing loop */
-LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+extern LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 #else
 /* glxevent - process X11 input */
- void glxevent(Display *dpy);
+extern void glxevent(Display *dpy);
 #endif  /* _WIN32 */
  
 #ifndef NDEBUG
-bool mouse_captured;
-bool debug_cursor_changed;
+extern bool mouse_captured;
+extern bool debug_cursor_changed;
 #endif
     
 #ifdef __cplusplus

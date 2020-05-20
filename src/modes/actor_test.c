@@ -2,7 +2,21 @@
  * actor_test - a test of scene graphs
  */
 #include "actor_test.h"
-#include "actor_test_obj/nodes.h"								  
+#include "actor_test_obj/nodes.h"			
+
+/* scene */
+scene *graph;
+
+/* some global constants */
+double motion_constant;
+double gravity_constant;
+double scale_constant;
+
+/* wrapper input to mode input */
+int input_mask;
+
+/* trigger to display triangle in HUD */
+bool show_triangle;
 								  
 static double bounding_box[] = {-2.9, 2.9, -2.9, 2.9, -11.0, -1.1};
 static GLfloat fog_color[] = { 0.3f, 0.3f, 0.3f, 1.0f };

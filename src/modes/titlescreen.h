@@ -12,14 +12,14 @@ extern "C" {
 #include "modes.h"
 
 /* game mode methods */
-bool titlescreen_init(void);		/* scene and system init */
-bool titlescreen_render(void);		/* scene rendering */
-bool titlescreen_input(void);		/* input handling */
-bool titlescreen_routine(void);		/* object processing */
-bool titlescreen_free(void);		/* free resources */
+extern bool titlescreen_init(void);		/* scene and system init */
+extern bool titlescreen_render(void);		/* scene rendering */
+extern bool titlescreen_input(void);		/* input handling */
+extern bool titlescreen_routine(void);		/* object processing */
+extern bool titlescreen_free(void);		/* free resources */
 
 /* scene */
-scene *titlescreen_graph;
+extern scene *titlescreen_graph;
 	
 #ifdef __cplusplus
 };

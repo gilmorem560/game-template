@@ -27,25 +27,25 @@ extern "C" {
 #include "../../util/macros.h"     /* useful macros */
     
 /* X11 variables */
-Display *dpy;
-XVisualInfo *vis;
-Window win;
-Cursor cursor;
-Window root;
-    unsigned long rootSizeX;
-    unsigned long rootSizeY;
-int screen_number;
+extern Display *dpy;
+extern XVisualInfo *vis;
+extern Window win;
+extern Cursor cursor;
+extern Window root;
+    extern unsigned long rootSizeX;
+    extern unsigned long rootSizeY;
+extern int screen_number;
 
 /* GLX variables */
-GLXFBConfig *config;
-GLXContext context;
-GLXWindow window;
+extern GLXFBConfig *config;
+extern GLXContext context;
+extern GLXWindow window;
 
 /* glxinit - initialize OpenGL for X11 */
-void glxinit();
+extern void glxinit();
 
 /* glxfree - close OpenGL for X11 */
-void glxfree(void);
+extern void glxfree(void);
 
 #ifdef __cplusplus
 };

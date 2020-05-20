@@ -13,28 +13,30 @@ extern "C" {
 #include "modes.h"
 
 /* game mode methods */
-bool actor_test_init(void);		/* scene and system init */
-bool actor_test_render(void);	/* scene rendering */
-bool actor_test_input(void);	/* input handling */
-bool actor_test_routine(void);	/* object processing */
-bool actor_test_free(void);		/* free resources */
+extern bool actor_test_init(void);		/* scene and system init */
+extern bool actor_test_render(void);	/* scene rendering */
+extern bool actor_test_input(void);	/* input handling */
+extern bool actor_test_routine(void);	/* object processing */
+extern bool actor_test_free(void);		/* free resources */
 
 /* scene */
-scene *graph;
+extern scene *graph;
 
 /* some global constants */
-double motion_constant;
-double gravity_constant;
-double scale_constant;
+extern double motion_constant;
+extern double gravity_constant;
+extern double scale_constant;
 
 /* wrapper input to mode input */
-int input_mask;
+extern int input_mask;
 #define IM_UP		1
 #define IM_DOWN		2
 #define IM_LEFT		4
 #define IM_RIGHT	8
 #define IM_ACTION1	16
 #define IM_ACTION2	32
+
+extern bool show_triangle;
 
 #ifdef __cplusplus
 };
