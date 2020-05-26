@@ -89,7 +89,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		wglevent(wnd);
 		#endif /* _WIN32 */
 		
+		#ifndef NDEBUG
 		debug_pollkeys(key_held);
+		#endif /* NDEBUG */
 		
 		/* process movement */
 		game_modes[mode_index].input();

@@ -9,28 +9,21 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* 2d space */
-typedef struct point2d {
-    double x;
-    double y;
-} point2d;
-typedef struct grid2d {
-    double x;
-    double y;
-} grid2d;
+typedef struct dim2 {	/* two dimensional construct */
+} dim2;
+typedef dim2 point2d;
+typedef dim2 grid2d;
 
 #define pointdistance2d(a, b)	sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y))
 
 /* 3d space */
-typedef struct point3d {
-    double x;
-    double y;
-    double z;
-} point3d;
-typedef struct grid3d {
-    double x;
-    double y;
-    double z;
-} grid3d;
+typedef struct dim3 {	/* three dimensional construct */
+	double x;
+	double y;
+	double z;
+} dim3;
+typedef dim3 point3d;
+typedef dim3 grid3d;
 
 #define pointdistance3d(a, b)	sqrt((b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y) + (b.z - a.z)*(b.z - a.z))
 

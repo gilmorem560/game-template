@@ -28,6 +28,11 @@ void at_tet_routine(actor *this);
 actor *at_triangle_new(void);
 void at_triangle_render(actor *this);
 void at_triangle_routine(actor *this);
+
+#define AT_PERSON 3
+actor *at_person_new(void);
+void at_person_render(actor *this);
+void at_person_routine(actor *this);
 	
 #ifdef __cplusplus
 };

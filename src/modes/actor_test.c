@@ -7,6 +7,12 @@
 /* scene */
 scene *graph;
 
+typedef struct graph_table {
+	signed short type;
+	void (*render)(node *);
+	void (*routine)(node *);
+} graph_table ;
+
 /* some global constants */
 double motion_constant;
 double gravity_constant;
@@ -20,15 +26,51 @@ bool show_triangle;
 								  
 static double bounding_box[] = {-2.9, 2.9, -2.9, 2.9, -11.0, -1.1};
 static GLfloat fog_color[] = { 0.3f, 0.3f, 0.3f, 1.0f };
-static point3d node_positions[] = {{0.0,0.0,0.0},{0.0,0.0,-2.0},{0.0,0.0,-5.0},{0.0,-2.5,-6.0},{0.0,-1.5,-7.0},{0.0,-0.5,-8.0},{0.0,-0.5,-11.0},{0.0,1.5,-11.0}};
-static point3d node_angles[] = {{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0}};
+static point3d node_positions[] = {
+		{0.0,0.0,0.0}		/* environment */
+		,{0.0,0.0,-2.0}		/* camera */
+		,{0.0,0.0,-5.0}		/* player */
+		,{0.0,-2.5,-6.0}	/* box 1 */
+		,{0.0,-1.5,-7.0}	/* box 2 */
+		,{0.0,-0.5,-8.0}	/* box 3 */
+		,{0.0,-0.5,-11.0}	/* box 4 */
+		,{0.0,1.5,-11.0}	/* collectible */
+		,{3.0,-2.5,-6.0}	/* box 5 */
+};
+static point3d node_angles[] = {
+		{0.0,0.0,0.0}		/* environment */
+		,{0.0,0.0,0.0}		/* camera */
+		,{0.0,0.0,0.0}		/* player */
+		,{0.0,0.0,0.0}		/* box 1 */
+		,{0.0,0.0,0.0}		/* box 2 */
+		,{0.0,0.0,0.0}		/* box 3 */
+		,{0.0,0.0,0.0}		/* box 4 */
+		,{0.0,0.0,0.0}		/* collectible */
+		,{0.0,0.0,0.0}		/* box 5 */
+};
+
+static graph_table scene_table[] = {
+		{NT_ENVIRONMENT, &environment_render, &environment_routine}
+		,{NT_CAMERA, NULL, NULL}
+		,{NT_PLAYER, &player_render, &player_routine}
+		,{NT_BOX, &box_render, &box_routine}
+		,{NT_BOX, &box_render, &box_routine}
+		,{NT_BOX, &box_render, &box_routine}
+		,{NT_BOX,  &box_render, &box_routine}
+		,{NT_COLLECTIBLE, &collectible_render, &collectible_routine}
+		,{NT_BOX, &box_render, &box_routine}
+};
+
+#define NODE_COUNT 9
 
 /*
  * actor_test_init - OpenGL init
  */
 bool actor_test_init(void)
 {
-	signed short box_1, box_2, box_3, box_4, a_collectible;
+	signed short box_1, box_2, box_3, box_4, a_collectible, box_5;
+	unsigned char index;
+	signed char node_id;
 	#ifndef NDEBUG
 	printf("actor_test: init\n");
 	#endif /* NDEBUG */
@@ -56,73 +98,43 @@ bool actor_test_init(void)
 	graph->bounding_box[5] = bounding_box[5];
 	
 	/* create node collection */
-	
-	/* create node 00 - environment */
-	environment_node = scene_addnode(graph, NT_ENVIRONMENT, environment_render, environment_routine);
-	scene_positionnode(graph, environment_node, node_positions[environment_node]);
-	scene_rotatenode(graph, environment_node, node_angles[environment_node]);
-	
-	/* create node 01 - camera */
-	camera_node = scene_addnode(graph, NT_CAMERA, NULL, NULL);
-	scene_positionnode(graph, camera_node, node_positions[camera_node]);
-	scene_rotatenode(graph, camera_node, node_angles[camera_node]);
-	scene_setchildnode(graph, environment_node, camera_node);
-		
-	/* create node 02 - player box */
-	player_node = scene_addnode(graph, NT_PLAYER, player_render, player_routine);
-	scene_positionnode(graph, player_node, node_positions[player_node]);
-	scene_rotatenode(graph, player_node, node_angles[player_node]);
-	scene_setchildnode(graph, environment_node, player_node);
-	
-	/* create node 03 - 05 - some boxes to jump on */
-	box_1 = scene_addnode(graph, NT_BOX, box_render, box_routine);
-	box_2 = scene_addnode(graph, NT_BOX, box_render, box_routine);
-	box_3 = scene_addnode(graph, NT_BOX, box_render, box_routine);
-	scene_positionnode(graph, box_1, node_positions[box_1]);
-	scene_positionnode(graph, box_2, node_positions[box_2]);
-	scene_positionnode(graph, box_3, node_positions[box_3]);
-	scene_rotatenode(graph, box_1, node_angles[box_1]);
-	scene_rotatenode(graph, box_2, node_angles[box_2]);
-	scene_rotatenode(graph, box_3, node_angles[box_3]);
-	scene_setchildnode(graph, environment_node, box_1);
-	scene_setchildnode(graph, environment_node, box_2);
-	scene_setchildnode(graph, environment_node, box_3);
-	
-	/* create note 06 - a box to put a collectible on */
-	box_4 = scene_addnode(graph, NT_BOX, box_render, box_routine);
-	scene_positionnode(graph, box_4, node_positions[box_4]);
-	scene_rotatenode(graph, box_4, node_angles[box_4]);
-	scene_setchildnode(graph, environment_node, box_4);
-	
-	
-	/* create node 07 - a collectible triangle! */
-	a_collectible = scene_addnode(graph, NT_COLLECTIBLE, collectible_render, collectible_routine);
-	scene_positionnode(graph, a_collectible, node_positions[a_collectible]);
-	scene_rotatenode(graph, a_collectible, node_angles[a_collectible]);
-	scene_setchildnode(graph, environment_node, a_collectible);
-	
-	/* assign environment */
-	graph->environment = graph->nodes[environment_node];
-	
-	/* assign camera */
-	graph->camera = graph->nodes[camera_node];
-	
-	/* assign player */
-	graph->player = graph->nodes[player_node];
+	for (index = 0; index < NODE_COUNT; index++) {
+		node_id = scene_addnode(graph, scene_table[index].type, scene_table[index].render, scene_table[index].routine);
+		scene_positionnode(graph, node_id, node_positions[index]);
+		scene_rotatenode(graph, node_id, node_angles[index]);
+		if (node_id != 0)
+			scene_setchildnode(graph, 0, node_id);	/* currently all initial nodes instantiated as children of environment, if nodes have children they will manage */
+
+		/* assign special nodes */
+		switch (scene_table[index].type) {
+		case NT_ENVIRONMENT:
+			graph->environment = graph->nodes[node_id];
+			break;
+		case NT_CAMERA:
+			graph->camera = graph->nodes[node_id];
+			break;
+		case NT_PLAYER:
+			graph->player = graph->nodes[node_id];
+			break;
+		default:
+			break;
+		}
+	}
 	
 	/* assign environment as our root node */
-	graph->root_node = graph->environment;
+	graph->root_node = graph->nodes[0];
 	
 	/* --- OpenGL Init --- */
 	
 	/* TODO: Create OpenGL "modes" that control all parameter switching */
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
-	glDisable(GL_COLOR_MATERIAL);
+	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_FOG);
+	glDisable(GL_BLEND);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -141,7 +153,9 @@ bool actor_test_init(void)
 	glFogf(GL_FOG_DENSITY, 0.45f);
 	glFogf(GL_FOG_START, 1.0f);
 	glFogf(GL_FOG_END, 10.0f);
-	
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
 	/* setup projection */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -203,6 +217,7 @@ bool actor_test_render(void)
 		glPopMatrix();
 	glPopMatrix();
 	
+	/* test hud elements */
 	if (show_triangle) {
 		glDisable(GL_DEPTH_TEST);
 

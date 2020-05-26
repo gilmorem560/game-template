@@ -3,10 +3,15 @@
  */
 #include "../nodes.h"
 
+bool debug_show_col = false;
+
 void box_init(node *this)
 {
 	this->node_actor = at_cube_new();
 	actor_routine(this->node_actor, AR_INIT);
+	#ifndef NDEBUG
+	debug_show_col = true;
+	#endif /* NDEBUG */
 	
 	return;
 }
@@ -34,11 +39,76 @@ void box_applyconstraints(node *this)
 
 void box_render(node *this)
 {
+	unsigned int counter = 0;
+	unsigned int counter2 = 0;
+	double angle = 0.0;
+	double angle2 = 0.0;
+
 	/* draw node */
 	glPushMatrix();
 		glTranslated(this->position.x, this->position.y, -this->position.z);
 		glScaled(0.5, 0.5, 0.5);
 		actor_render(this->node_actor);
+		if (debug_show_col) {
+			glDisable(GL_CULL_FACE);
+			glEnable(GL_BLEND);
+			glColor4d(1.0, 0.0, 0.0, 0.5);
+			for (counter2 = 0; counter2 < 4; counter2++) {
+				glPushMatrix();
+					glRotated(angle2, 0.0, 1.0, 0.0);
+					for (counter = 0; counter < 4; counter++) {
+						glPushMatrix();
+							glRotated(angle, 0.0, 0.0, 1.0);
+							glTranslated(0.0, 1.0, -2.0);
+							glBegin(GL_QUADS);
+								glVertex3d(1.0, 0.0, 1.0);
+								glVertex3d(1.0, 0.0, -1.0);
+								glVertex3d(-1.0, 0.0, -1.0);
+								glVertex3d(-1.0, 0.0, 1.0);
+							glEnd();
+						glPopMatrix();
+						angle += 90.0;
+					}
+				glPopMatrix();
+				angle2 += 90.0;
+			}
+			angle = 0.0;
+			glPushMatrix();
+				glRotated(90.0, 1.0, 0.0, 0.0);
+				for (counter = 0; counter < 4; counter++) {
+					glPushMatrix();
+						glRotated(angle, 0.0, 0.0, 1.0);
+						glTranslated(0.0, 1.0, -2.0);
+						glBegin(GL_QUADS);
+							glVertex3d(1.0, 0.0, 1.0);
+							glVertex3d(1.0, 0.0, -1.0);
+							glVertex3d(-1.0, 0.0, -1.0);
+							glVertex3d(-1.0, 0.0, 1.0);
+						glEnd();
+					glPopMatrix();
+					angle += 90.0;
+				}
+			glPopMatrix();
+			angle = 0.0;
+			glPushMatrix();
+				glRotated(270.0, 1.0, 0.0, 0.0);
+				for (counter = 0; counter < 4; counter++) {
+					glPushMatrix();
+						glRotated(angle, 0.0, 0.0, 1.0);
+						glTranslated(0.0, 1.0, -2.0);
+						glBegin(GL_QUADS);
+							glVertex3d(1.0, 0.0, 1.0);
+							glVertex3d(1.0, 0.0, -1.0);
+							glVertex3d(-1.0, 0.0, -1.0);
+							glVertex3d(-1.0, 0.0, 1.0);
+						glEnd();
+					glPopMatrix();
+					angle += 90.0;
+				}
+			glPopMatrix();
+			glDisable(GL_BLEND);
+			glEnable(GL_CULL_FACE);
+		}
 	glPopMatrix();
 	
 	/* retain previous position for vector calcs */

@@ -3,11 +3,9 @@
  */
 #include "../nodes.h"
 
-GLdouble player_move_forward;
-GLdouble player_move_right;
-GLdouble player_move_up;
-GLdouble player_vertical_vel;
-GLdouble player_vertical_accel;
+dim3 player_accel;
+dim3 player_vel;
+
 bool player_has_orbit;
 bool trigger_jump;
 
@@ -22,11 +20,12 @@ void player_init(node *this)
 	actor_routine(this->node_actor, AR_INIT);
 	
 	player_has_orbit = false;
-	player_move_forward = 0.0;
-	player_move_right = 0.0;
-	player_move_up = 0.0;
-	player_vertical_vel = 0.0;
-	player_vertical_accel = -0.03;
+	player_vel.x = 0.0;
+	player_vel.y = 0.0;
+	player_vel.z = 0.0;
+	player_accel.x = 0.0;
+	player_accel.y = -0.03;
+	player_accel.z = 0.0;
 	orbit_node = 0;
 	orbit_child_index = 0;
 	
@@ -43,7 +42,7 @@ void player_free(node *this)
 /* 
  * TODO: tidy into a generic bounding box collision handler
  */
-void player_to_box(node *player, node *box)
+bool player_to_box(node *player, node *box)
 {
 	double dist_x, dist_y, dist_z;
 	double ang_x, ang_y, ang_z;
@@ -54,6 +53,7 @@ void player_to_box(node *player, node *box)
 	bool touched_x = false;
 	bool touched_y = false;
 	bool touched_z = false;
+	bool standing = false;
 	
 	/* detect incursion */
 	if (player->position.x > box->position.x - 0.6
@@ -96,7 +96,6 @@ void player_to_box(node *player, node *box)
 			else
 				touched_y = true;
 		}
-		box_collided = false;
 	}
 	
 	/* place at point of collision */
@@ -110,8 +109,9 @@ void player_to_box(node *player, node *box)
 			player->position.y = box->position.y - 0.6;
 		else {
 			player->position.y = box->position.y + 0.6;
-			standing_on_surface = true;
+			standing = true;
 		}
+		player_vel.y = 0.0;
 	} else if (touched_z) {
 		if (dist_z < 0)
 			player->position.z = box->position.z - 0.6;
@@ -119,15 +119,20 @@ void player_to_box(node *player, node *box)
 			player->position.z = box->position.z + 0.6;
 	}
 
-	return;
+	return standing;
 }
 
+/*
+ * collision - calculate collisions with objects
+ */
 void player_collision(node *this)
 {
 	collided has_collided = {0, 0, 0};
 	unsigned short index;
 	unsigned short node;
 	bool got_triangle = false;
+	bool standing_on_ground = false;
+	bool standing_on_box = false;
 	
 	/* act on previous collisions by object type */
 	for (index = 0; index < this->collisions_count; index++) {
@@ -138,7 +143,8 @@ void player_collision(node *this)
 				this->position.x = this->collisions[index].x * 2.9;
 			if (this->collisions[index].y) {
 				this->position.y = this->collisions[index].y * 2.9;			
-				standing_on_surface = true;
+				standing_on_ground = true;
+				player_vel.y = 0.0;
 			}
 			if (this->collisions[index].z < 0)
 				this->position.z = -11.0;
@@ -163,7 +169,7 @@ void player_collision(node *this)
 		case NT_BOX:
 				if (fabs(pointdistance3d(this->position,graph->nodes[index]->position)) > 1.0)
 					break;	/* don't waste cycles calculating a box we're far away from */
-				player_to_box(this, graph->nodes[index]);
+				standing_on_box = player_to_box(this, graph->nodes[index]);
 				break;
 		case NT_COLLECTIBLE:
 			/* detect incursion */
@@ -183,7 +189,9 @@ void player_collision(node *this)
 		has_collided.y = 0;
 		has_collided.z = 0;
 	}
-	
+
+	standing_on_surface = standing_on_ground | standing_on_box;
+
 	/* act */
 	if (got_triangle)
 		show_triangle = true;
@@ -205,11 +213,11 @@ void player_addorbit(node *this)
 void player_processinput(node *this)
 {
 	/* motion */
-	if (input_mask & IM_UP) player_move_forward += motion_constant;
-	if (input_mask & IM_DOWN) player_move_forward -= motion_constant;
-	if (input_mask & IM_LEFT) player_move_right -= motion_constant;
-	if (input_mask & IM_RIGHT) player_move_right += motion_constant;
-	if ((input_mask & IM_ACTION1) && standing_on_surface) {player_vertical_vel = 0.35; standing_on_surface = false;}
+	if (input_mask & IM_UP) player_vel.z += motion_constant;
+	if (input_mask & IM_DOWN) player_vel.z -= motion_constant;
+	if (input_mask & IM_LEFT) player_vel.x -= motion_constant;
+	if (input_mask & IM_RIGHT) player_vel.x += motion_constant;
+	if ((input_mask & IM_ACTION1) && standing_on_surface) {player_vel.y = 0.35; standing_on_surface = false;}
 	if (input_mask & IM_ACTION2) player_has_orbit = true;
 	
 	if (player_has_orbit && orbit_node == 0) {
@@ -232,30 +240,30 @@ void player_applyconstraints(node *this)
 	
 	/* move based on velocity */
 	/* motion relative to camera angle */
-	if (player_move_forward) {
-		this->position.x += player_move_forward * camera_xz.y;
-		this->position.z += player_move_forward * camera_xz.x;
-		if (player_move_forward > 0.0)
+	if (player_vel.z) {
+		this->position.x += player_vel.z * camera_xz.y;
+		this->position.z += player_vel.z * camera_xz.x;
+		if (player_vel.z > 0.0)
 			this->rotation.x = -graph->camera->rotation.x;
 		else
-			this->rotation.x = 540 - graph->camera->rotation.x;
-		player_move_forward = 0.0;
+			this->rotation.x = 540.0 - graph->camera->rotation.x;
+		player_vel.z = 0.0;
 	}
-	if (player_move_right) {
+	if (player_vel.x) {
 		if (this->position.z > graph->camera->position.z) {
-			veccomp2d_calc(player_move_right, graph->camera->rotation.x, &camera_xz);
+			veccomp2d_calc(player_vel.x, graph->camera->rotation.x, &camera_xz);
 			this->position.x += camera_xz.x;
 			this->position.z -= camera_xz.y;
 		} else {
-			veccomp2d_calc(-player_move_right, graph->camera->rotation.x, &camera_xz);
+			veccomp2d_calc(-player_vel.x, graph->camera->rotation.x, &camera_xz);
 			this->position.x -= camera_xz.x;
 			this->position.z += camera_xz.y;
 		}
-		if (player_move_right > 0.0)
+		if (player_vel.x > 0.0)
 			this->rotation.x = -graph->camera->rotation.x - 90.0;
 		else
 			this->rotation.x = -graph->camera->rotation.x + 90.0;
-		player_move_right = 0.0;
+		player_vel.x = 0.0;
 	}
 	
 	/* handle children */
@@ -275,19 +283,17 @@ void player_applyconstraints(node *this)
 		}
 	}
 	
-	/* vertical accel and velocity */
-	player_vertical_vel += player_vertical_accel;
-	this->position.y += player_vertical_vel;
-	
-	if (standing_on_surface)
-		player_vertical_vel = 0.0;
+	/* apply acceleration to velocity */
+	player_vel.x = 0.0;				/* TODO: Control applies momentary acceleration */
+	player_vel.y += player_accel.y;
+	player_vel.z = 0.0;				/* TODO: Control applies momentary acceleration */
+
+	/* apply velocity to position */
+	this->position.y += player_vel.y;
 	
 	/* normalize angles */
 	this->rotation.x = fmod(this->rotation.x, 360.0);
 	this->rotation.y = fmod(this->rotation.y, 360.0);
-	
-	/* clear standing flag until detected again */
-	standing_on_surface = false;
 	
 	return;
 }
