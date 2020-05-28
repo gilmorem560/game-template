@@ -5,6 +5,11 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* configuration */
+#ifndef _WIN32
+#include "../../config.h"
+#endif  /* _WIN32 */
+
 /* OpenGL context */
 #include "../graphics/contexts/glcontext.h"
   
@@ -65,6 +70,15 @@ extern LRESULT CALLBACK wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 /* glxevent - process X11 input */
 extern void glxevent(Display *dpy);
 #endif  /* _WIN32 */
+
+/* joypad support - linux and BSD only currently */
+#ifdef HAVE_LIBEVDEV_LIBEVDEV_H
+extern void joystick_init(void);
+extern void joystick_read(void);
+extern void joystick_free(void);
+extern unsigned long pad_pressed;
+extern unsigned long pad_held;
+#endif
  
 #ifndef NDEBUG
 extern bool mouse_captured;

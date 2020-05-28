@@ -455,6 +455,10 @@ void glxevent(Display *dpy)
 				break;
 		}
 	}
+
+	#ifdef HAVE_LIBEVDEV_LIBEVDEV_H
+	joystick_read();
+	#endif /* HAVE_LIBEVDEV_LIBEVDEV_H */
     
     return;
 }

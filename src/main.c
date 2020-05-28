@@ -74,6 +74,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		return EXIT_FAILURE;
 	}
 
+	#ifdef HAVE_LIBEVDEV_LIBEVDEV_H
+	joystick_init();
+	#endif /* HAVE_LIBEVDEV_LIBEVDEV_H */
+
     /* prepare mode assets */
     game_modes[mode_index].init();
 
@@ -111,6 +115,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     /* unload mode assets */
     game_modes[mode_index].free();
+
+	#ifdef HAVE_LIBEVDEV_LIBEVDEV_H
+	joystick_free();
+	#endif /* HAVE_LIBEVDEV_LIBEVDEV_H */
 
     /* close context for X11 */
 	switch (current_context) {
