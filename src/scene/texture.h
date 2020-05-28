@@ -7,6 +7,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+
+#include <stddef.h>
 	
 /*
  * texture - a raw texture consisting of uncompressed pixel data
