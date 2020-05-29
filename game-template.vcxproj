@@ -202,6 +202,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\contexts\glcontext.c" />
     <ClCompile Include="src\graphics\primitives\grid2d.c" />
     <ClCompile Include="src\graphics\primitives\grid3d.c" />
     <ClCompile Include="src\graphics\primitives\point2d.c" />
@@ -209,6 +210,7 @@
     <ClCompile Include="src\graphics\primitives\poly2d.c" />
     <ClCompile Include="src\graphics\primitives\poly3d.c" />
     <ClCompile Include="src\graphics\primitives\vect.c" />
+    <ClCompile Include="src\input\input.c" />
     <ClCompile Include="src\main.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
     </ClCompile>
@@ -220,6 +222,7 @@
     </ClCompile>
     <ClCompile Include="src\modes\actor_test.c" />
     <ClCompile Include="src\modes\actor_test_obj\actors\cube.c" />
+    <ClCompile Include="src\modes\actor_test_obj\actors\person.c" />
     <ClCompile Include="src\modes\actor_test_obj\actors\tetrahedron.c" />
     <ClCompile Include="src\modes\actor_test_obj\actors\triangle.c" />
     <ClCompile Include="src\modes\actor_test_obj\nodes\box.c" />
@@ -228,6 +231,10 @@
     <ClCompile Include="src\modes\actor_test_obj\nodes\environment.c" />
     <ClCompile Include="src\modes\actor_test_obj\nodes\orbit.c" />
     <ClCompile Include="src\modes\actor_test_obj\nodes\player.c" />
+    <ClCompile Include="src\modes\logos.c" />
+    <ClCompile Include="src\modes\logos_obj\nodes\plane.c" />
+    <ClCompile Include="src\modes\modes.c" />
+    <ClCompile Include="src\modes\titlescreen.c" />
     <ClCompile Include="src\scene\actor.c" />
     <ClCompile Include="src\scene\collision\collision_box.c" />
     <ClCompile Include="src\scene\collision\collision_router.c" />
@@ -246,7 +253,11 @@
     <ClInclude Include="src\modes\actor_test.h" />
     <ClInclude Include="src\modes\actor_test_obj\actors.h" />
     <ClInclude Include="src\modes\actor_test_obj\nodes.h" />
+    <ClInclude Include="src\modes\logos.h" />
+    <ClInclude Include="src\modes\logos_obj\actors.h" />
+    <ClInclude Include="src\modes\logos_obj\nodes.h" />
     <ClInclude Include="src\modes\modes.h" />
+    <ClInclude Include="src\modes\titlescreen.h" />
     <ClInclude Include="src\scene\actor.h" />
     <ClInclude Include="src\scene\collision.h" />
     <ClInclude Include="src\scene\node.h" />

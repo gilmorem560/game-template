@@ -68,9 +68,8 @@ static graph_table scene_table[] = {
  */
 bool actor_test_init(void)
 {
-	signed short box_1, box_2, box_3, box_4, a_collectible, box_5;
 	unsigned char index;
-	signed char node_id;
+	unsigned short node_id;
 	#ifndef NDEBUG
 	printf("actor_test: init\n");
 	#endif /* NDEBUG */

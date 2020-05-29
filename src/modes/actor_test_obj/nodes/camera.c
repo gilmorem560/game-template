@@ -26,7 +26,6 @@ void camera_routine(node *this, node *player)
 	vect_component camera_dist_c;
 	double camera_dist_z_adj;
 	double camera_dist;
-	double camera_dist_planar;
 	vect_component camera_xz = { 0.0, 0.0 };
 	
 	/* determine distance */

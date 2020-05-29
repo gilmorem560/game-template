@@ -51,6 +51,21 @@
     <Filter Include="Header Files\mode\actor_test_obj">
       <UniqueIdentifier>{faa0175a-2a0f-4e84-b9f1-be268609fed9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\mode\logos_obj">
+      <UniqueIdentifier>{b950f254-7e86-4c36-9b10-0c13ccccd3cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mode\titlescreen_obj">
+      <UniqueIdentifier>{295bc514-7744-4002-b2bb-638d051e987d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mode\logos_obj\nodes">
+      <UniqueIdentifier>{dafbcdcb-812d-415b-ab2d-48f9831ffa2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\mode\logos_obj">
+      <UniqueIdentifier>{3e30b121-aaa7-4838-983e-5cdda7a11ec1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\mode\titlescreen_obj">
+      <UniqueIdentifier>{d9e89dfc-3c4b-4aee-bc93-a209500c1d5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
@@ -131,6 +146,27 @@
     <ClCompile Include="src\modes\actor_test_obj\nodes\collectible.c">
       <Filter>Source Files\mode\actor_test_obj\nodes</Filter>
     </ClCompile>
+    <ClCompile Include="src\modes\actor_test_obj\actors\person.c">
+      <Filter>Source Files\mode\actor_test_obj\actors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\logos.c">
+      <Filter>Source Files\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\modes.c">
+      <Filter>Source Files\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\titlescreen.c">
+      <Filter>Source Files\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modes\logos_obj\nodes\plane.c">
+      <Filter>Source Files\mode\logos_obj\nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\input.c">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\contexts\glcontext.c">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\input\input.h">
@@ -183,6 +219,18 @@
     </ClInclude>
     <ClInclude Include="src\modes\actor_test_obj\nodes.h">
       <Filter>Header Files\mode\actor_test_obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\logos.h">
+      <Filter>Header Files\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\titlescreen.h">
+      <Filter>Header Files\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\logos_obj\actors.h">
+      <Filter>Header Files\mode\logos_obj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\logos_obj\nodes.h">
+      <Filter>Header Files\mode\logos_obj</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -45,7 +45,7 @@ void player_free(node *this)
 bool player_to_box(node *player, node *box)
 {
 	double dist_x, dist_y, dist_z;
-	double ang_x, ang_y, ang_z;
+	double ang_x;
 	bool box_inside_x = false;
 	bool box_inside_y = false;
 	bool box_inside_z = false;

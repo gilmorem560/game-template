@@ -10,6 +10,8 @@ extern "C" {
 
 /* 2d space */
 typedef struct dim2 {	/* two dimensional construct */
+	double x;
+	double y;
 } dim2;
 typedef dim2 point2d;
 typedef dim2 grid2d;
