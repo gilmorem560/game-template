@@ -220,6 +220,15 @@ void player_processinput(node *this)
 	if ((input_mask & IM_ACTION1) && standing_on_surface) {player_vel.y = 0.35; standing_on_surface = false;}
 	if (input_mask & IM_ACTION2) player_has_orbit = true;
 	
+	#ifdef HAVE_LIBEVDEV_LIBEVDEV_H
+	/* x - jump */			if ((pad_pressed & (1 << PAD_B)) && standing_on_surface) {player_vel.y = 0.35; standing_on_surface = false;}
+	/* motion*/
+							if (pad_held & (1 << PAD_UP)) player_vel.z += motion_constant;
+							if (pad_held & (1 << PAD_DOWN)) player_vel.z -= motion_constant;
+							if (pad_held & (1 << PAD_LEFT)) player_vel.x -= motion_constant;
+							if (pad_held & (1 << PAD_RIGHT)) player_vel.x += motion_constant;
+	#endif /* HAVE_LIBEVDEV_LIBEVDEV_H */
+
 	if (player_has_orbit && orbit_node == 0) {
 		player_addorbit(this);
 	}

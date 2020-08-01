@@ -10,7 +10,7 @@ void box_init(node *this)
 	this->node_actor = at_cube_new();
 	actor_routine(this->node_actor, AR_INIT);
 	#ifndef NDEBUG
-	debug_show_col = true;
+	debug_show_col = false;
 	#endif /* NDEBUG */
 	
 	return;

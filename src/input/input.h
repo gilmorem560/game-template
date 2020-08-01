@@ -73,11 +73,7 @@ extern void glxevent(Display *dpy);
 
 /* joypad support - linux and BSD only currently */
 #ifdef HAVE_LIBEVDEV_LIBEVDEV_H
-extern void joystick_init(void);
-extern void joystick_read(void);
-extern void joystick_free(void);
-extern unsigned long pad_pressed;
-extern unsigned long pad_held;
+#include "joystick.h"
 #endif
  
 #ifndef NDEBUG

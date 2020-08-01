@@ -11,6 +11,7 @@ main_SOURCES = \
 	graphics/primitives/vect.c \
 	input/glxevent.c \
 	input/input.c \
+	input/joystick.c \
 	input/joystick_evdev.c \
 	modes/modes.c \
 	modes/logos.c \

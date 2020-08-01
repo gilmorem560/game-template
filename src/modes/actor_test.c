@@ -257,6 +257,10 @@ bool actor_test_input(void)
 	/* system */
 	/* q - quit */	if (key_held & KEY_Q) quit = true;
 	
+	#ifdef HAVE_LIBEVDEV_LIBEVDEV_H
+	/* start - quit */		if (pad_pressed & (1 << PAD_START)) quit = true;
+	#endif /* HAVE_LIBEVDEV_LIBEVDEV_H */
+
 	key_pressed = 0;
 	
 	return true;

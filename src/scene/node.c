@@ -6,6 +6,10 @@
 #include "node.h"
 
 /*
+ * #define VERBOSE_DEBUG - Uncomment for more intensive messages
+ */
+
+/*
  * new - generates a new node with initialized values
  */
 node *node_new(signed short id, signed int type, void (*render)(node *this), void (*routine)(node *this))
@@ -79,8 +83,10 @@ void node_render(node *this)
 		fputs("render: undefined node passed\n", stderr);
 	else if (this->render != NULL && this->id >= 0)
 		this->render(this);
+	#ifdef VERBOSE_DEBUG
 	else
 		fprintf(stderr, "node %d is inactive or not rendering\n", this->id);
+	#endif /* VERBOSE_DEBUG */
 	
 	return;
 }
@@ -101,8 +107,10 @@ void node_routine(node *this, signed char routine_index)
 		this->routine_index = routine_index;
 		this->routine(this);
 	}
+	#ifdef VERBOSE_DEBUG
 	else
 		fprintf(stderr, "node %d is inactive or has no routine\n", this->id);
+	#endif /* VERBOSE_DEBUG */
 	
 	return;
 }
