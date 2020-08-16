@@ -169,7 +169,7 @@ void player_collision(node *this)
 		case NT_BOX:
 				if (fabs(pointdistance3d(this->position,graph->nodes[index]->position)) > 1.0)
 					break;	/* don't waste cycles calculating a box we're far away from */
-				standing_on_box = player_to_box(this, graph->nodes[index]);
+				standing_on_box |= player_to_box(this, graph->nodes[index]);
 				break;
 		case NT_COLLECTIBLE:
 			/* detect incursion */
